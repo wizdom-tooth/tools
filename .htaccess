@@ -1,0 +1,23 @@
+<IfModule mod_rewrite.c>
+
+	RewriteEngine on
+	Options +FollowSymLinks
+	RewriteBase /
+
+	# -----------------------------------------------------
+	# production
+	# -----------------------------------------------------
+
+	# wiz group corp portal
+	RewriteCond %{HTTP_HOST} ^wiz-corp\.jp$ [NC]
+	RewriteCond $1 ^index\.(php|html)$ [OR]
+	RewriteCond $1 ^(top)
+	RewriteRule ^(.*)$ / [R=301,L]
+
+	RewriteCond %{HTTP_HOST} ^wiz-corp\.jp$ [NC]
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d [OR]
+	RewriteCond %{REQUEST_URI} ^/$ 
+	RewriteCond $1 !^(redmine)
+	RewriteRule ^(.*)$ portal.php/$1 [L]
+</IfModule>
