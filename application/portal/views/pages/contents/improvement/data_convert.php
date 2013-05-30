@@ -11,7 +11,7 @@ $raw_mail = <<<EOT
 メールアドレス：ＯgAＷa＠wiｚ-Ｇ.Ｃｏ.JＰ
 性別：M
 国籍：JaPaＮ
-電話番号：０９０-1234-５６７８
+電話番号：０９０-1234ー５６７８
 EOT;
 ?>
 
@@ -32,11 +32,11 @@ EOT;
 <ul id="improvement">
 	<li><span id="improvement">方法 (B)</span></li>
 </ul>
-<form method="post" action="/improvement/data_convert.html">
 <div id="table">
+<form method="post" action="/improvement/data_convert.html">
 <div class="box" id="float_left">
 <div class="box">
-<textarea name="mail_body" cols="40" rows="10">
+<textarea name="mail_body" cols="40" rows="7">
 <?php
 if (isset($mail_body))
 {
@@ -51,8 +51,8 @@ else
 </div>
 <div class="clear"></div>
 <div class="box">
-<input type="submit" value="整形する">
-<input type="button" value="初期化" onclick="location.href=''">
+<input type="submit" value="整形する" />
+<input type="button" value="初期化" onclick="location.href=''" />
 </div>
 </div>
 </form>
@@ -111,6 +111,19 @@ else
 メールの内容は全半角や大小文字がバラバラです。<br />
 文字の間にスペースも入っているようです。
 </div>
+<ul id="improvement">
+	<li><span id="red">条件</span>
+		<ol id="improvement">
+			<li>共通：スペースは削除したい</li>
+			<li>姓名：半角英字の大文字に整形したい</li>
+			<li>メールアドレス：半角英字の小文字に整形したい</li>
+			<li>メールアドレス：@より右側が存在するかチェックしたい</li>
+			<li>国籍：半角英字の大文字に整形したい</li>
+			<li>電話番号：半角数字に整形したい</li>
+			<li>電話番号：連結文字は無しか半角"-"のみに統一したい</li>
+		</ol>
+	</li>
+</ul>
 <pre>
 <?php echo $raw_mail;?>
 </pre>

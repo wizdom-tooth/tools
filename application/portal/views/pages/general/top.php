@@ -16,23 +16,3 @@ if (
 </ul>
 </div>
 <?php endif;?>
-
-<?php
-// ほげほげ
-if (
-	user_group('admin') ||
-	user_group('manager') ||
-	user_group('employee')
-):
-?>
-<h3>ほげふが</h3>
-<div class="box" id="contents">
-<ul>
-<li><a href="/">ほげほげほげ</a></li>
-<li><a href="/">ふがふがふが</a></li>
-<li><a href="/">ほげほげほげ</a></li>
-<li><a href="/">ふがふがふが</a></li>
-</ul>
-</div>
-<?php endif;?>
-
