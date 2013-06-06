@@ -4,22 +4,28 @@ class Improvement extends CI_Controller_With_Auth {
 
 	private $_sitemap = array(
 		'index' => array(
-			'title'    => '改善提案のヒント',
+			'title'    => '業務改善トップ',
 			'url'      => '/improvement/index.html',
 			'children' => array(
-				'data' => array(
-					'title'    => 'データ関連',
+				'sample' => array(
+					'title'    => '改善提案のヒント＆DEMO',
 					'url'      => NULL,
 					'children' => array(
-						'data_convert' => array(
-							'title'    => 'データ整形',
-							'url'      => '/improvement/data_convert.html',
-							'children' => NULL,
-						),
-						'data_input' => array(
-							'title'    => 'データ入力',
-							'url'      => '/improvement/data_input.html',
-							'children' => NULL,
+						'data' => array(
+							'title'    => 'データ処理関連',
+							'url'      => NULL,
+							'children' => array(
+								'data_convert' => array(
+									'title'    => 'データ整形',
+									'url'      => '/improvement/data_convert.html',
+									'children' => NULL,
+								),
+								'data_input' => array(
+									'title'    => 'データ入力',
+									'url'      => '/improvement/data_input.html',
+									'children' => NULL,
+								),
+							),
 						),
 					),
 				),

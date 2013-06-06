@@ -27,21 +27,16 @@ document.getElementById('numok').checked=false;
 window.scroll(0,document.body.scrollHeight);
 EOT;
 $js1 = preg_replace('/\s/', '', $js1);
-$bm1 = '<a href="javascript:(function(){'.$js1.'})();">[SAMPLE 01]</a> Click Me!';
+$bm1 = '<a href="javascript:(function(){'.$js1.'})();">Click Me!</a>';
 $js2 = preg_replace('/\s/', '', $js2);
-$bm2 = '<a href="javascript:(function(){'.$js2.'})();">[SAMPLE 02]</a> Click Me!';
+$bm2 = '<a href="javascript:(function(){'.$js2.'})();">Click Me!</a>';
 $js3 = preg_replace('/\s/', '', $js3);
 $bm3 = '<a href="javascript:(function(){'.$js3.'})();">Bookmark Me!</a>';
 ?>
 
-<h2>データ入力</h2>
-
-<!--==========================-->
-<!-- 内容 -->
-<!--==========================-->
+<h2>DEMO: データ入力</h2>
 
 <h3>Do you like which way ?</h3>
-<div class="space_10"></div>
 
 <div id="improvement">
 
@@ -73,8 +68,8 @@ $bm3 = '<a href="javascript:(function(){'.$js3.'})();">Bookmark Me!</a>';
 <ul id="improvement">
 	<li><span id="improvement">方法 (B)</span>
 		<ol id="improvement">
-			<li><?php echo $bm1;?></li>
-			<li><?php echo $bm2;?></li>
+			<li>SAMPLE01 [<?php echo $bm1;?>]</li>
+			<li>SAMPLE02 [<?php echo $bm2;?>]</li>
 		</ol>
 	</li>
 </ul>
@@ -167,8 +162,8 @@ $bm3 = '<a href="javascript:(function(){'.$js3.'})();">Bookmark Me!</a>';
 <ul id="improvement">
 	<li><span id="red">ポイント</span>
 		<ul id="improvement">
-			<li>この手法はリンクをブックマークする事で、任意のページに適用できる</li>
-			<li>下記は適用サンプルですので、実際にフォームを送信しないように注意してください</li>
+			<li>この手法はリンクをブックマークする事で、任意のページに適用する事が可能です</li>
+			<li>下記はサンプルですので、フォームを送信しないように御注意ください</li>
 			<li>ex) <a href="https://account.edit.yahoo.co.jp/registration" target="blank">Yahoo! Japan ID登録</a> [<?php echo $bm3;?>]</li>
 		</ul>
 	</li>
@@ -176,4 +171,4 @@ $bm3 = '<a href="javascript:(function(){'.$js3.'})();">Bookmark Me!</a>';
 
 </div>
 
-<?php $this->load->view('pages/components/contents', array('sitemap' => $sitemap));?>
+<?php $this->load->view('pages/components/sitemap', array('sitemap' => $sitemap));?>

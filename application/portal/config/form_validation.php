@@ -20,7 +20,7 @@ $config = array(
 		array(
 			'field' => 'country_national',
 			'label' => '国籍',
-			'rules' => 'convert[single]|convert[space_strip]|trim|strtoupper|strip_tags|xss_clean|required'
+			'rules' => 'convert[single]|convert[space_strip]|trim|strtoupper|alpha|strip_tags|xss_clean|required'
 		),
 		array(
 			'field' => 'sex',

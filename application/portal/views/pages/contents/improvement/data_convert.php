@@ -1,9 +1,3 @@
-<h2>データ整形</h2>
-
-<!--==========================-->
-<!-- 内容 -->
-<!--==========================-->
-
 <?php
 $raw_mail = <<<EOT
 姓：Oｇ Ａw　ａ
@@ -15,10 +9,11 @@ $raw_mail = <<<EOT
 EOT;
 ?>
 
+<h2>DEMO: データ整形</h2>
+
 <h3>Do you like which way ?</h3>
 
 <div id="improvement">
-<div class="space_10"></div>
 <a href="#anchor_overview">事例を読む</a>
 <ul id="improvement">
 	<li><span id="improvement">方法 (A)</span>
@@ -129,4 +124,4 @@ else
 </pre>
 </div>
 
-<?php $this->load->view('pages/components/contents', array('sitemap' => $sitemap));?>
+<?php $this->load->view('pages/components/sitemap', array('sitemap' => $sitemap));?>
