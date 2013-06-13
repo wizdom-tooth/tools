@@ -150,86 +150,83 @@ module IssuesHelper
     return s.html_safe if issue.custom_field_values.empty?
 
     # カスタムフィールド配列をexpander毎に分割する
-    box = Hash::new
-    tmp = Hash::new
+    boxes = []
+    tmp = []
     expander_name = ''
-    i = 0
+    j = 0
     issue.custom_field_values.compact.each do |c|
-      if /^expander-(\S+)$/ =~ h(c.custom_field.name)
+      if /^--------expander-(\S+)$/ =~ h(c.custom_field.name)
         if !tmp.empty?
           if expander_name == ''
-            box['noexpand-' + i] = tmp
-            tmp = Hash::new
-            i += 1
+            boxes << {"noexpand-#{j}" => tmp}
+            tmp = []
+            j += 1
           else
-		    box[expander_name] = tmp
-            tmp = Hash::new
-            expander_name = h(c.custom_field.name).scan(/^expander-(\S+)$/).slice(0, 1)
+		    boxes << {expander_name => tmp}
+            tmp = []
           end
-        else
-            expander_name = h(c.custom_field.name).scan(/^expander-(\S+)$/).slice(0, 1)
 		end
+        expander_name = h(c.custom_field.name).scan(/^--------expander-(\S+)$/).slice(0, 1).to_s
       else
-        tmp[h(c.custom_field.name)] = simple_format_without_paragraph(h(show_value(c)))
-        #tmp.store(h(c.custom_field.name), simple_format_without_paragraph(h(show_value(c))))
+        key = h(c.custom_field.name)
+		value = simple_format_without_paragraph(h(show_value(c)))
+        tmp << {key => value}
       end
     end
-    if !tmp.empty?
-      if expander_name == ''
-        box['noexpand-' + i] = tmp
-      else
-        box[expander_name] = tmp
-      end
-	end
-
-    #ordered_values = []
-    #half = (issue.custom_field_values.size / 2.0).ceil
-    #half.times do |i|
-    #  ordered_values << issue.custom_field_values[i]
-    #  ordered_values << issue.custom_field_values[i + half]
-    #end
+    if expander_name == ''
+      boxes << {"noexpand-#{j}" => tmp}
+    else
+      boxes << {expander_name => tmp}
+    end
 
     # expander box 毎にテーブルを描画
-    box.each do |expander_name, items|
-      id  = "collapse-#{expander_name}"
-      sid = "#{id}-show"
-      hid = "#{id}-hide"
-      s << "<p>"
-      s << "<a class=\"collapsible collapsed\" href=\"#\" id=\"#{sid}\""
-      s << "onclick=\"$(&#x27;##{sid}, ##{hid}&#x27;).toggle(); "
-      s << "$(&#x27;##{id}&#x27;).fadeToggle(150);; return false;\">#{expander_name}を開く</a>"
-      s << "<a class=\"collapsible\" href=\"#\" id=\"#{hid}\" "
-      s << "onclick=\"$(&#x27;##{sid}, ##{hid}&#x27;).toggle(); "
-      s << "$(&#x27;##{id}&#x27;).fadeToggle(150);; return false;\" style=\"display:none;\">#{expander_name}を隠す</a>"
-      s << "<div class=\"collapsed-text\" id=\"#{id}\" style=\"display:none;\">"
-      s << "<table class=\"attributes\">\n"
-      s << "<tr>\n"
-      n = 0
-      items.each do |custom_field_name, custom_field_value|
-        s << "</tr>\n<tr>\n" if n > 0 && (n % 2) == 0
-        s << "\t<th>#{custom_field_name}:</th><td>#{custom_field_value}</td>\n"
-        n += 1
+    boxes.each do |box|
+      box.each do |expander_name, items|
+        unless /^noexpand/ =~ expander_name
+          if /＠/ =~ expander_name
+            expander_name, label = expander_name.split('＠')
+          else
+            label = ''
+          end
+          id  = "collapse-#{expander_name}"
+          sid = "#{id}-show"
+          hid = "#{id}-hide"
+          if label != ''
+            s << "<hr />"
+            s << "<div style=\"padding-left:5px; color:#FFF5EE; font-size:12pt; font-weight:bold; width:auto; background-color:#FFA07A\">#{label}</div>"
+          end
+          s << "<p>"
+          s << "<a class=\"collapsible collapsed\" href=\"#\" id=\"#{sid}\""
+          s << "onclick=\"$(&#x27;##{sid}, ##{hid}&#x27;).toggle(); "
+          s << "$(&#x27;##{id}&#x27;).fadeToggle(130);; return false;\">「#{expander_name}」を開く</a>"
+          s << "<a class=\"collapsible\" href=\"#\" id=\"#{hid}\" "
+          s << "onclick=\"$(&#x27;##{sid}, ##{hid}&#x27;).toggle(); "
+          s << "$(&#x27;##{id}&#x27;).fadeToggle(130);; return false;\" style=\"display:none;\">「#{expander_name}」を閉じる</a>"
+          s << "<div class=\"collapsed-text\" id=\"#{id}\" style=\"display:none;\">"
+		end
+        s << "<table class=\"attributes\">\n"
+        s << "<tr>\n"
+        ordered_values = []
+        half = (items.size / 2.0).ceil
+        half.times do |i|
+          ordered_values << items[i]
+          ordered_values << items[i + half]
+        end
+        n = 0
+        ordered_values.compact.each do |item|
+          key, value = item.shift
+          s << "</tr>\n<tr>\n" if n > 0 && (n % 2) == 0
+          s << "\t<th>#{key}:</th><td>#{value}</td>\n"
+          n += 1
+		end
+        s << "</tr>\n"
+        s << "</table>\n"
+        unless /^noexpand/ =~ expander_name.to_s
+          s << "</div>\n"
+          s << "</p>\n"
+        end
       end
-      s << "</tr>\n"
-      s << "</table>\n"
-      s << "</div>\n"
-      s << "</p>\n"
     end
-
-#    s << '<p><a class="collapsible collapsed" href="#" id="collapse-aaa-show" onclick="$(&#x27;#collapse-aaa-show, #collapse-aaa-hide&#x27;).toggle(); $(&#x27;#collapse-aaa&#x27;).fadeToggle(150);; return false;">show</a><a class="collapsible" href="#" id="collapse-aaa-hide" onclick="$(&#x27;#collapse-aaa-show, #collapse-aaa-hide&#x27;).toggle(); $(&#x27;#collapse-aaa&#x27;).fadeToggle(150);; return false;" style="display:none;">hide</a><div class="collapsed-text" id="collapse-aaa" style="display:none;">'
-#    s << '<table class="attributes">'
-#    s << "<tr>\n"
-#    n = 0
-#    ordered_values.compact.each do |value|
-#      s << "</tr>\n<tr>\n" if n > 0 && (n % 2) == 0
-#      s << "\t<th>#{ h(value.custom_field.name) }:</th><td>#{ simple_format_without_paragraph(h(show_value(value))) }</td>\n"
-#      n += 1
-#    end
-#    s << "</tr>\n"
-#    s << "</table>\n"
-#    s << "</div>\n"
-#    s << "</p>\n"
-
     s.html_safe
   end
 

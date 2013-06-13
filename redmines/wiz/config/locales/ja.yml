@@ -264,7 +264,7 @@ ja:
   field_project: プロジェクト
   field_issue: チケット
   field_status: ステータス
-  field_notes: 注記
+  field_notes: 作業履歴コメント
   field_is_closed: 終了したチケット
   field_is_default: デフォルト値
   field_tracker: トラッカー
@@ -414,9 +414,9 @@ ja:
   permission_add_issues: チケットの追加
   permission_edit_issues: チケットの編集
   permission_manage_issue_relations: 関連するチケットの管理
-  permission_add_issue_notes: 注記の追加
-  permission_edit_issue_notes: 注記の編集
-  permission_edit_own_issue_notes: 自身が記入した注記の編集
+  permission_add_issue_notes: 作業履歴コメントの追加
+  permission_edit_issue_notes: 作業履歴コメントの編集
+
   permission_move_issues: チケットの移動
   permission_delete_issues: チケットの削除
   permission_manage_public_queries: 公開クエリの管理
@@ -431,8 +431,8 @@ ja:
   permission_edit_time_entries: 作業時間の編集
   permission_edit_own_time_entries: 自身が記入した作業時間の編集
   permission_manage_project_activities: 作業分類 (時間トラッキング) の管理
-  permission_manage_news: ニュースの管理
-  permission_comment_news: ニュースへのコメント
+  permission_manage_news: 周知事項の管理
+  permission_comment_news: 周知事項へのコメント
   permission_view_documents: 文書の閲覧
   permission_manage_files: ファイルの管理
   permission_view_files: ファイルの閲覧
@@ -460,7 +460,7 @@ ja:
 
   project_module_issue_tracking: チケットトラッキング
   project_module_time_tracking: 時間トラッキング
-  project_module_news: ニュース
+  project_module_news: 周知事項
   project_module_documents: 文書
   project_module_files: ファイル
   project_module_wiki: Wiki
@@ -560,7 +560,7 @@ ja:
   label_attribute_plural: 属性
   label_no_data: 表示するデータがありません
   label_change_status: ステータスの変更
-  label_history: 履歴
+  label_history: 作業履歴
   label_attachment: ファイル
   label_attachment_new: 新しいファイル
   label_attachment_delete: ファイルを削除
@@ -568,13 +568,13 @@ ja:
   label_file_added: ファイルが追加されました
   label_report: レポート
   label_report_plural: レポート
-  label_news: ニュース
-  label_news_new: ニュースを追加
-  label_news_plural: ニュース
-  label_news_latest: 最新ニュース
-  label_news_view_all: すべてのニュースを見る
-  label_news_added: ニュースが追加されました
-  label_news_comment_added: ニュースにコメントが追加されました
+  label_news: 周知事項
+  label_news_new: 周知事項を追加
+  label_news_plural: 周知事項
+  label_news_latest: 最新周知事項
+  label_news_view_all: すべての周知事項を見る
+  label_news_added: 周知事項が追加されました
+  label_news_comment_added: 周知事項にコメントが追加されました
   label_settings: 設定
   label_overview: 概要
   label_version: バージョン
@@ -612,7 +612,7 @@ ja:
   label_previous: 前
   label_used_by: 使用中
   label_details: 詳細
-  label_add_note: 注記を追加
+  label_add_note: 作業履歴コメントを追加
   label_per_page: ページ毎
   label_calendar: カレンダー
   label_months_from: ヶ月分
@@ -994,7 +994,7 @@ ja:
   label_role_anonymous: 匿名ユーザー
   label_role_non_member: 非メンバー
 
-  label_issue_note_added: 注記が追加されました
+  label_issue_note_added: 作業履歴コメントが追加されました
   label_issue_status_updated: ステータスが更新されました
   label_issue_priority_updated: 優先度が更新されました
   label_issues_visibility_own: 作成者か担当者であるチケット
@@ -1018,7 +1018,7 @@ ja:
   description_date_range_interval: 日付で指定
   description_issue_category_reassign: 新しいカテゴリを選択してください
   description_search: 検索キーワード
-  description_notes: 注記
+  description_notes: 作業履歴コメント
   description_date_range_list: 一覧から選択
   description_choose_project: プロジェクト
   description_date_to: 終了日
@@ -1045,8 +1045,8 @@ ja:
   text_project_identifier_info: アルファベット小文字(a-z)・数字・ハイフン・アンダースコアが使えます。最初の文字はアルファベットの小文字にしてください。<br />識別子は後で変更することはできません。
   field_multiple: 複数選択可
   setting_commit_cross_project_ref: 異なるプロジェクトのチケットの参照/修正を許可
-  text_issue_conflict_resolution_add_notes: 自分の編集内容を破棄し注記のみ追加
-  text_issue_conflict_resolution_overwrite: 自分の編集内容の保存を強行 (他のユーザーの更新内容は注記を除き上書きされます)
+  text_issue_conflict_resolution_add_notes: 自分の編集内容を破棄し作業履歴コメントのみ追加
+  text_issue_conflict_resolution_overwrite: 自分の編集内容の保存を強行 (他のユーザーの更新内容は作業履歴コメントを除き上書きされます)
   notice_issue_update_conflict: このチケットを編集中に他のユーザーが更新しました。
   text_issue_conflict_resolution_cancel: 自分の編集内容を破棄し %{link} を再表示
   permission_manage_related_issues: 関連するチケットの管理
@@ -1091,9 +1091,9 @@ ja:
   label_copied_from: コピー元
   label_any_issues_in_project: 次のプロジェクト内のチケット
   label_any_issues_not_in_project: 次のプロジェクト外のチケット
-  field_private_notes: プライベート注記
-  permission_view_private_notes: プライベート注記の閲覧
-  permission_set_notes_private: 注記をプライベートに設定
+  field_private_notes: プライベート作業履歴コメント
+  permission_view_private_notes: プライベート作業履歴コメントの閲覧
+  permission_set_notes_private: 作業履歴コメントをプライベートに設定
   label_no_issues_in_project: 次のプロジェクト内のチケットを除く
   label_any: すべて
   label_last_n_weeks: 直近%{count}週間
