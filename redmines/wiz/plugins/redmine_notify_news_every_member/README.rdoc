@@ -1,0 +1,67 @@
+= notify_news_every_member
+
+== このプラグインについて
+
+このプラグインは、ニュースが追加されたことを通知するメールをプロジェクト
+の全メンバーに送信するようRedmineの動作を変更します。ニュースが追加され
+たことをプロジェクトの全メンバーに確実に周知したい場合に利用します。
+
+Redmineでは、管理画面の「設定」=>「メール通知」で「ニュースが追加されま
+した」チェックボックスをONにするとプロジェクトで新しいニュースが追加され
+たことをメンバーに通知することができます。しかし、通知対象となるメンバー
+は、「マイアカウント」の「メール通知」が「参加しているプロジェクトの全て
+のチケット」に設定されているメンバーのみです。デフォルトではこれとは異な
+る設定になっているため、あえて設定を変更したメンバーにしかメールが届きま
+せん。
+
+このプラグインをインストールとに、各々のメンバーの設定とは無関係に、すべ
+てのメンバーにニュースが追加されたことを通知するメールが送られるようにな
+ります。
+
+== 動作環境
+
+Redmine 2.0および1.4で動作を確認しました。
+
+== インストール方法
+
+Redmineのインストールディレクトリのpluginsディレクトリ以下(Redmine 2.0未
+満の場合はvendor/plugins以下)にファイルを展開しRedmineを再起動してくださ
+い。
+
+展開後は次のようなディレクトリ構成となります。
+
+RAILS_ROOT/
+  |
+  +-vendor/
+      |
+      +-plugins/
+          |
+          +-redmine_notify_news_every_member/
+              |
+              +-lib/
+              +-test/
+
+== ライセンス
+
+The MIT License
+
+Copyright (C) 2009-2012 FAR END Technologies Corporation
+http://www.farend.co.jp/
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
