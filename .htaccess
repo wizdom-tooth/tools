@@ -1,6 +1,7 @@
 order deny,allow
 deny from all
 allow from 218.219.209.2
+allow from 117.55.68.35
 
 <IfModule mod_rewrite.c>
 
@@ -22,6 +23,6 @@ allow from 218.219.209.2
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d [OR]
 	RewriteCond %{REQUEST_URI} ^/$ 
-	RewriteCond $1 !^(redmine|redmine2)
+	RewriteCond $1 !^(redmine|wiki)
 	RewriteRule ^(.*)$ portal.php/$1 [L]
 </IfModule>
