@@ -34,10 +34,10 @@ module SettingsHelper
     if blank_text = options.delete(:blank)
       choices = [[blank_text.is_a?(Symbol) ? l(blank_text) : blank_text, '']] + choices
     end
-    setting_label(setting, options).html_safe +
+    setting_label(setting, options).html_safe.force_encoding("utf-8") +
       select_tag("settings[#{setting}]",
                  options_for_select(choices, Setting.send(setting).to_s),
-                 options).html_safe
+                 options).html_safe.force_encoding("utf-8")
   end
 
   def setting_multiselect(setting, choices, options={})

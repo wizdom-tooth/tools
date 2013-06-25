@@ -155,7 +155,7 @@ module IssuesHelper
     expander_name = ''
     j = 0
     issue.custom_field_values.compact.each do |c|
-      if /^--------expander-(\S+)$/ =~ h(c.custom_field.name)
+      if /^-----expander-(\S+)$/ =~ h(c.custom_field.name)
         if !tmp.empty?
           if expander_name == ''
             boxes << {"noexpand-#{j}" => tmp}
@@ -166,7 +166,7 @@ module IssuesHelper
             tmp = []
           end
 		end
-        expander_name = h(c.custom_field.name).scan(/^--------expander-(\S+)$/).slice(0, 1).to_s
+        expander_name = h(c.custom_field.name).scan(/^-----expander-(\S+)$/).slice(0, 1).to_s
       else
         key = h(c.custom_field.name)
 		value = simple_format_without_paragraph(h(show_value(c)))
@@ -183,26 +183,44 @@ module IssuesHelper
     boxes.each do |box|
       box.each do |expander_name, items|
         unless /^noexpand/ =~ expander_name
+          # hr
+          if /#hr/ =~ expander_name
+            expander_name = expander_name.scan(/^(\S+)#hr/).slice(0, 1).to_s
+            is_hr = true
+          else
+            is_hr = false
+          end
+          # label
           if /＠/ =~ expander_name
             expander_name, label = expander_name.split('＠')
           else
             label = ''
           end
-          id  = "collapse-#{expander_name}"
-          sid = "#{id}-show"
-          hid = "#{id}-hide"
-          if label != ''
+
+          if label == '紹介' and (h(issue.status.name) == '新規' or /^# (\S+)$/ =~ h(issue.status.name))
+            return s.html_safe
+          end
+
+          # html整形
+          #s << 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+          #s << label + label + label + label + label
+          id  = 'collapse-' + label.delete('"]]') + expander_name
+          sid = id + '-show'
+          hid = id + '-hide'
+          if is_hr == true
             s << "<hr />"
-            s << "<div style=\"padding-left:5px; color:#FFF5EE; font-size:12pt; font-weight:bold; width:auto; background-color:#FFA07A\">#{label}</div>"
+          end
+          if label != ''
+            s << "<div style=\"margin-top:7px; padding-left:5px; color:#FFF5EE; font-size:12pt; font-weight:bold; width:auto; background-color:#2F7B00\">" + label + "</div>"
           end
           s << "<p>"
-          s << "<a class=\"collapsible collapsed\" href=\"#\" id=\"#{sid}\""
-          s << "onclick=\"$(&#x27;##{sid}, ##{hid}&#x27;).toggle(); "
-          s << "$(&#x27;##{id}&#x27;).fadeToggle(130);; return false;\">「#{expander_name}」を開く</a>"
-          s << "<a class=\"collapsible\" href=\"#\" id=\"#{hid}\" "
-          s << "onclick=\"$(&#x27;##{sid}, ##{hid}&#x27;).toggle(); "
-          s << "$(&#x27;##{id}&#x27;).fadeToggle(130);; return false;\" style=\"display:none;\">「#{expander_name}」を閉じる</a>"
-          s << "<div class=\"collapsed-text\" id=\"#{id}\" style=\"display:none;\">"
+          s << "<a class=\"collapsible collapsed\" href=\"#\" id=\"" + sid + "\""
+          s << "onclick=\"$(&#x27;#" + sid + ", #" + hid + "&#x27;).toggle(); "
+          s << "$(&#x27;#" + id + "&#x27;).fadeToggle(130);; return false;\">「" + expander_name + "」を開く</a>"
+          s << "<a class=\"collapsible\" href=\"#\" id=\"" + hid + "\" "
+          s << "onclick=\"$(&#x27;#" + sid + ", #" + hid + "&#x27;).toggle(); "
+          s << "$(&#x27;#" + id + "&#x27;).fadeToggle(130);; return false;\" style=\"display:none;\">「" + expander_name + "」を閉じる</a>"
+          s << "<div class=\"collapsed-text\" id=\"" + id + "\" style=\"display:none;\">"
 		end
         s << "<table class=\"attributes\">\n"
         s << "<tr>\n"
@@ -216,7 +234,7 @@ module IssuesHelper
         ordered_values.compact.each do |item|
           key, value = item.shift
           s << "</tr>\n<tr>\n" if n > 0 && (n % 2) == 0
-          s << "\t<th>#{key}:</th><td>#{value}</td>\n"
+          s << "\t<th>" + key + ":</th><td>" + value + "</td>\n"
           n += 1
 		end
         s << "</tr>\n"

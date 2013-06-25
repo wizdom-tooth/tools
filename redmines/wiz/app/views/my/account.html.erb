@@ -1,3 +1,4 @@
+# encoding: utf-8
 <div class="contextual">
 <%= link_to(l(:button_change_password), {:action => 'password'}, :class => 'icon icon-passwd') if @user.change_password_allowed? %>
 <%= call_hook(:view_my_account_contextual, :user => @user)%>
