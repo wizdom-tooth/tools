@@ -12,3 +12,5 @@ end
 
 # Initialize the rails application
 RedmineApp::Application.initialize!
+
+ActionController::Base.relative_url_root = "/redmine"

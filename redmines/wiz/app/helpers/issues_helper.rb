@@ -166,7 +166,7 @@ module IssuesHelper
             tmp = []
           end
 		end
-        expander_name = h(c.custom_field.name).scan(/^-----expander-(\S+)$/).slice(0, 1).to_s
+        expander_name = h(c.custom_field.name).scan(/^-----expander-(\S+)$/).shift.shift
       else
         key = h(c.custom_field.name)
 		value = simple_format_without_paragraph(h(show_value(c)))
@@ -185,7 +185,7 @@ module IssuesHelper
         unless /^noexpand/ =~ expander_name
           # hr
           if /#hr/ =~ expander_name
-            expander_name = expander_name.scan(/^(\S+)#hr/).slice(0, 1).to_s
+            expander_name = expander_name.scan(/^(\S+)#hr/).shift.shift
             is_hr = true
           else
             is_hr = false
@@ -202,9 +202,7 @@ module IssuesHelper
           end
 
           # html整形
-          #s << 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
-          #s << label + label + label + label + label
-          id  = 'collapse-' + label.delete('"]]') + expander_name
+          id  = 'collapse-' + label + expander_name
           sid = id + '-show'
           hid = id + '-hide'
           if is_hr == true
@@ -239,7 +237,7 @@ module IssuesHelper
 		end
         s << "</tr>\n"
         s << "</table>\n"
-        unless /^noexpand/ =~ expander_name.to_s
+        unless /^noexpand/ =~ expander_name
           s << "</div>\n"
           s << "</p>\n"
         end
