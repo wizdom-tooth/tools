@@ -1,0 +1,21 @@
+<% if custom_field.field_format.blank? || %w(string text).include?(custom_field.field_format) %>
+  <p><%= form.check_box(:textilizable) %></p>
+<% end %>
+
+<% if (Redmine::VERSION::ARRAY <=> [2,1,0]) < 0 %>
+<script type="text/javascript">
+  Event.observe("custom_field_field_format", "change", function() {
+    var p_textilizable = $("custom_field_textilizable");
+    var format = this;
+    switch (format.value) {
+      case 'text':
+      case 'string':
+        Element.show(p_textilizable.parentNode);
+        break;
+      default:
+        Element.hide(p_textilizable.parentNode);
+        break;
+    }
+  });
+</script>
+<% end %>

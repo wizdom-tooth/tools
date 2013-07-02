@@ -1,0 +1,33 @@
+h2. Redmine reorder links arbitrary plugin
+
+Reorder links arbitrary is a Redmine plugin that allows to change position of item in Redmine enumerations lists (trackers, custom fields, etc) to any position
+
+It is very convenient if you have a lot of custom fields and want to rearrange them in specific order because without plugin it is possible to move items only at one position at a time
+
+h3. Possible actions
+
+Plugin adds extra button to the sort column of the existing Redmine enumerations.
+
+In the popup dialog it is possible to specify relative or absolute position of item in the list
+
+If number starts with + or - signs then item will move to the position relative to the current (negative - higher, positive - lower)
+If number is number without any + or - prefixes then item will be placed at the specified position (1 means topmost)
+
+For example, +4 will move item to 4 positions lower its current position, and 3 will make item third in the list
+
+h3. System files modifications
+
+* Plugin adds a new method *move_to_pos* to the *acts_as_list* plugin
+* Plugin extends ApplicationHelper' function *reorder_links*
+
+Please be aware that plugin works *only* in production mode
+
+h3. History
+
+0.0.7
+
+* Redmine 2.x (Rails 3.x) compatibility
+
+0.0.6
+
+* Initial release

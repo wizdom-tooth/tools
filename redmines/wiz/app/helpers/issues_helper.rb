@@ -197,7 +197,7 @@ module IssuesHelper
             label = ''
           end
 
-          if label == '紹介' and (h(issue.status.name) == '新規' or /^# (\S+)$/ =~ h(issue.status.name))
+          if label == '顧客' and (h(issue.status.name) == '新規' or /^# (\S+)$/ =~ h(issue.status.name))
             return s.html_safe
           end
 
@@ -220,20 +220,46 @@ module IssuesHelper
           s << "$(&#x27;#" + id + "&#x27;).fadeToggle(130);; return false;\" style=\"display:none;\">「" + expander_name + "」を閉じる</a>"
           s << "<div class=\"collapsed-text\" id=\"" + id + "\" style=\"display:none;\">"
 		end
-        s << "<table class=\"attributes\">\n"
-        s << "<tr>\n"
         ordered_values = []
         half = (items.size / 2.0).ceil
         half.times do |i|
           ordered_values << items[i]
           ordered_values << items[i + half]
         end
+        s << "<table class=\"attributes\">\n"
+        s << "<tr>\n"
         n = 0
         ordered_values.compact.each do |item|
           key, value = item.shift
-          s << "</tr>\n<tr>\n" if n > 0 && (n % 2) == 0
-          s << "\t<th>" + key + ":</th><td>" + value + "</td>\n"
-          n += 1
+          if key == "通話内容"
+            s << "</tr>\n"
+            s << "</table>\n"
+            s << "<table class=\"attributes\">\n"
+            s << "<tr>\n"
+            s << "<th>" + key + ":</th>\n"
+            s << "</tr>\n"
+            s << "<tr>\n"
+            s << "<td>" + value + "</td>\n"
+            s << "</tr>\n"
+            s << "</table>\n"
+            s << "<table class=\"attributes\">\n"
+            s << "<tr>\n"
+          elsif key == "アポイント日付"
+            s << "</tr>\n"
+            s << "</table>\n"
+            s << "<table class=\"attributes\">\n"
+            s << "<tr>\n"
+            s << "<th>" + key + ":</th><td>" + value + "</td>\n"
+            s << "<th>&nbsp</th><td>&nbsp</td>\n"
+            s << "</tr>\n"
+            s << "</table>\n"
+            s << "<table class=\"attributes\">\n"
+            s << "<tr>\n"
+          else
+            s << "</tr>\n<tr>\n" if n > 0 && (n % 2) == 0
+            s << "\t<th>" + key + ":</th><td>" + value + "</td>\n"
+            n += 1
+          end
 		end
         s << "</tr>\n"
         s << "</table>\n"

@@ -1,0 +1,4 @@
+en:
+# arbitrary links reorder
+  label_sort_arbitrary: "Arbitrary move item"
+  prompt_sort_arbitrary: "Enter new position,\n(use +/- before number for relative movement,\npositive number for absolute position):"

@@ -1,0 +1,32 @@
+= Textilizable Custom Fields plug-in
+
+Adds Textile formatting support to "text" and "long text" custom fields.
+
+== Usage
+
+Go to the *Custom Fields* in the *Administration* section. Add a new or edit existing custom field with "text" or "long text" format.
+Enable check box "Supports Textile formatting".
+
+== Installation And Configuration
+
+From a ZIP file:
+
+* Download the latest version of the plugin
+* Unzip to */plugins* (Redmine 2.x) or */vendor/plugins* (Redmine 1.x) folder of Redmine
+
+From a GIT repository:
+
+* Clone repository with <b>git clone git://git.academ.org/redmine_textilizable_custom_fields.git plugins/redmine_textilizable_custom_fields</b> command
+
+After download:
+
+* Run <b>rake redmine:plugins:migrate</b> (Redmine 2.x) or <b>rake db:migrate:plugins</b> (Redmine 1.x).
+* Restart Redmine.
+
+== Compatibility
+
+This plug-in is compatible with Redmine 1.4.x, 2.0.x, 2.1.x
+
+== Changelog
+
+[0.0.1] Initial commit
