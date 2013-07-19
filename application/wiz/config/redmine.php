@@ -24,20 +24,18 @@ $config['rm_status_id_base_done']       = '8';
 $config['rm_status_id_manken_wait']     = '23';
 $config['rm_status_id_manken_done']     = '21';
 $config['rm_status_id_tel_by_us']       = '24';
-$config['rm_status_id_tel_by_us#']      = '26';
 $config['rm_status_id_tel_by_client']   = '25';
-$config['rm_status_id_tel_by_client#']  = '28';
 $config['rm_status_id_tel_on_apodate']  = '9';
+$config['rm_status_id_tel_by_us#']      = '26';
+$config['rm_status_id_tel_by_client#']  = '28';
 $config['rm_status_id_tel_on_apodate#'] = '27';
-$config['rm_status_id_tel_just_now']    = '22';
-$config['rm_status_id_ng']              = '22';
+$config['rm_status_id_ng']              = '10';
 $config['rm_status_id_contracted']      = '11';
 
 // カスタムフィールドID
 $config['rm_cf_id_-----expander-基本情報＠紹介'] = '6';
-$config['rm_cf_id_fudousan'] = '20';
 $config['rm_cf_id_不動産会社'] = '20';
-$config['rm_cf_id_不動産会社 - 区分'] = '21';
+$config['rm_cf_id_不動産会社区分'] = '21';
 $config['rm_cf_id_経路（Ponta／HIS)'] = '22';
 $config['rm_cf_id_ダブり？'] = '24';
 $config['rm_cf_id_紹介日'] = '23';
