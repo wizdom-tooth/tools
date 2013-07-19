@@ -167,6 +167,9 @@ module IssuesHelper
           end
 		end
         expander_name = h(c.custom_field.name).scan(/^-----expander-(\S+)$/).shift.shift
+      elsif /^-----noexpand-(\S+)$/ =~ h(c.custom_field.name)
+        expander_name = ''
+        tmp = []
       else
         key = h(c.custom_field.name)
 		value = simple_format_without_paragraph(h(show_value(c)))
@@ -196,8 +199,8 @@ module IssuesHelper
           else
             label = ''
           end
-
-          if label == '顧客' and (h(issue.status.name) == '新規' or /^# (\S+)$/ =~ h(issue.status.name))
+          # 紹介段階では顧客DBの内容は表示しない
+          if label == '顧客' and (h(issue.status.name) == '新規' or /^# .+$/ =~ h(issue.status.name))
             return s.html_safe
           end
 
@@ -219,6 +222,8 @@ module IssuesHelper
           s << "onclick=\"$(&#x27;#" + sid + ", #" + hid + "&#x27;).toggle(); "
           s << "$(&#x27;#" + id + "&#x27;).fadeToggle(130);; return false;\" style=\"display:none;\">「" + expander_name + "」を閉じる</a>"
           s << "<div class=\"collapsed-text\" id=\"" + id + "\" style=\"display:none;\">"
+        else
+          s << "<hr />"
 		end
         ordered_values = []
         half = (items.size / 2.0).ceil
@@ -231,6 +236,7 @@ module IssuesHelper
         n = 0
         ordered_values.compact.each do |item|
           key, value = item.shift
+=begin
           if key == "通話内容"
             s << "</tr>\n"
             s << "</table>\n"
@@ -244,7 +250,7 @@ module IssuesHelper
             s << "</table>\n"
             s << "<table class=\"attributes\">\n"
             s << "<tr>\n"
-          elsif key == "アポイント日付"
+          elsif key == "最新アポイント日付"
             s << "</tr>\n"
             s << "</table>\n"
             s << "<table class=\"attributes\">\n"
@@ -255,6 +261,13 @@ module IssuesHelper
             s << "</table>\n"
             s << "<table class=\"attributes\">\n"
             s << "<tr>\n"
+          elsif key == "住所"
+=end
+          if key == "住所"
+            s << "</tr>\n<tr>\n" if n > 0 && (n % 2) == 0
+            s << "\t<th>" + key + ":</th>"
+			s << "<td><a target='_blank' href='/ogawa/test.html?address=#{value}'>" + value + "</a></td>" + "\n"
+            n += 1
           else
             s << "</tr>\n<tr>\n" if n > 0 && (n % 2) == 0
             s << "\t<th>" + key + ":</th><td>" + value + "</td>\n"

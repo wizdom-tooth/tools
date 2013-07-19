@@ -1,9 +1,11 @@
 <?php
 
-class General extends CI_Controller_With_Auth
-{
+class General extends CI_Controller_With_Auth {
+
 	public function index()
 	{
+		$this->ag_auth->view('general/top');
+		/*
 		if (logged_in())
 		{
 			$this->ag_auth->view('general/top');
@@ -12,6 +14,7 @@ class General extends CI_Controller_With_Auth
 		{
 			$this->login();
 		}
+		*/
 	}
 
 	public function delete_user()

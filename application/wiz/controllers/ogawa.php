@@ -2,13 +2,7 @@
 
 class Ogawa extends CI_Controller_With_Auth {
 
-	const APPID = 'dj0zaiZpPTFuZXFSYWF0aWNGUSZkPVlXazlPREJOYkZSVk4ya21jR285TUEtLSZzPWNvbnN1bWVyc2VjcmV0Jng9N2E-';
-
-    public function __construct()
-    {
-		parent::__construct();
-		$this->ag_auth->restrict('employee');
-    }
+	const YAHOO_APPID = 'dj0zaiZpPTFuZXFSYWF0aWNGUSZkPVlXazlPREJOYkZSVk4ya21jR285TUEtLSZzPWNvbnN1bWVyc2VjcmV0Jng9N2E-';
 
 	public function index()
 	{
@@ -25,7 +19,7 @@ class Ogawa extends CI_Controller_With_Auth {
 
 		$url = 'http://geo.search.olp.yahooapis.jp/OpenLocalPlatform/V1/geoCoder';
 		$post = array(
-			'appid' => self::APPID,
+			'appid' => self::YAHOO_APPID,
 			'query' => $address,
 			'ei' => 'UTF-8',
 			'results' => 1,
@@ -166,7 +160,7 @@ class Ogawa extends CI_Controller_With_Auth {
 
 		$url = 'http://reverse.search.olp.yahooapis.jp/OpenLocalPlatform/V1/reverseGeoCoder';
 		$post = array(
-			'appid' => self::APPID,
+			'appid' => self::YAHOO_APPID,
 			'lat' => $lat,
 			'lon' => $lon,
 			'results' => 1,
@@ -189,7 +183,7 @@ class Ogawa extends CI_Controller_With_Auth {
 
 		$url = 'http://search.olp.yahooapis.jp/OpenLocalPlatform/V1/zipCodeSearch';
 		$post = array(
-			'appid' => self::APPID,
+			'appid' => self::YAHOO_APPID,
 			'query' => $address,
 			'detail' => 'simple',
 			'results' => 1,

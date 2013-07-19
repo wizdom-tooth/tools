@@ -64,5 +64,21 @@ $db['default']['swap_pre'] = '';
 $db['default']['autoinit'] = TRUE;
 $db['default']['stricton'] = FALSE;
 
+$db['redmine']['hostname'] = 'localhost';
+$db['redmine']['username'] = 'root';
+$db['redmine']['password'] = 'onetop0721';
+$db['redmine']['database'] = 'db_redmine';
+$db['redmine']['dbdriver'] = 'mysql';
+$db['redmine']['dbprefix'] = '';
+$db['redmine']['pconnect'] = FALSE;
+$db['redmine']['db_debug'] = TRUE;
+$db['redmine']['cache_on'] = FALSE;
+$db['redmine']['cachedir'] = '';
+$db['redmine']['char_set'] = 'utf8';
+$db['redmine']['dbcollat'] = 'utf8_general_ci';
+$db['redmine']['swap_pre'] = '';
+$db['redmine']['autoinit'] = TRUE;
+$db['redmine']['stricton'] = FALSE;
+
 /* End of file database.php */
 /* Location: ./application/config/database.php */

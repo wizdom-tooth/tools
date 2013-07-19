@@ -1,6 +1,7 @@
 <ul>
   <%= call_hook(:view_issues_context_menu_start, {:issues => @issues, :can => @can, :back => @back }) %>
 
+  <!--===================== disable unused contex menu taogawa
   <% if @issue -%>
     <li><%= context_menu_link l(:button_edit), edit_issue_path(@issue),
             :class => 'icon-edit', :disabled => !@can[:edit] %></li>
@@ -58,6 +59,7 @@
     </ul>
   </li>
   <% end %>
+  ===============================================-->
 
   <% if @safe_attributes.include?('assigned_to_id') && @assignables.present? -%>
   <li class="folder">

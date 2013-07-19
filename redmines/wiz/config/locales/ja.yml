@@ -264,7 +264,7 @@ ja:
   field_project: プロジェクト
   field_issue: チケット
   field_status: ステータス
-  field_notes: 作業履歴コメント
+  field_notes: 通話記録
   field_is_closed: 終了したチケット
   field_is_default: デフォルト値
   field_tracker: トラッカー
@@ -414,8 +414,8 @@ ja:
   permission_add_issues: チケットの追加
   permission_edit_issues: チケットの編集
   permission_manage_issue_relations: 関連するチケットの管理
-  permission_add_issue_notes: 作業履歴コメントの追加
-  permission_edit_issue_notes: 作業履歴コメントの編集
+  permission_add_issue_notes: 通話履歴の追加
+  permission_edit_issue_notes: 通話履歴の編集
 
   permission_move_issues: チケットの移動
   permission_delete_issues: チケットの削除
@@ -463,7 +463,8 @@ ja:
   project_module_news: 周知事項
   project_module_documents: 文書
   project_module_files: ファイル
-  project_module_wiki: Wiki
+  # edited by ogawa wiki to link
+  project_module_wiki: リンク集
   project_module_repository: リポジトリ
   project_module_boards: フォーラム
   project_module_gantt: ガントチャート
@@ -560,7 +561,7 @@ ja:
   label_attribute_plural: 属性
   label_no_data: 表示するデータがありません
   label_change_status: ステータスの変更
-  label_history: 作業履歴
+  label_history: 通話記録
   label_attachment: ファイル
   label_attachment_new: 新しいファイル
   label_attachment_delete: ファイルを削除
@@ -607,12 +608,12 @@ ja:
   label_new_statuses_allowed: ステータスの移行先
   label_all: すべて
   label_none: なし
-  label_nobody: 無記名
+  label_nobody: ＠担当なし
   label_next: 次
   label_previous: 前
   label_used_by: 使用中
   label_details: 詳細
-  label_add_note: 作業履歴コメントを追加
+  label_add_note: 通話履歴を追加
   label_per_page: ページ毎
   label_calendar: カレンダー
   label_months_from: ヶ月分
@@ -689,7 +690,7 @@ ja:
   label_search: 検索
   label_result_plural: 結果
   label_all_words: すべての単語
-  label_wiki: Wiki
+  label_wiki: リンク集
   label_wiki_edit: Wiki編集
   label_wiki_edit_plural: Wiki編集
   label_wiki_page: Wikiページ
@@ -994,7 +995,7 @@ ja:
   label_role_anonymous: 匿名ユーザー
   label_role_non_member: 非メンバー
 
-  label_issue_note_added: 作業履歴コメントが追加されました
+  label_issue_note_added: 通話履歴が追加されました
   label_issue_status_updated: ステータスが更新されました
   label_issue_priority_updated: 優先度が更新されました
   label_issues_visibility_own: 作成者か担当者であるチケット
@@ -1018,7 +1019,7 @@ ja:
   description_date_range_interval: 日付で指定
   description_issue_category_reassign: 新しいカテゴリを選択してください
   description_search: 検索キーワード
-  description_notes: 作業履歴コメント
+  description_notes: 通話履歴
   description_date_range_list: 一覧から選択
   description_choose_project: プロジェクト
   description_date_to: 終了日
@@ -1045,8 +1046,8 @@ ja:
   text_project_identifier_info: アルファベット小文字(a-z)・数字・ハイフン・アンダースコアが使えます。最初の文字はアルファベットの小文字にしてください。<br />識別子は後で変更することはできません。
   field_multiple: 複数選択可
   setting_commit_cross_project_ref: 異なるプロジェクトのチケットの参照/修正を許可
-  text_issue_conflict_resolution_add_notes: 自分の編集内容を破棄し作業履歴コメントのみ追加
-  text_issue_conflict_resolution_overwrite: 自分の編集内容の保存を強行 (他のユーザーの更新内容は作業履歴コメントを除き上書きされます)
+  text_issue_conflict_resolution_add_notes: 自分の編集内容を破棄し通話履歴のみ追加
+  text_issue_conflict_resolution_overwrite: 自分の編集内容の保存を強行 (他のユーザーの更新内容は通話履歴を除き上書きされます)
   notice_issue_update_conflict: このチケットを編集中に他のユーザーが更新しました。
   text_issue_conflict_resolution_cancel: 自分の編集内容を破棄し %{link} を再表示
   permission_manage_related_issues: 関連するチケットの管理
@@ -1091,9 +1092,9 @@ ja:
   label_copied_from: コピー元
   label_any_issues_in_project: 次のプロジェクト内のチケット
   label_any_issues_not_in_project: 次のプロジェクト外のチケット
-  field_private_notes: プライベート作業履歴コメント
-  permission_view_private_notes: プライベート作業履歴コメントの閲覧
-  permission_set_notes_private: 作業履歴コメントをプライベートに設定
+  field_private_notes: プライベート通話履歴
+  permission_view_private_notes: プライベート通話履歴の閲覧
+  permission_set_notes_private: 通話履歴をプライベートに設定
   label_no_issues_in_project: 次のプロジェクト内のチケットを除く
   label_any: すべて
   label_last_n_weeks: 直近%{count}週間

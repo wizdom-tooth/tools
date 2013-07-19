@@ -56,8 +56,9 @@ $config['index_page'] = '';
 | 'ORIG_PATH_INFO'	Uses the ORIG_PATH_INFO
 |
 */
+
 //$config['uri_protocol']	= 'AUTO';
-$config['uri_protocol']	= 'REQUEST_URI';
+$config['uri_protocol']	= isset($_SERVER['REQUEST_URI']) ? 'REQUEST_URI' : 'CLI';
 
 /*
 |--------------------------------------------------------------------------
@@ -193,7 +194,7 @@ $config['directory_trigger']	= 'd'; // experimental not currently in use
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 1;
+$config['log_threshold'] = 4;
 
 /*
 |--------------------------------------------------------------------------

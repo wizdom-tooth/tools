@@ -14,12 +14,15 @@
 		<?php if (ENV_LABEL !== ''):?>
 		<h1><?php echo ENV_LABEL;?></h1>
 		<?php endif;?>
-		<?php if (logged_in()):?>
 
 		<!--header area-->
 		<div id="header">
 			<div id="logo"><a href="/"><img src="/assets/wiz/img/wiz-g_logo_header.jpg" /></a></div>
-			<div id="username">Hi, <?php echo username();?>.</div>
+			<?php if (logged_in()):?>
+				<div id="username">Hi, <?php echo username();?>.</div>
+			<?php else:?>
+				<div id="username">Hi, guest.</div>
+			<?php endif;?>
 		</div>
 		<div class="clear"></div>
 
@@ -27,7 +30,5 @@
 		<div id="nav_bg">
 		<?php $this->load->view($this->config->item('auth_views_root') . 'parts/nav'); ?>
 		</div>
-
-		<?php endif;?>
 		
 		<div id="container">
