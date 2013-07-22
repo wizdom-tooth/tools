@@ -2,8 +2,6 @@
 
 class Migration extends CI_Controller {
 
-	const SRC_FILE_PATH_INTORODUCTION = '/home/wiz/work/wiz/migration/introduction.csv';
-
 	private $_map_introduction_data = array();
 	private $_map_status            = array();
 
@@ -13,8 +11,7 @@ class Migration extends CI_Controller {
 		if ($this->input->is_cli_request() !== TRUE) show_error('system error.');
 		$this->config->load('redmine');
 		$this->load->library('redmine');
-		//$this->load->database('redmine');
-
+		$this->load->library('multipostredmine');
 		// {{{ ステータスIDマッピング設定
 		$this->_map_status = array(
 			'NG' => $this->config->item('rm_status_id_ng'),
@@ -295,16 +292,6 @@ class Migration extends CI_Controller {
 
 	public function csv_to_db()
 	{
-		// 移行ソースデータファイルチェック
-		if (
-			! file_exists(self::SRC_FILE_PATH_INTORODUCTION) ||
-			! is_readable(self::SRC_FILE_PATH_INTORODUCTION)
-		)
-		{
-			echo 'ERROR: request src file is not readable.'."\n";
-			echo 'XXXXXXXXXXXXXX set [error handling process] afrer few XXXXXXXXXXXXXXX'."\n";
-		}
-
 		// DEBUG
 		// ------------------------------------
 		$i = 0;
@@ -312,6 +299,9 @@ class Migration extends CI_Controller {
 		$debug_limit  = 1500;
 		// ------------------------------------
 
+		$this->multipostredmine->run();
+
+		/*
         // 紹介CSVデータファイルを読み込む
 		$introduction_data = array();
 		$fp = fopen(self::SRC_FILE_PATH_INTORODUCTION, 'r');
@@ -434,6 +424,7 @@ class Migration extends CI_Controller {
 			// ------------------------------------
 		}
 		fclose($fp);
+		*/
 	}
 }
 /* vim:set foldmethod=marker: */ 
