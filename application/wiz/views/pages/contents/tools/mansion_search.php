@@ -101,10 +101,19 @@ if ($east_or_west === 'west')
 
 <div id="form_manken">
 <form action="" method="get">
-住所：<input type="text" name="address" size="40" value="<?php echo $address;?>"/>
+郵便番号 or 住所：<input type="text" name="query" value="<?php echo $query;?>" size="40"/>
+<span>※全半角は不問です。入力後にEnterキーを押してください。</span>
 </form>
+
+<?php if ($is_success === FALSE):?>
+<span id="red">当該キーワードでは有効な郵便番号情報が見つかりませんでした。郵便番号を識別できるキーワードを入力して下さい。</span>
+
+<?php else:?>
 <?php if ($address != ''):?>
-郵便番号：<?php echo $zip1.'-'.$zip2;?>
+<hr />
+郵便番号：<?php echo $zip1.'-'.$zip2;?><br />
+住所：<?php echo $searched_address;?><br />
+
 <?php endif;?>
 </div><!--form_manken-->
 
@@ -365,4 +374,5 @@ $("#jcom_jcn_button").click(function(){
 //-->
 </script>
 
+<?php endif;?>
 <?php endif;?>

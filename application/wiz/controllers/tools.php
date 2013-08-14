@@ -16,24 +16,65 @@ class Tools extends CI_Controller_With_Auth {
 		$this->ag_auth->view('contents/toos/print_for_tel');
 	}
 
+	private function _show_mansion_search_error($query)
+	{
+		$data = array(
+			'query' => $query,
+			'is_success' => FALSE,
+			'address' => '',
+			'searched_address' => '',
+			'zip1' => '',
+			'zip2' => '',
+			'prefcode' => '',
+			'east_or_west' => '',
+			'is_osaka' => '',
+			'is_osaka_east' => '',
+			'is_osaka_south' => '',
+		);
+		$this->ag_auth->view('contents/tools/mansion_search', $data);
+		exit;
+	}
+
 	public function mansion_search()
 	{
-		$address = $this->input->get('address');
-		if (empty($address))
+		$query = $this->input->get('query');
+		if (empty($query) || strlen($query) <= 7)
 		{
-			$data = array(
-				'address' => '',
-				'address_el' => '',
-				'zip1' => '',
-				'zip2' => '',
-				'prefcode' => '',
-				'east_or_west' => '',
-				'is_osaka' => '',
-				'is_osaka_east' => '',
-				'is_osaka_south' => '',
+			$this->_show_mansion_search_error($query);
+		}
+		else
+		{
+			$address = preg_replace('/\s+/', '', $query);
+			$address = preg_replace('/　+/', '', $address);
+			$address = mb_convert_kana($address, 'KVa');
+		}
+
+		// -------------------------
+		// もし郵便番号が指定された場合、住所に変換する
+		// -------------------------
+
+		if (preg_match('/^\d{3}\-?\d{4}$/', $address))
+		{
+			$url = 'http://search.olp.yahooapis.jp/OpenLocalPlatform/V1/zipCodeSearch';
+			$post = array(
+				'appid' => self::YAHOO_APPID,
+				'query' => $address,
+				//'detail' => 'simple',
+				'results' => 1,
 			);
-			$this->ag_auth->view('contents/tools/mansion_search', $data);
-			exit;
+			$url .= '?' . http_build_query($post);
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			$result = curl_exec($ch);
+			$xml = simplexml_load_string($result);
+			if ((int)$xml->ResultInfo->Count === 0)
+			{
+				$this->_show_mansion_search_error($query);
+			}
+			$address = (string)$xml->Feature->Property->Address;
+			//var_dump($xml);
+			curl_close($ch);
 		}
 
 		// -------------------------
@@ -54,11 +95,14 @@ class Tools extends CI_Controller_With_Auth {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		$result = curl_exec($ch);
 		$xml = simplexml_load_string($result);
-		//var_dump($xml);
+		// var_dump($xml);
+		if ((int)$xml->ResultInfo->Count === 0 || (int)$xml->Feature->Property->AddressMatchingLevel < 3)
+		{
+			$this->_show_mansion_search_error($query);
+		}
 		list($lon, $lat) = explode(',', (string)$xml->Feature->Geometry->Coordinates);
 		$governmentcode = (string)$xml->Feature->Property->GovernmentCode;
 		$prefcode = substr($governmentcode, 0, 2);
-
 
 		// 東西日本判定
 		$east_or_west = ((int)$prefcode <= 15 || $prefcode === '19' || $prefcode === '20') ? 'east' : 'west';
@@ -178,29 +222,6 @@ class Tools extends CI_Controller_With_Auth {
 		}
 
 		// -------------------------
-		// リバースジオコーダ
-		// -------------------------
-
-		$url = 'http://reverse.search.olp.yahooapis.jp/OpenLocalPlatform/V1/reverseGeoCoder';
-		$post = array(
-			'appid' => self::YAHOO_APPID,
-			'lat' => $lat,
-			'lon' => $lon,
-			'results' => 1,
-		);
-		$url .= '?' . http_build_query($post);
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		$result = curl_exec($ch);
-		$xml = simplexml_load_string($result);
-		//var_dump($xml);
-		foreach ($xml->Feature->Property->AddressElement as $el)
-		{
-			$address_el[(string)$el->Level] = (string)$el->Name;
-		}
-
-		// -------------------------
 		// 郵便番号検索
 		// -------------------------
 
@@ -208,8 +229,10 @@ class Tools extends CI_Controller_With_Auth {
 		$post = array(
 			'appid' => self::YAHOO_APPID,
 			'query' => $address,
-			'detail' => 'simple',
+			//'detail' => 'simple',
 			'results' => 1,
+			'sort' => '-zip_code',
+			'zkind' => '0',
 		);
 		$url .= '?' . http_build_query($post);
 		$ch = curl_init();
@@ -217,14 +240,21 @@ class Tools extends CI_Controller_With_Auth {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		$result = curl_exec($ch);
 		$xml = simplexml_load_string($result);
+		if ((int)$xml->ResultInfo->Count === 0)
+		{
+			$this->_show_mansion_search_error($query);
+		}
+		$searched_address = $xml->Feature->Property->Address;
 		$zip = str_replace('〒', '', $xml->Feature->Name);
 		list($zip1, $zip2) = explode('-', $zip);
 		//var_dump($xml);
 		curl_close($ch);
 
 		$data = array(
+			'query' => $query,
+			'is_success' => TRUE,
 			'address' => $address,
-			'address_el' => $address_el,
+			'searched_address' => $searched_address,
 			'zip1' => $zip1,
 			'zip2' => $zip2,
 			'prefcode' => $prefcode,
