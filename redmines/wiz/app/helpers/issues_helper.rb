@@ -209,10 +209,11 @@ module IssuesHelper
           sid = id + '-show'
           hid = id + '-hide'
           if is_hr == true
-            s << "<hr />"
+			# --------------------------------------------------------taogawa
+            s << "<hr>"
           end
           if label != ''
-            s << "<div style=\"margin-top:7px; padding-left:5px; color:#FFF5EE; font-size:12pt; font-weight:bold; width:auto; background-color:#2F7B00\">" + label + "</div>"
+            s << "<div style=\"margin-top:7px; padding-left:5px; color:#FFF5EE; font-size:12pt; font-weight:bold; width:auto; background-color:#585858\">" + label + "</div>"
           end
           s << "<p>"
           s << "<a class=\"collapsible collapsed\" href=\"#\" id=\"" + sid + "\""

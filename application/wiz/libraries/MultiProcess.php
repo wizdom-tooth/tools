@@ -160,11 +160,11 @@ class MultiProcess
 			}
 			else //最大起動数を越えた場合
 			{
-				echo "waiting.\n";
+				//echo "waiting.\n";
 				$pid = pcntl_waitpid(-1, $status, WUNTRACED);
 				$pchild--;
 				$pend++;
-				echo "$pid stopped.\n";
+				//echo "$pid stopped.\n";
 			}
 		}
 		echo "kicked all.\n";

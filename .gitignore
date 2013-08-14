@@ -1,3 +1,6 @@
 backup/
 logs/
 cache/
+*.bak
+*.new
+*.org

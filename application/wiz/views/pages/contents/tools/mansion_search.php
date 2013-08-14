@@ -100,7 +100,7 @@ if ($east_or_west === 'west')
 ?>
 
 <div id="form_manken">
-<form action="/ogawa/test.html" method="get">
+<form action="" method="get">
 住所：<input type="text" name="address" size="40" value="<?php echo $address;?>"/>
 </form>
 <?php if ($address != ''):?>
@@ -154,6 +154,7 @@ if ($east_or_west === 'west')
 <div id="au_box">
 <h3 class="accordion_head">・auひかり</h3>
 <div>
+エラーになる場合は、<a href="http://www2.auhikari.jp/search_mansion/index.html" target="iframe_au">コチラ</a>から検索してください。<br />
 <iframe name="iframe_au" class="iframe_box" id="iframe_au"></iframe>
 <form style="display:none" target="iframe_au" id="form_iframe_au" method="post" action="<?php echo $url['au'];?>">
 <input type="hidden" value="add_01" name="mode">

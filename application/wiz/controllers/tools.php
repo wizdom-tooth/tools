@@ -1,17 +1,40 @@
 <?php
 
-class Ogawa extends CI_Controller_With_Auth {
+class Tools extends CI_Controller_With_Auth {
 
 	const YAHOO_APPID = 'dj0zaiZpPTFuZXFSYWF0aWNGUSZkPVlXazlPREJOYkZSVk4ya21jR285TUEtLSZzPWNvbnN1bWVyc2VjcmV0Jng9N2E-';
 
+	/*
 	public function index()
 	{
 		$this->ag_auth->view('contents/ogawa/index');
 	}
+	*/
 
-	public function test()
+	public function print_for_tel()
+	{
+		$this->ag_auth->view('contents/toos/print_for_tel');
+	}
+
+	public function mansion_search()
 	{
 		$address = $this->input->get('address');
+		if (empty($address))
+		{
+			$data = array(
+				'address' => '',
+				'address_el' => '',
+				'zip1' => '',
+				'zip2' => '',
+				'prefcode' => '',
+				'east_or_west' => '',
+				'is_osaka' => '',
+				'is_osaka_east' => '',
+				'is_osaka_south' => '',
+			);
+			$this->ag_auth->view('contents/tools/mansion_search', $data);
+			exit;
+		}
 
 		// -------------------------
 		// ジオコーダ
@@ -210,6 +233,6 @@ class Ogawa extends CI_Controller_With_Auth {
 			'is_osaka_east' => $is_osaka_east,
 			'is_osaka_south' => $is_osaka_south,
 		);
-		$this->ag_auth->view('contents/ogawa/test', $data);
+		$this->ag_auth->view('contents/tools/mansion_search', $data);
 	}
 }
