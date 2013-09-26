@@ -10,6 +10,8 @@ $url = array(
 	'flets_nishi'  => 'https://flets-w.com/cart/index.php',
 	'commufa'      => 'http://www.commufa.jp/cgi-bin/apartment/ap.cgi',
 	'starcat'      => 'http://web2.starcat.co.jp/search/',
+	'greencity'    => 'http://www.gctv.co.jp/other/tvnet/index.html',
+	'himawari'     => 'http://www.himawari.co.jp/thinking/area/',
 	'eo_hikari'    => 'http://eonet.jp/area/mansion.html',
 	'bbiq'         => 'http://www2.info-mapping.com/qtnet/map/mn-listzip.asp',
 );
@@ -48,7 +50,7 @@ if ($east_or_west === 'west')
 			}
 			if ($is_osaka_south)
 			{
-				$tel_flets_nishi[] = '(大阪南) 0120-817-572';
+				$tel_flets_nishi[] = '(大阪南) 0120-817-234';
 			}
 			break;
 		case '28': // 兵庫
@@ -130,7 +132,7 @@ if ($east_or_west === 'west')
 <iframe name="iframe_flets" class="iframe_box" id="iframe_flets"></iframe>
 <form style="display:none" target="iframe_flets" id="form_iframe_flets_login" method="post" action="<?php echo $url['flets_login'];?>">
 <input type="hidden" name="id" value="1001181152" />
-<input type="hidden" name="password" value="wizp1306" />
+<input type="hidden" name="password" value="wizp1309" />
 </form>
 <form style="display:none" target="iframe_flets" id="form_iframe_flets_search" method="post" action="<?php echo $url['flets_search'];?>">
 <input type="hidden" value="zipcode" name="skind">
@@ -230,6 +232,24 @@ if ($east_or_west === 'west')
 </div>
 
 
+<!--greencity-->
+<div id="greencity_box">
+<h3 class="accordion_head">・グリーンシティケーブル</h3>
+<div>
+<iframe class="iframe_box" id="iframe_greencity" src="<?php echo $url['greencity'];?>"></iframe>
+</div>
+</div>
+
+
+<!--himawari-->
+<div id="himawari_box">
+<h3 class="accordion_head">・ひまわりネットワーク</h3>
+<div>
+<iframe class="iframe_box" id="iframe_himawari" src="<?php echo $url['himawari'];?>"></iframe>
+</div>
+</div>
+
+
 <!--eo光-->
 <div id="eo_hikari_box">
 <h3 class="accordion_head">・eo光</h3>
@@ -315,11 +335,16 @@ $(document).ready(function(){
 		$("#flets_nishi_box").show();
 	}
 	switch ("<?php echo $prefcode;?>") {
-		// スターキャット
-		case '23': // 愛知
+		// コミュファ
+		case '23': // 愛知の場合は地域によって更に下記を追加
+			<?php if ($is_aichi_starcat === TRUE): // スターキャット?>
 			$("#form_iframe_starcat").submit();
 			$("#starcat_box").show();
-		// コミュファ
+			<?php elseif ($is_aichi_greencity === TRUE): // グリーンシティケーブル?>
+			$("#greencity_box").show();
+			<?php elseif ($is_aichi_himawari === TRUE): // ひまわりネットワーク?>
+			$("#himawari_box").show();
+			<?php endif;?>
 		case '21': // 岐阜
 		case '22': // 静岡
 		case '24': // 三重

@@ -7,6 +7,7 @@
 		<link rel="stylesheet" href="/assets/wiz/css/global.css" type="text/css" />
 		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 		<script type="text/javascript" src="/assets/wiz/js/jquery-1.9.1.min.js"></script>
+		<script type="text/javascript" src="/assets/wiz/js/jquery-contained-sticky-scroll-min.js"></script>
 		<script type="text/javascript" src="/assets/wiz/js/ZeroClipboard.min.js"></script>
 		<title><?php echo ENV_LABEL.' ';?>Wiz Group Corp Portal</title>
 	</head>

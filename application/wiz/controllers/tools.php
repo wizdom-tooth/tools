@@ -4,18 +4,6 @@ class Tools extends CI_Controller_With_Auth {
 
 	const YAHOO_APPID = 'dj0zaiZpPTFuZXFSYWF0aWNGUSZkPVlXazlPREJOYkZSVk4ya21jR285TUEtLSZzPWNvbnN1bWVyc2VjcmV0Jng9N2E-';
 
-	/*
-	public function index()
-	{
-		$this->ag_auth->view('contents/ogawa/index');
-	}
-	*/
-
-	public function print_for_tel()
-	{
-		$this->ag_auth->view('contents/toos/print_for_tel');
-	}
-
 	private function _show_mansion_search_error($query)
 	{
 		$data = array(
@@ -27,9 +15,12 @@ class Tools extends CI_Controller_With_Auth {
 			'zip2' => '',
 			'prefcode' => '',
 			'east_or_west' => '',
-			'is_osaka' => '',
-			'is_osaka_east' => '',
-			'is_osaka_south' => '',
+			'is_osaka' => FALSE,
+			'is_osaka_east' => FALSE,
+			'is_osaka_south' => FALSE,
+			'is_aichi_starcat' => FALSE,
+			'is_aichi_greencity' => FALSE,
+			'is_aichi_himawari' => FALSE,
 		);
 		$this->ag_auth->view('contents/tools/mansion_search', $data);
 		exit;
@@ -106,6 +97,31 @@ class Tools extends CI_Controller_With_Auth {
 
 		// 東西日本判定
 		$east_or_west = ((int)$prefcode <= 15 || $prefcode === '19' || $prefcode === '20') ? 'east' : 'west';
+
+		// 愛知県の場合は細分化
+		$is_aichi_starcat = FALSE;
+		$is_aichi_greencity = FALSE;
+		$is_aichi_himawari = FALSE;
+
+		if ($prefcode === '23')
+		{
+			switch ($governmentcode)
+			{
+				case '23113': //愛知県名古屋市守山区
+				case '23226': //愛知県尾張旭市
+				case '23204': //愛知県瀬戸市
+					$is_aichi_greencity = TRUE;
+					break;
+				case '23211': //愛知県豊田市
+				case '23236': //愛知県みよし市
+				case '23238': //愛知県長久手市 
+					$is_aichi_himawari = TRUE;
+					break;
+				default:
+					$is_aichi_starcat = TRUE;
+					break;
+			}
+		}
 
 		// 大阪府の場合は細分化
 		$is_osaka       = false;
@@ -229,9 +245,8 @@ class Tools extends CI_Controller_With_Auth {
 		$post = array(
 			'appid' => self::YAHOO_APPID,
 			'query' => $address,
-			//'detail' => 'simple',
 			'results' => 1,
-			'sort' => '-zip_code',
+			'sort' => 'zip_kana',
 			'zkind' => '0',
 		);
 		$url .= '?' . http_build_query($post);
@@ -262,6 +277,9 @@ class Tools extends CI_Controller_With_Auth {
 			'is_osaka' => $is_osaka,
 			'is_osaka_east' => $is_osaka_east,
 			'is_osaka_south' => $is_osaka_south,
+			'is_aichi_starcat' => $is_aichi_starcat,
+			'is_aichi_greencity' => $is_aichi_greencity,
+			'is_aichi_himawari' => $is_aichi_himawari,
 		);
 		$this->ag_auth->view('contents/tools/mansion_search', $data);
 	}

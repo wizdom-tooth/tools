@@ -64,6 +64,23 @@ $db['default']['swap_pre'] = '';
 $db['default']['autoinit'] = TRUE;
 $db['default']['stricton'] = FALSE;
 
+$db['wizp']['hostname'] = 'localhost';
+$db['wizp']['username'] = 'root';
+$db['wizp']['password'] = 'onetop0721';
+$db['wizp']['database'] = 'wiz_planners';
+$db['wizp']['dbdriver'] = 'mysql';
+$db['wizp']['dbprefix'] = '';
+$db['wizp']['pconnect'] = FALSE;
+$db['wizp']['db_debug'] = TRUE;
+$db['wizp']['cache_on'] = FALSE;
+$db['wizp']['cachedir'] = '';
+$db['wizp']['char_set'] = 'utf8';
+$db['wizp']['dbcollat'] = 'utf8_general_ci';
+$db['wizp']['swap_pre'] = '';
+$db['wizp']['autoinit'] = TRUE;
+$db['wizp']['stricton'] = FALSE;
+
+/*
 $db['redmine']['hostname'] = 'localhost';
 $db['redmine']['username'] = 'root';
 $db['redmine']['password'] = 'onetop0721';
@@ -79,6 +96,7 @@ $db['redmine']['dbcollat'] = 'utf8_general_ci';
 $db['redmine']['swap_pre'] = '';
 $db['redmine']['autoinit'] = TRUE;
 $db['redmine']['stricton'] = FALSE;
+*/
 
 /* End of file database.php */
 /* Location: ./application/config/database.php */

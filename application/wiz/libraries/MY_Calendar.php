@@ -16,7 +16,7 @@ class MY_Calendar extends CI_Calendar {
 	 * @param	array	the data to be shown in the calendar cells
 	 * @return	string
 	 */
-	function generate($ad, $year = '', $month = '', $data = array())
+	function generate($year = '', $month = '', $data = array())
 	{
 		// Set and validate the supplied month/year
 		if ($year == '')
@@ -82,7 +82,7 @@ class MY_Calendar extends CI_Calendar {
 			$this->next_prev_url = preg_replace("/(.+?)\/*$/", "\\1/",  $this->next_prev_url);
 
 			$adjusted_date = $this->adjust_date($month - 1, $year);
-			$out .= str_replace('{previous_url}', $this->next_prev_url.$ad.'/'.$adjusted_date['year'].'/'.$adjusted_date['month'], $this->temp['heading_previous_cell']);
+			$out .= str_replace('{previous_url}', $this->next_prev_url.$adjusted_date['year'].'/'.$adjusted_date['month'], $this->temp['heading_previous_cell']);
 			$out .= "\n";
 		}
 
@@ -91,7 +91,7 @@ class MY_Calendar extends CI_Calendar {
 
 		// add taogawa
 		$headings = array();
-		$path_base = "chart/index/${ad}";
+		$path_base = "addup/index";
 
 		$year_segment = "${path_base}/{$year}";
 		if ($year_segment === uri_string())
@@ -134,7 +134,7 @@ class MY_Calendar extends CI_Calendar {
 		if ($this->show_next_prev == TRUE)
 		{
 			$adjusted_date = $this->adjust_date($month + 1, $year);
-			$out .= str_replace('{next_url}', $this->next_prev_url.$ad.'/'.$adjusted_date['year'].'/'.$adjusted_date['month'], $this->temp['heading_next_cell']);
+			$out .= str_replace('{next_url}', $this->next_prev_url.$adjusted_date['year'].'/'.$adjusted_date['month'], $this->temp['heading_next_cell']);
 		}
 
 		$out .= "\n";
