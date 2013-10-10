@@ -75,6 +75,10 @@ class MY_Calendar extends CI_Calendar {
 		$out .= $this->temp['heading_row_start'];
 		$out .= "\n";
 
+		// -----------------------
+		// mod taogawa
+		// -----------------------
+
 		// "previous" month link
 		if ($this->show_next_prev == TRUE)
 		{
@@ -82,17 +86,19 @@ class MY_Calendar extends CI_Calendar {
 			$this->next_prev_url = preg_replace("/(.+?)\/*$/", "\\1/",  $this->next_prev_url);
 
 			$adjusted_date = $this->adjust_date($month - 1, $year);
-			$out .= str_replace('{previous_url}', $this->next_prev_url.$adjusted_date['year'].'/'.$adjusted_date['month'], $this->temp['heading_previous_cell']);
+			$out .= str_replace('{previous_url}', $this->next_prev_url.$adjusted_date['year'].'/'.$adjusted_date['month'].'/01', $this->temp['heading_previous_cell']);
 			$out .= "\n";
 		}
 
 		// Heading containing the month/year
 		$colspan = ($this->show_next_prev == TRUE) ? 5 : 7;
 
-		// add taogawa
 		$headings = array();
 		$path_base = "addup/index";
 
+		$headings[] = $year;
+		$headings[] = $this->get_month_name($month);
+		/*
 		$year_segment = "${path_base}/{$year}";
 		if ($year_segment === uri_string())
 		{
@@ -103,7 +109,7 @@ class MY_Calendar extends CI_Calendar {
 			$headings[] = '<a href="'.base_url($year_segment).'">'.$year.'</a>';
 		}
 
-		$month_segment = "${path_base}/{$year}/${month}";
+		$month_segment = "${path_base}/{$year}/${month}/01";
 		if ($month_segment === uri_string())
 		{
 			$headings[] = $this->get_month_name($month);
@@ -112,6 +118,7 @@ class MY_Calendar extends CI_Calendar {
 		{
 			$headings[] = '<a href="'.base_url($month_segment).'">'.$this->get_month_name($month).'</a>';
 		}
+		*/
 
 		$day_segment = "${path_base}/{$cur_year}/{$cur_month}/{$cur_day}";
 		if ($day_segment === uri_string())
@@ -134,7 +141,7 @@ class MY_Calendar extends CI_Calendar {
 		if ($this->show_next_prev == TRUE)
 		{
 			$adjusted_date = $this->adjust_date($month + 1, $year);
-			$out .= str_replace('{next_url}', $this->next_prev_url.$adjusted_date['year'].'/'.$adjusted_date['month'], $this->temp['heading_next_cell']);
+			$out .= str_replace('{next_url}', $this->next_prev_url.$adjusted_date['year'].'/'.$adjusted_date['month'].'/01', $this->temp['heading_next_cell']);
 		}
 
 		$out .= "\n";

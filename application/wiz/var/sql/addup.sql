@@ -23,7 +23,8 @@ CREATE TABLE `addup` (
   `remote` varchar(100) NOT NULL,
   `router` varchar(100),
   `contract_date` varchar(100),
-  `commufa` varchar(100),
+  `user_name` varchar(100),
+  `hikari_tv` varchar(100) NOT NULL,
   `benefit` varchar(100),
   PRIMARY KEY (`id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;

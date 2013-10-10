@@ -1,35 +1,11 @@
 <h2>Top Page</h2>
 
-<?php
-// プロジェクト管理ツール
-if (
-	user_group('admin') ||
-	user_group('manager') ||
-	user_group('employee')
-):
-?>
-<h3>プロジェクト管理ツール</h3>
+<h3>ツールリスト</h3>
 <div class="box" id="contents">
 <ul>
-<li><a href="/redmine/">プロジェクト管理ツールトップ</a></li>
+<?php if (user_group('admin') || user_group('manager')):?>
+<li><a href="/tools/mansion_search.html">マン検ツール</a></li>
+<li><a href="/addup/index.html">日次集計ツール</a></li>
+<?php endif;?>
 </ul>
 </div>
-<?php endif;?>
-
-
-
-<?php
-// 業務改善
-if (
-	user_group('admin') ||
-	user_group('manager') ||
-	user_group('employee')
-):
-?>
-<h3>業務改善</h3>
-<div class="box" id="contents">
-<ul>
-<li><?php echo anchor('improvement/index', '業務改善トップ');?></li>
-</ul>
-</div>
-<?php endif;?>
