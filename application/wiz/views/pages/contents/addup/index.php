@@ -130,6 +130,12 @@ function initializer(){
 			$(this).replaceWith('<span class="cal_highlight_text">' + $(this).text() + "</span>")
 		}
 	});
+	// 集計結果が0のセルをグレイアウト
+	$('.google-visualization-table-td').each(function(i){
+		if ($(this).text() == "0") {
+			$(this).css("background-color", "#D3D3D3");
+		}
+	});
 }
 
 // draw table

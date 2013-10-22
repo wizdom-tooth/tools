@@ -23,8 +23,8 @@ h2{
 }
 h3 {
 	height: 30px;
-	margin: 5px 0px 0px 0px;
-	padding: 5px 0px 0px 5px;
+	margin: 4px 0px 0px 0px;
+	padding: 4px 0px 0px 4px;
 	font-size: 18px;
 	font-weight: bold;
 	color: #333333;
@@ -329,4 +329,7 @@ div#improvement{
 }
 .cal_highlight_cell {
 	background-color: yellow;
+}
+#tabs {
+	margin: 3px;
 }

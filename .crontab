@@ -12,5 +12,5 @@ PHP="/usr/bin/php"
 
 HANDLER="/home/wiz/g/application/wiz/public/index.php"
 
-# migrate redmine status and strip assignment
-*/1 * * * * ${PHP} ${HANDLER} cron convert_status_and_strip_assignment 
+# feed addup data
+30 */3 * * * ${PHP} ${HANDLER} cron feed_addup_data
