@@ -4,3 +4,4 @@ cache/
 *.bak
 *.new
 *.org
+*.tsv
