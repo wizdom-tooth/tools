@@ -43,12 +43,14 @@ class Addup extends CI_Controller_With_Auth {
 		'ng',
 	);
 
+	private $_db_wizp = NULL;
+
 	public function __construct()
 	{
 		parent::__construct();
 		//nager'$this->ag_auth->restrict('admin');
 		$this->ag_auth->restrict('manager');
-		$this->db_wizp = $this->load->database('wizp', TRUE);
+		$this->_db_wizp = $this->load->database('wizp', TRUE);
 		$this->config->load('admin_calendar');
 		$this->load->library('calendar', $this->config->item('calendar_prefs'));
 	}
@@ -146,7 +148,7 @@ class Addup extends CI_Controller_With_Auth {
 				$cond.' '.
 			'order by '.
 				'user_name';
-		$query = $this->db_wizp->query($sql);
+		$query = $this->_db_wizp->query($sql);
 		$users = $query->result_array();
 
 		// 担当者毎の集計
@@ -159,7 +161,7 @@ class Addup extends CI_Controller_With_Auth {
 				$cond.' '.
 			'order by '.
 				'time_zone';
-		$query = $this->db_wizp->query($sql);
+		$query = $this->_db_wizp->query($sql);
 		$sum_user = $query->result_array();
 
 		// ------------------------------------
@@ -175,7 +177,7 @@ class Addup extends CI_Controller_With_Auth {
 				'time_zone_mst '.
 			'order by '.
 				'time_zone';
-		$query = $this->db_wizp->query($sql);
+		$query = $this->_db_wizp->query($sql);
 		foreach ($query->result() as $row)
 		{
 			$time_zones[] = $row->time_zone;
@@ -213,7 +215,7 @@ class Addup extends CI_Controller_With_Auth {
 						'date,'.
 						'time_zone';
 
-				$query = $this->db_wizp->query($sql);
+				$query = $this->_db_wizp->query($sql);
 				if ($query->num_rows() > 0)
 				{
 					$tmp = $query->row_array();

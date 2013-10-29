@@ -127,7 +127,7 @@ if ($east_or_west === 'west')
 
 <!--フレッツ光-->
 <div id="flets_box">
-<h3 class="accordion_head">・フレッツ光</h3>
+<h3 class="accordion_head label_blue">・フレッツ光</h3>
 <div>
 <iframe name="iframe_flets" class="iframe_box" id="iframe_flets"></iframe>
 <form style="display:none" target="iframe_flets" id="form_iframe_flets_login" method="post" action="<?php echo $url['flets_login'];?>">
@@ -144,7 +144,7 @@ if ($east_or_west === 'west')
 
 <!--flets nishi-->
 <div id="flets_nishi_box">
-<h3 class="accordion_head">・フレッツ西</h3>
+<h3 class="accordion_head label_blue">・フレッツ西</h3>
 <div>
 ごめんね。自動入力はサポートしてないよ。手入力して検索してね。<br />
 郵便番号：<?php echo $zip1.' '.$zip2;?><br />
@@ -163,7 +163,7 @@ if ($east_or_west === 'west')
 
 <!--auひかり-->
 <div id="au_box">
-<h3 class="accordion_head">・auひかり</h3>
+<h3 class="accordion_head label_blue">・auひかり</h3>
 <div>
 エラーになる場合は、<a href="http://www2.auhikari.jp/search_mansion/index.html" target="iframe_au">コチラ</a>から検索してください。<br />
 <iframe name="iframe_au" class="iframe_box" id="iframe_au"></iframe>
@@ -189,7 +189,7 @@ if ($east_or_west === 'west')
 
 <!--spaaqs-->
 <div id="spaaqs_box">
-<h3 class="accordion_head">・spaaqs</h3>
+<h3 class="accordion_head label_blue">・spaaqs</h3>
 <div>
 <iframe name="iframe_spaaqs" class="iframe_box" id="iframe_spaaqs"></iframe>
 <form style="display:none" target="iframe_spaaqs" id="form_iframe_spaaqs" method="get" action="<?php echo $url['spaaqs'];?>">
@@ -203,7 +203,7 @@ if ($east_or_west === 'west')
 
 <!--commufa-->
 <div id="commufa_box">
-<h3 class="accordion_head">・コミュファ</h3>
+<h3 class="accordion_head label_blue">・コミュファ</h3>
 <div>
 <iframe name="iframe_commufa" class="iframe_box" id="iframe_commufa"></iframe>
 <form style="display:none" target="iframe_commufa" id="form_iframe_commufa" method="get" action="<?php echo $url['commufa'];?>">
@@ -219,7 +219,7 @@ if ($east_or_west === 'west')
 
 <!--starcat-->
 <div id="starcat_box">
-<h3 class="accordion_head">・スターキャット</h3>
+<h3 class="accordion_head label_blue">・スターキャット</h3>
 <div>
 <iframe name="iframe_starcat" class="iframe_box" id="iframe_starcat"></iframe>
 <form style="display:none" target="iframe_starcat" id="form_iframe_starcat" method="get" action="<?php echo $url['starcat'];?>">
@@ -234,7 +234,7 @@ if ($east_or_west === 'west')
 
 <!--greencity-->
 <div id="greencity_box">
-<h3 class="accordion_head">・グリーンシティケーブル</h3>
+<h3 class="accordion_head label_blue">・グリーンシティケーブル</h3>
 <div>
 <iframe class="iframe_box" id="iframe_greencity" src="<?php echo $url['greencity'];?>"></iframe>
 </div>
@@ -243,7 +243,7 @@ if ($east_or_west === 'west')
 
 <!--himawari-->
 <div id="himawari_box">
-<h3 class="accordion_head">・ひまわりネットワーク</h3>
+<h3 class="accordion_head label_blue">・ひまわりネットワーク</h3>
 <div>
 <iframe class="iframe_box" id="iframe_himawari" src="<?php echo $url['himawari'];?>"></iframe>
 </div>
@@ -252,7 +252,7 @@ if ($east_or_west === 'west')
 
 <!--eo光-->
 <div id="eo_hikari_box">
-<h3 class="accordion_head">・eo光</h3>
+<h3 class="accordion_head label_blue">・eo光</h3>
 <div>
 ごめんね。自動入力はサポートしてないよ。手入力して検索してね。<br />
 郵便番号：<?php echo $zip1.' '.$zip2;?><br />
@@ -265,7 +265,7 @@ if ($east_or_west === 'west')
 
 <!--BBIQ-->
 <div id="bbiq_box">
-<h3 class="accordion_head">・BBIQ</h3>
+<h3 class="accordion_head label_blue">・BBIQ</h3>
 <div>
 <iframe name="iframe_bbiq" class="iframe_box" id="iframe_bbiq"></iframe>
 <form style="display:none" target="iframe_bbiq" id="form_iframe_bbiq" method="get" action="<?php echo $url['bbiq'];?>">
@@ -284,7 +284,7 @@ if ($east_or_west === 'west')
 </div>
 
 <div id="jcom_box"><!--jcom-->
-<h3 class="accordion_head">・jcom</h3>
+<h3 class="accordion_head label_blue">・jcom</h3>
 <div>
 <iframe name="iframe_jcom" class="iframe_box" id="iframe_jcom"></iframe>
 <form style="display:none" target="iframe_jcom" id="form_iframe_jcom" method="get" action="<?php echo $url['jcom'];?>">
@@ -296,7 +296,7 @@ if ($east_or_west === 'west')
 </div>
 
 <div id="jcn_box"><!--jcn-->
-<h3 class="accordion_head">・jcn</h3>
+<h3 class="accordion_head label_blue">・jcn</h3>
 <div>
 <iframe name="iframe_jcn" class="iframe_box" id="iframe_jcn"></iframe>
 <form style="display:none" target="iframe_jcn" id="form_iframe_jcn" method="get" action="<?php echo $url['jcn'];?>">

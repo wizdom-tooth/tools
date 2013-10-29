@@ -7,32 +7,33 @@ $DROP_VIEW_SQL =
 	"DROP VIEW IF EXISTS addup_%%%CHANNEL%%%;";
 $CREATE_VIEW_SQL =
 	'CREATE VIEW addup_%%%CHANNEL%%% AS '.
-		'select date, '.
-		'time_zone, '.
-		'sum(1) as introduction_total, '.
-		'sum(status="契約" and service not like "%移転%" and benefit in ("特典なし", "")) as contract_total, '.
-		'sum(status="契約" and service="フレッツ光") as contract_flets, '.
-		'sum(isp!="未入力") as isp, '.
-		'sum(virus!="未入力") as virus, '.
-		'sum(remote!="未入力") as remote, '.
-		'sum(hikari_tv="案内了承") as hikari_tv_pa, '.
-		'sum(hikari_tv like "%プラン%") as hikari_tv, '.
-		'sum(hikari_tel!="未入力") as hikari_tel, '.
-		'"-" as ng '.
-	'from '.
-		'addup '.
-	'where '.
-		'%%%WHERE%%% '.
-	'group by '.
-		'date, '.
-		'time_zone;';
+		'select '.
+			'date, '.
+			'time_zone, '.
+			'sum(1) as introduction_total, '.
+			'sum(status="契約" and service not like "%移転%" and benefit in ("特典なし", "")) as contract_total, '.
+			'sum(status="契約" and service="フレッツ光") as contract_flets, '.
+			'sum(isp!="未入力") as isp, '.
+			'sum(virus!="未入力") as virus, '.
+			'sum(remote!="未入力") as remote, '.
+			'sum(hikari_tv="案内了承") as hikari_tv_pa, '.
+			'sum(hikari_tv like "%プラン%") as hikari_tv, '.
+			'sum(hikari_tel!="未入力") as hikari_tel, '.
+			'"-" as ng '.
+		'from '.
+			'addup '.
+		'where '.
+			'%%%WHERE%%% '.
+		'group by '.
+			'date, '.
+			'time_zone;';
 
 $channels = array(
-	'able_and_realestate' => 'channel in("エイブル", "エイブル西", "ハウパ", "ハウス・トゥ", "既存店", "ミニミニ西日本", "既存店（西）")',
+	'able_and_realestate' => 'channel in("エイブル", "エイブル西", "ハウパ", "ハウス・トゥ", "既存店", "ミニミニ西日本", "既存店(西)")',
 	'able_east' => 'channel = "エイブル"',
 	'able_west' => 'channel = "エイブル西"',
 	'realestate_east' => 'channel in("ハウパ", "ハウス・トゥ", "既存店")',
-	'realestate_west' => 'channel in("ミニミニ西日本", "既存店（西）")',
+	'realestate_west' => 'channel in("ミニミニ西日本", "既存店(西)")',
 	'aeras' => 'store_name = "アエラス%"',
 	'soleil' => 'store_name = "ソレイユ%"',
 	'prime' => 'store_name = "プライム%"',

@@ -193,7 +193,7 @@ class Cron extends CI_Controller {
 			$optional_message[] = "${success_count} records are inserted.";
 			if ( ! empty($skip_message))
 			{
-				array_unshift($skip_message, '--- skipped records is as follows ---');
+				array_unshift($skip_message, '--- skipped records are as follows ---');
 				$optional_message = array_merge($optional_message, $skip_message);
 			}
 			$this->_send_wiz_admin(self::MAIL_ADDUP_INFO_SUCCESS, $optional_message);
