@@ -22,7 +22,7 @@ CREATE TABLE `addup` (
   `virus` varchar(100) NOT NULL,
   `remote` varchar(100) NOT NULL,
   `router` varchar(100),
-  `contract_date` varchar(100),
+  `contract_date` date,
   `user_name` varchar(100),
   `hikari_tv` varchar(100) NOT NULL,
   `benefit` varchar(100),

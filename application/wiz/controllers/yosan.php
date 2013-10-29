@@ -1,7 +1,8 @@
 <?php
 
-class Addup_Monthly extends CI_Controller_With_Auth {
+class Yosan extends CI_Controller_With_Auth {
 
+	/*
 	private $_kinds = array(
 		'total',
 		'complete',
@@ -74,6 +75,7 @@ class Addup_Monthly extends CI_Controller_With_Auth {
 		'ocn_upsell' => 'channel = "hogehoge!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!保留"',
 		'benefit' => 'benefit not in("特典なし", "")',
 	);
+	*/
 
 	private $_db_wizp = NULL;
 
@@ -82,9 +84,11 @@ class Addup_Monthly extends CI_Controller_With_Auth {
 		parent::__construct();
 		$this->ag_auth->restrict('manager');
 		$this->config->load('wiz_form');
-		$this->load->library('form_validation');
+		//$this->load->library('form_validation');
 		$this->load->helper('form');
 		$this->_db_wizp = $this->load->database('wizp', TRUE);
+        $this->config->load('input_yosan_calendar');
+        $this->load->library('calendar', $this->config->item('calendar_prefs'));
 	}
 
 	// 対象データ無しの空集計配列を返す
@@ -111,8 +115,11 @@ class Addup_Monthly extends CI_Controller_With_Auth {
 	}
 	*/
 
-	public function index($year = date('Y'), $month = date('m'))
+	public function index($year = '', $month = '')
 	{
+		if ($year === '') $year = date('Y');
+		if ($month === '') $month = date('m');
+
 		// 予算データが入力されていたら妥当性を確認してDBに入力
 
         // ------------------------------------
@@ -140,6 +147,10 @@ class Addup_Monthly extends CI_Controller_With_Auth {
 		$data = array(
 			'year' => $year,
 			'month' => $month,
+			'calendar' => $calendar,
+            'form_year' => $this->config->item('form_year'),
+            'form_month' => $this->config->item('form_month'),
+            'form_channel' => $this->config->item('form_channel'),
 		);
 		$this->ag_auth->view('contents/yosan/index', $data);
 	}

@@ -8,7 +8,7 @@ google.setOnLoadCallback(initializer);
 // chart options
 var table_option = {
 	allowHtml: true,
-	width: '100%',
+	width: '782px',
 };
 
 // sum data table
@@ -31,8 +31,8 @@ foreach ($kinds as $kind)
 				"[".
 					"[".
 						"'年月',".
-						"'チャンネル',".
-						"'東西区分',".
+						"'チャネル',".
+						"'東西',".
 						"'予算',".
 						"'紹介',".
 						"'実績',".
@@ -74,11 +74,11 @@ function drawChart(){
 				var data = google.visualization.arrayToDataTable(sum['<?php echo $kind;?>']);
 				var table = new google.visualization.Table(document.getElementById('table_<?php echo $kind;?>'));
 				table.draw(data, table_option);
-				$('#div_<?php echo $kind;?>').show();
+				//$('#div_<?php echo $kind;?>').show();
 			<?php endif;?>
 		<?php endforeach;?>
 	<?php endif;?>
-	$('#div_user').show();
+	//$('#div_user').show();
 }
 </script>
 

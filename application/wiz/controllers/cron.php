@@ -127,6 +127,7 @@ class Cron extends CI_Controller {
 				$fields[$j] = preg_replace('/\s+/', '', $field); // ホワイトスペースのストリップ
 			}
 			$fields[1] = date('Ymd', strtotime($fields[1])); // 日付フ>ォーマット変更
+			$fields[18] = date('Ymd', strtotime($fields[18])); // 日付フ>ォーマット変更
 
 			// 不正なデータをスキップ
 			$is_invlid_emptyid = FALSE;

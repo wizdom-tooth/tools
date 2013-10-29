@@ -45,34 +45,18 @@ class Addup_Monthly extends CI_Controller_With_Auth {
 	);
 
 	private $_where = array(
-		'able_and_realestate' => 'channel in("エイブル", "エイブル西", "ハウパ", "ハウス・トゥ", "既存店", ">ミニミニ西日本", "既存店(西)")',
-		'able_east' => 'channel = "エイブル"',
-		'able_west' => 'channel = "エイブル西"',
-		'realestate_east' => 'channel in("ハウパ", "ハウス・トゥ", "既存店")',
-		'realestate_west' => 'channel in("ミニミニ西日本", "既存店(西)")',
-		'aeras' => 'store_name = "アエラス%"',
-		'soleil' => 'store_name = "ソレイユ%"',
-		'prime' => 'store_name = "プライム%"',
-		'housepartner' => 'channel = "ハウパ"',
-		'house2house' => 'channel = "ハウス・トゥ"',
-		'ablehikkoshi_east' => 'channel = "エイブル引越" and east_or_west = "東"',
-		'ablehikkoshi_west' => 'channel = "エイブル引越" and east_or_west = "西"',
-		'ponta_east' => 'channel = "Ponta" and east_or_west = "東"',
-		'ponta_west' => 'channel = "Ponta" and east_or_west = "西"',
-		'his' => 'channel = "HIS"',
-		'his_east' => 'channel = "HIS" and east_or_west = "東"',
-		'his_west' => 'channel = "HIS" and east_or_west = "西"',
-		'nissei' => 'channel = "日本生命"',
-		'nissei_east' => 'channel = "日本生命" and east_or_west = "東"',
-		'nissei_west' => 'channel = "日本生命" and east_or_west = "西"',
-		'univ' => 'channel = "大学東" or channel = "大学西"',
-		'univ_east' => 'channel = "大学東"',
-		'univ_west' => 'channel = "大学西"',
-		'isp' => 'status = "オプション契約"',
-		'iten' => 'service in("フレッツ光移転(東京・千葉)", "フレッツ光(移転)")',
-		'fletsclub_iten' => 'service = "フレッツ光移転(その他)"',
-		'ocn_upsell' => 'channel = "hogehoge!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!保留"',
-		'benefit' => 'benefit not in("特典なし", "")',
+		'able_east' => 'a.channel = "エイブル"',
+		'able_west' => 'a.channel = "エイブル西"',
+		'realestate_east' => 'a.channel in("ハウパ", "ハウス・トゥ", "既存店")',
+		'realestate_west' => 'a.channel in("ミニミニ西日本", "既存店(西)")',
+		'ponta_east' => 'a.channel = "Ponta" and a.east_or_west = "東"',
+		'ponta_west' => 'a.channel = "Ponta" and a.east_or_west = "西"',
+		'his_east' => 'a.channel = "HIS" and a.east_or_west = "東"',
+		'his_west' => 'a.channel = "HIS" and a.east_or_west = "西"',
+		'nissei_east' => 'a.channel = "日本生命" and a.east_or_west = "東"',
+		'nissei_west' => 'a.channel = "日本生命" and a.east_or_west = "西"',
+		'univ_east' => 'a.channel = "大学東"',
+		'univ_west' => 'a.channel = "大学西"',
 	);
 
 	private $_db_wizp = NULL;
@@ -82,7 +66,7 @@ class Addup_Monthly extends CI_Controller_With_Auth {
 		parent::__construct();
 		$this->ag_auth->restrict('manager');
 		$this->config->load('wiz_form');
-		$this->load->library('form_validation');
+		//$this->load->library('form_validation');
 		$this->load->helper('form');
 		$this->_db_wizp = $this->load->database('wizp', TRUE);
 	}
@@ -108,7 +92,7 @@ class Addup_Monthly extends CI_Controller_With_Auth {
 		$y = sprintf('%04d', $year);
 		$m = sprintf('%02d', $month);
 		$ym = "{$y}{$m}";
-		$cond = "month = '{$ym}'";
+		$cond = "a.month = '{$ym}'";
 
 		// 取得対象チャネル条件指定SQL WHERE句作成
 		$channel = $this->input->get('channel');
@@ -157,8 +141,6 @@ class Addup_Monthly extends CI_Controller_With_Auth {
 
 		// 種別毎の集計情報を取得
 		$sum = array();
-		$select_fields_list = implode(', ', $this->_select_fields);
-
 		foreach ($this->_kinds as $kind)
 		{
 			/*
@@ -177,11 +159,26 @@ class Addup_Monthly extends CI_Controller_With_Auth {
 			*/
 			$sql = ''.
 				'select '.
-					$select_fields_list.' '.
+					'a.month, '.
+					'a.channel, '.
+					'a.east_or_west, '.
+					'"0" as yosan, '. // *************************************:
+					'a.introduction, '.
+					'b.contraction, '.
+					'"0" as percent_yojitsu, '. // ************************************
+					'"0" as percent_contracted '. // **********************************
 				'from '.
-					"addup_monthly_${kind} ".
+					"addup_monthly_introduction_${kind} a, ".
+					"addup_monthly_contraction_${kind} b ".
 				'where '.
-					$cond;
+					$cond.' and '.
+					'a.month = b.month and '.
+					'a.channel = b.channel and '.
+					'a.east_or_west = b.east_or_west '.
+				'order by '.
+					'a.month,'.
+					'a.channel, '.
+					'a.east_or_west';
 
 			$query = $this->_db_wizp->query($sql);
 			if ($query->num_rows() > 0)

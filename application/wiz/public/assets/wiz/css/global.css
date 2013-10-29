@@ -187,7 +187,12 @@ strong{
 #calendar{
 	float: left;
 	width: 250px;
-	height: 196px;
+	height: auto;
+}
+#calendar_input_yosan {
+	float: left;
+	width: 80%; 
+	height: auto;
 }
 #right {
 	float: left;
@@ -203,7 +208,7 @@ strong{
     float: left;
 	margin: 0px;
 	padding: 0px;
-	width: 850px;
+	width: 800px;
     height: 100%;
 }
 #chart_wrapper{
