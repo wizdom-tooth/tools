@@ -2,81 +2,6 @@
 
 class Yosan extends CI_Controller_With_Auth {
 
-	/*
-	private $_kinds = array(
-		'total',
-		'complete',
-		'flets',
-		'other',
-		'isp_total',
-		'isp_biglobe',
-		'isp_ocn',
-		'isp_yahoo',
-		'iten',
-		'iten_with_isp',
-		'only_isp',
-		'hikari_tel_total',
-		'hikari_tel_plan_base',
-		'hikari_tel_plan_anshin',
-		'hikari_tel_plan_anshin_more',
-		'hikari_tel_plan_a',
-		'option_virus',
-		'option_remote',
-		'option_hikari_tv_pa',
-		'option_hikari_tv',
-		'option_hikari_portable',
-		'e_hikari_fiber_kddi',
-		'e_hikari_fiber_ucom',
-		'mobile_adsl_emobile',
-		'mobile_adsl_eaccess',
-		'mobile_adsl_yahoobb',
-		'catv_itiscom',
-		'catv_jcnyokohama',
-	);
-
-	private $_select_fields = array(
-		'month',
-		'channel',
-		'east_or_west',
-		'yosan',
-		'introduction',
-		'contraction',
-		'percent_yojitsu',
-		'percent_contracted',
-	);
-
-	private $_where = array(
-		'able_and_realestate' => 'channel in("エイブル", "エイブル西", "ハウパ", "ハウス・トゥ", "既存店", ">ミニミニ西日本", "既存店(西)")',
-		'able_east' => 'channel = "エイブル"',
-		'able_west' => 'channel = "エイブル西"',
-		'realestate_east' => 'channel in("ハウパ", "ハウス・トゥ", "既存店")',
-		'realestate_west' => 'channel in("ミニミニ西日本", "既存店(西)")',
-		'aeras' => 'store_name = "アエラス%"',
-		'soleil' => 'store_name = "ソレイユ%"',
-		'prime' => 'store_name = "プライム%"',
-		'housepartner' => 'channel = "ハウパ"',
-		'house2house' => 'channel = "ハウス・トゥ"',
-		'ablehikkoshi_east' => 'channel = "エイブル引越" and east_or_west = "東"',
-		'ablehikkoshi_west' => 'channel = "エイブル引越" and east_or_west = "西"',
-		'ponta_east' => 'channel = "Ponta" and east_or_west = "東"',
-		'ponta_west' => 'channel = "Ponta" and east_or_west = "西"',
-		'his' => 'channel = "HIS"',
-		'his_east' => 'channel = "HIS" and east_or_west = "東"',
-		'his_west' => 'channel = "HIS" and east_or_west = "西"',
-		'nissei' => 'channel = "日本生命"',
-		'nissei_east' => 'channel = "日本生命" and east_or_west = "東"',
-		'nissei_west' => 'channel = "日本生命" and east_or_west = "西"',
-		'univ' => 'channel = "大学東" or channel = "大学西"',
-		'univ_east' => 'channel = "大学東"',
-		'univ_west' => 'channel = "大学西"',
-		'isp' => 'status = "オプション契約"',
-		'iten' => 'service in("フレッツ光移転(東京・千葉)", "フレッツ光(移転)")',
-		'fletsclub_iten' => 'service = "フレッツ光移転(その他)"',
-		'ocn_upsell' => 'channel = "hogehoge!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!保留"',
-		'benefit' => 'benefit not in("特典なし", "")',
-	);
-	*/
-
 	private $_db_wizp = NULL;
 
 	public function __construct()
@@ -84,65 +9,130 @@ class Yosan extends CI_Controller_With_Auth {
 		parent::__construct();
 		$this->ag_auth->restrict('manager');
 		$this->config->load('wiz_form');
+        $this->config->load('input_yosan_calendar');
+        $this->load->library('calendar', $this->config->item('calendar_prefs'));
 		//$this->load->library('form_validation');
 		$this->load->helper('form');
 		$this->_db_wizp = $this->load->database('wizp', TRUE);
-        $this->config->load('input_yosan_calendar');
-        $this->load->library('calendar', $this->config->item('calendar_prefs'));
 	}
 
-	// 対象データ無しの空集計配列を返す
-	/*
-	private function _get_sum_empty($date, $time_zone)
+	public function index()
 	{
-		$sum_empty  = array();
-		foreach ($this->_select_fields as $field)
+        // 取得対象年月条件指定SQL WHERE句作成
+        if ($this->input->get('year') === FALSE)
+        {
+            $year = $_GET['year'] = date('Y');
+        }
+        if ($this->input->get('month') === FALSE)
+        {
+            $month = $_GET['month'] = date('m');
+        }
+        if ($this->input->get('year') !== FALSE && $this->input->get('month') !== FALSE)
+        {
+            $year  = $_GET['year']  = $this->input->get('year');
+            $month = $_GET['month'] = $this->input->get('month');
+        }
+        $y = sprintf('%04d', $year);
+        $m = sprintf('%02d', $month);
+        $cond = "date like '{$y}-{$m}-%'";
+
+        // 対象チャネル条件指定SQL WHERE句作成
+		$channel = $this->input->get('channel');
+        if ($channel === FALSE)
+        {
+            $channel = $_GET['channel'] = 'realestate_east';
+        }
+        $cond .= " and channel = '{$channel}'";
+
+        // ------------------------------------
+        // DBに予算情報を入力する 
+        // ------------------------------------
+
+//var_dump($this->input->post());
+
+		if ($this->input->post('action') === 'input')
 		{
-			if ($field === 'date')
+			$req_input_data = $this->input->post();
+
+			// 予算データが入力されていたら妥当性を確認してDBに入力 *******************************
+			for ($d = 1; $d <= 31; $d++)
 			{
-				$sum_empty['date'] = $date;
-			}
-			elseif ($field === 'time_zone')
-			{
-				$sum_empty['time_zone'] = $time_zone;
-			}
-			else
-			{
-				$sum_empty[$field] = 0;
+				if (isset($req_input_data["y_{$d}_i"]) === TRUE)
+				{
+					$sql = ''.
+						'replace into yosan '.
+							'('.
+								'channel, '.
+								'date, '.
+								'yosan_introduction, '.
+								'yosan_contraction_a, '.
+								'yosan_contraction_b, '.
+								'yosan_contraction_c, '.
+								'yosan_contraction_d, '.
+								'yosan_contraction_e, '.
+								'yosan_contraction_f '.
+							') '.
+						'values '.
+							'('.
+								"'{$channel}', ".
+								"'{$y}-{$m}-${d}', ".
+								"{$req_input_data["y_{$d}_i"]}, ".
+								"{$req_input_data["y_{$d}_a"]}, ".
+								"{$req_input_data["y_{$d}_b"]}, ".
+								"{$req_input_data["y_{$d}_c"]}, ".
+								"{$req_input_data["y_{$d}_d"]}, ".
+								"{$req_input_data["y_{$d}_e"]}, ".
+								"{$req_input_data["y_{$d}_f"]} ".
+							')';
+					$this->_db_wizp->query($sql);
+					//var_dump($sql);
+					// エラー処理 ****************************************_
+					// do anything
+				}
 			}
 		}
-		return $sum_empty;
-	}
-	*/
 
-	public function index($year = '', $month = '')
-	{
-		if ($year === '') $year = date('Y');
-		if ($month === '') $month = date('m');
+        // ------------------------------------
+        // 予算情報を取り出す
+        // ------------------------------------
 
-		// 予算データが入力されていたら妥当性を確認してDBに入力
+        $sql = ''.
+            'select '.
+                'channel, '.
+                'DATE_FORMAT(date, "%d") as day, '.
+                'yosan_introduction, '.
+                'yosan_contraction_a, '.
+                'yosan_contraction_b, '.
+                'yosan_contraction_c, '.
+                'yosan_contraction_d, '.
+                'yosan_contraction_e, '.
+                'yosan_contraction_f '.
+            'from '.
+                'yosan '.
+            'where '.
+                $cond.' '.
+            'order by '.
+                'day';
+
+        $query = $this->_db_wizp->query($sql);
+        $tmp = $query->result_array();
+
+		$yosan_datas = array();
+		foreach ($tmp as $yosan_data)
+		{
+			$yosan_datas[(int)$yosan_data['day']] = $yosan_data;
+		}
 
         // ------------------------------------
         // カレンダー
         // ------------------------------------
 
-        $calendar_links = array();
-		/*
-        for ($i = 1; $i <= date('t', strtotime($y.$m.$d)); $i++)
+        $calendar_contents = array();
+		foreach ($yosan_datas as $day => $yosan_data)
         {
-            $target_ym = $year.$month;
-            $cur_ym = date('Ym');
-            if ($target_ym < $cur_ym || $i <= date('j'))
-            {
-                $calendar_links[$i] = base_url('addup/index/'.$y.'/'.$m.'/'.sprintf('%02d', $i).'/');
-            }
-            else
-            {
-                break;
-            }
+			$calendar_contents[$day] = $this->load->view('pages/components/calendar/input_yosan', $yosan_data, TRUE);
         }
-		*/
-        $calendar = $this->calendar->generate($year, $month, $calendar_links);
+        $calendar = $this->calendar->generate($year, $month, $calendar_contents);
 
 		$data = array(
 			'year' => $year,

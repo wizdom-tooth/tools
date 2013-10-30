@@ -194,6 +194,9 @@ strong{
 	width: 80%; 
 	height: auto;
 }
+#calendar_input_yosan td {
+	font-size: 10px;
+}
 #right {
 	float: left;
 	width: auto;

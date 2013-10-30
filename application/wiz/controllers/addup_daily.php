@@ -108,7 +108,7 @@ class Addup_Daily extends CI_Controller_With_Auth {
 			$y = $year = date('Y');
 			$m = $month = date('m');
 			$d = $day = date('d');
-			$date = "{$y}{$m}{$d}";
+			$date = "{$y}-{$m}-{$d}";
 			$cond = "a.date = '{$y}-{$m}-{$d}'";
 		}
 
