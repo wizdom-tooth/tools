@@ -8,6 +8,9 @@
 <form action="/yosan/index.html" method="post">
 <div class="box_solid" id="calendar_input_yosan">
 <?php echo $calendar;?>
+<input type="hidden" name="channel" value="<?php echo $channel;?>"/>
+<input type="hidden" name="year" value="<?php echo $year;?>"/>
+<input type="hidden" name="month" value="<?php echo $month;?>"/>
 <input type="hidden" name="action" value="input"/>
 <input type="submit" />
 </div>
@@ -17,13 +20,10 @@
 <div class="box_solid" id="right">
 <div class="space_20"></div>
 <form name="input_yosan" id="input_yosan" method="get" action="/yosan/index.html">
-<?php $selected = ($this->input->get('year')) ? $this->input->get('year') : ''; ?>
-<?php echo form_dropdown('year', $form_year, $selected); ?>年
-<?php $selected = ($this->input->get('month')) ? $this->input->get('month') : ''; ?>
-<?php echo form_dropdown('month', $form_month, $selected); ?>月<br />
+<?php echo form_dropdown('year', $form_year, $year); ?>年
+<?php echo form_dropdown('month', $form_month, $month); ?>月
 <div class="space_10"></div>
-<?php $selected = ($this->input->get('channel')) ? $this->input->get('channel') : ''; ?>
-<?php echo form_dropdown('channel', $form_channel, $selected); ?><br />
+<?php echo form_dropdown('channel', $form_channel, $channel); ?>
 <div class="space_10"></div>
 <input type="submit" />
 </form>

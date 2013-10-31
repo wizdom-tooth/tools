@@ -20,19 +20,12 @@ foreach ($kinds as $kind)
 	// 種別別集計表テーブル定義
 	if ( ! empty($sum[$kind]))
 	{
-        $js_arrays = array();
-        foreach ($sum[$kind] as $tmp)
-        {
-            $js_arrays[] = "['".implode("','", $tmp)."']";
-        }
-        $js_array_str = implode(',', $js_arrays);
+		$js_array_str = "['".implode("','", $sum[$kind])."']";
 		echo "".
 			"${kind}:".
 				"[".
 					"[".
 						"'年月',".
-						"'チャネル',".
-						"'東西',".
 						"'予算',".
 						"'紹介',".
 						"'実績',".

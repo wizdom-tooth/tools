@@ -18,37 +18,26 @@ class Yosan extends CI_Controller_With_Auth {
 
 	public function index()
 	{
-        // 取得対象年月条件指定SQL WHERE句作成
-        if ($this->input->get('year') === FALSE)
-        {
-            $year = $_GET['year'] = date('Y');
-        }
-        if ($this->input->get('month') === FALSE)
-        {
-            $month = $_GET['month'] = date('m');
-        }
-        if ($this->input->get('year') !== FALSE && $this->input->get('month') !== FALSE)
-        {
-            $year  = $_GET['year']  = $this->input->get('year');
-            $month = $_GET['month'] = $this->input->get('month');
-        }
+        // 対象年月整理
+        $year  = ($this->input->get_post('year') === FALSE) ? date('Y') : $this->input->get_post('year');
+		$month = ($this->input->get_post('month') === FALSE) ? date('m') : $this->input->get_post('month');
+
+		$_GET['year']  = $_POST['year']  = $year;
+		$_GET['month'] = $_POST['month'] = $month;
+
         $y = sprintf('%04d', $year);
         $m = sprintf('%02d', $month);
-        $cond = "date like '{$y}-{$m}-%'";
 
-        // 対象チャネル条件指定SQL WHERE句作成
-		$channel = $this->input->get('channel');
-        if ($channel === FALSE)
-        {
-            $channel = $_GET['channel'] = 'realestate_east';
-        }
-        $cond .= " and channel = '{$channel}'";
+        // 対象チャネル整理
+		$channel = ($this->input->get_post('channel') === FALSE) ? 'realestate_east' : $this->input->get_post('channel');
+		$_GET['channel'] = $_POST['channel'] = $channel;
+
+        // 条件指定SQL WHERE句作成
+        $cond = "date like '{$y}-{$m}-%' and channel = '{$channel}'";
 
         // ------------------------------------
         // DBに予算情報を入力する 
         // ------------------------------------
-
-//var_dump($this->input->post());
 
 		if ($this->input->post('action') === 'input')
 		{
@@ -99,7 +88,7 @@ class Yosan extends CI_Controller_With_Auth {
         $sql = ''.
             'select '.
                 'channel, '.
-                'DATE_FORMAT(date, "%d") as day, '.
+                'DATE_FORMAT(date, "%e") as day, '.
                 'yosan_introduction, '.
                 'yosan_contraction_a, '.
                 'yosan_contraction_b, '.
@@ -120,7 +109,7 @@ class Yosan extends CI_Controller_With_Auth {
 		$yosan_datas = array();
 		foreach ($tmp as $yosan_data)
 		{
-			$yosan_datas[(int)$yosan_data['day']] = $yosan_data;
+			$yosan_datas[$yosan_data['day']] = $yosan_data;
 		}
 
         // ------------------------------------
@@ -138,6 +127,7 @@ class Yosan extends CI_Controller_With_Auth {
 			'year' => $year,
 			'month' => $month,
 			'calendar' => $calendar,
+			'channel' => $channel,
             'form_year' => $this->config->item('form_year'),
             'form_month' => $this->config->item('form_month'),
             'form_channel' => $this->config->item('form_channel'),

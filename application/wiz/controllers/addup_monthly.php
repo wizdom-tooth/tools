@@ -73,34 +73,18 @@ class Addup_Monthly extends CI_Controller_With_Auth {
 
 	public function index()
 	{
-		$cond = '';
+        // 対象年月整理
+        $_GET['year']  = $year  = ($this->input->get('year') === FALSE)  ? date('Y') : $this->input->get('year');
+		$_GET['month'] = $month = ($this->input->get('month') === FALSE) ? date('m') : $this->input->get('month');
 
-		// 取得対象年月条件指定SQL WHERE句作成
-		if ($this->input->get('year') === FALSE)
-		{
-			$year = $_GET['year'] = date('Y');
-		}
-		if ($this->input->get('month') === FALSE)
-		{
-			$month = $_GET['month'] = date('m');
-		}
-		if ($this->input->get('year') !== FALSE && $this->input->get('month') !== FALSE)
-		{
-			$year  = $_GET['year']  = $this->input->get('year');
-			$month = $_GET['month'] = $this->input->get('month');
-		}
-		$y = sprintf('%04d', $year);
-		$m = sprintf('%02d', $month);
-		$ym = "{$y}{$m}";
-		$cond = "a.month = '{$ym}'";
+        $y = sprintf('%04d', $year);
+        $m = sprintf('%02d', $month);
 
-		// 取得対象チャネル条件指定SQL WHERE句作成
-		$channel = $this->input->get('channel');
-		if ($channel === FALSE)
-		{
-			$channel = $_GET['channel'] = 'realestate_east';
-		}
-		$cond .= ' and '.$this->_where[$channel];
+        // 対象チャネル整理
+        $_GET['channel'] = $channel = ($this->input->get('channel') === FALSE) ? 'realestate_east' : $this->input->get('channel');
+
+		// 条件指定SQL WHERE句作成
+		$cond = "a.month = '{$y}{$m}' and ".$this->_where[$channel];
 
 		// ------------------------------------
 		// 担当者別集計
@@ -160,8 +144,6 @@ class Addup_Monthly extends CI_Controller_With_Auth {
 			$sql = ''.
 				'select '.
 					'a.month, '.
-					'a.channel, '.
-					'a.east_or_west, '.
 					'"0" as yosan, '. // *************************************:
 					'a.introduction, '.
 					'b.contraction, '.
@@ -181,39 +163,74 @@ class Addup_Monthly extends CI_Controller_With_Auth {
 					'a.east_or_west';
 
 			$query = $this->_db_wizp->query($sql);
-			if ($query->num_rows() > 0)
-			{
-				$rows = $query->result_array();
-				if ($channel === 'realestate_east' || $channel === 'realestate_west')
-				{
-					$total_yosan = 0;
-					$total_introduction = 0;
-					$total_contraction = 0;
+			$hit_counts = $query->num_rows();
 
-					foreach ($rows as $row)
-					{
-						$total_yosan        += (int)$row['yosan'];
-						$total_introduction += (int)$row['introduction'];
-						$total_contraction  += (int)$row['contraction'];
-					}
-					$rows[] = array(
-						'month' => '計',
-						'channel' => '-',
-						'east_or_west' => '-',
-						'yosan' => $total_yosan,
-						'introduction' => $total_introduction,
-						'contraction' => $total_contraction,
-						'percent_yojitsu' => '0', //*****************
-						'percent_contracted' => '0', //*****************
-					);
+			if ($hit_counts === 0)
+			{
+				// ****************************************************************
+				// 情報が無かったら0埋めデータを送る
+				$sum[$kind] = array(
+                    'month'              => "${y}${m}",
+                    'yosan'              => '0',
+                    'introduction'       => '0',
+                    'contraction'        => '0',
+                    'percent_yojitsu'    => '0', //*****************
+                    'percent_contracted' => '0', //*****************
+				);
+				continue;
+			}
+			if ($hit_counts === 1)
+			{
+				$tmp = $query->result_array();
+				$addup_data = $tmp[0];
+			}
+			elseif ($hit_counts > 1)
+			{
+				$total_introduction = 0;
+				$total_contraction  = 0;
+
+				foreach ($query->result_array() as $row)
+				{
+					$total_introduction += (int)$row['introduction'];
+					$total_contraction  += (int)$row['contraction'];
 				}
-				$sum[$kind] = $rows;
+
+				$addup_data = array(
+					'month'              => "${y}${m}",
+					'yosan'              => '0',
+					'introduction'       => $total_introduction,
+					'contraction'        => $total_contraction,
+					'percent_yojitsu'    => '0', //*****************
+					'percent_contracted' => '0', //*****************
+				);
+			}
+			// 予算情報を取ってパーセンテージを計算して配列にセットする
+			// ********************************************************
+			$sql = ''.
+				'select '.
+					'yosan_introduction '.
+				'from '.
+					'yosan_monthly '.
+				'where '.
+					"month = '{$y}{$m}' and ".
+					"channel = '${channel}'";
+
+			$query = $this->_db_wizp->query($sql);
+			if ($query->num_rows() === 0)
+			{
+				$addup_data['yosan'] = 0;
 			}
 			else
 			{
-				// ****************************************************************
-				//$sum[$kind][] = $this->_get_sum_empty($date, $time_zone);
+				$row = $query->row();
+				$addup_data['yosan'] = $row->yosan_introduction;
 			}
+			// ********************************************************
+			$addup_data['percent_yojitsu'] = '0';
+			$addup_data['percent_contracted'] = '0';
+			// ********************************************************
+
+			$sum[$kind] = $addup_data;
 		}
 
 		// ------------------------------------
