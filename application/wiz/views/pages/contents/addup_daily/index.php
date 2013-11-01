@@ -30,7 +30,7 @@ foreach ($channels as $channel)
 					"[".
 						"'日付',".
 						"'時間帯',".
-						"'照会実績',".
+						"'照会',".
 						"'契約実績',".
 						"'内フレ実績',".
 						"'ISP',".
@@ -39,7 +39,8 @@ foreach ($channels as $channel)
 						"'ひかりTVパ',".
 						"'ひかりTV',".
 						"'ひかり電話',".
-						"'NG'".
+						"'NG',".
+						"'契約予算'".
 					"],".
 					$js_array_str.
 				"],\n";
@@ -133,7 +134,8 @@ function initializer(){
 	// 集計結果が0のセルをグレイアウト
 	$('.google-visualization-table-td').each(function(i){
 		if ($(this).text() == "0") {
-			$(this).css("background-color", "#D3D3D3");
+			/*$(this).css("background-color", "#D3D3D3");*/
+			$(this).css("color", "#D3D3D3");
 		}
 	});
 }
@@ -142,7 +144,6 @@ function initializer(){
 function drawChart(){
 	<?php if ( ! empty($sum_user)):?>
 		$('.no_addup').hide();
-
 		// チャンネル別集計テーブル描画
 		<?php $channels = array_keys($sum);?>
 		<?php foreach ($channels as $channel):?>
@@ -153,7 +154,6 @@ function drawChart(){
 		$('#div_<?php echo $channel;?>').show();
 		<?php endif;?>
 		<?php endforeach;?>
-
 		// 担当者別集計テーブル描画
 		var data = google.visualization.arrayToDataTable(sum_user['user']);
 		var table = new google.visualization.Table(document.getElementById('table_user'));

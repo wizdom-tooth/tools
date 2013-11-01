@@ -48,35 +48,61 @@ class Yosan extends CI_Controller_With_Auth {
 			{
 				if (isset($req_input_data["y_{$d}_i"]) === TRUE)
 				{
-					$sql = ''.
-						'replace into yosan '.
-							'('.
-								'channel, '.
-								'date, '.
-								'yosan_introduction, '.
-								'yosan_contraction_a, '.
-								'yosan_contraction_b, '.
-								'yosan_contraction_c, '.
-								'yosan_contraction_d, '.
-								'yosan_contraction_e, '.
-								'yosan_contraction_f '.
-							') '.
-						'values '.
-							'('.
-								"'{$channel}', ".
-								"'{$y}-{$m}-${d}', ".
-								"{$req_input_data["y_{$d}_i"]}, ".
-								"{$req_input_data["y_{$d}_a"]}, ".
-								"{$req_input_data["y_{$d}_b"]}, ".
-								"{$req_input_data["y_{$d}_c"]}, ".
-								"{$req_input_data["y_{$d}_d"]}, ".
-								"{$req_input_data["y_{$d}_e"]}, ".
-								"{$req_input_data["y_{$d}_f"]} ".
-							')';
-					$this->_db_wizp->query($sql);
-					//var_dump($sql);
-					// エラー処理 ****************************************_
-					// do anything
+					$yosan_kind_ids = array('i', 'a', 'b', 'c', 'd', 'e', 'f');
+					foreach ($yosan_kind_ids as $yosan_kind_id)
+					{
+						switch ($yosan_kind_id)
+						{
+							case 'i':
+								$yosan_kind = '紹介予算';
+								$count = $req_input_data["y_{$d}_i"];
+								break;
+							case 'a':
+								$yosan_kind = 'A(10-12)';
+								$count = $req_input_data["y_{$d}_a"];
+								break;
+							case 'b':
+								$yosan_kind = 'B(12-14)';
+								$count = $req_input_data["y_{$d}_b"];
+								break;
+							case 'c':
+								$yosan_kind = 'C(14-16)';
+								$count = $req_input_data["y_{$d}_c"];
+								break;
+							case 'd':
+								$yosan_kind = 'D(16-18)';
+								$count = $req_input_data["y_{$d}_d"];
+								break;
+							case 'e':
+								$yosan_kind = 'E(18-20)';
+								$count = $req_input_data["y_{$d}_e"];
+								break;
+							case 'f':
+								$yosan_kind = 'F(20-LAST)';
+								$count = $req_input_data["y_{$d}_f"];
+								break;
+						}
+
+						$sql = ''.
+							'replace into yosan '.
+								'('.
+									'channel, '.
+									'date, '.
+									'yosan_kind, '.
+									'count '.
+								') '.
+							'values '.
+								'('.
+									"'{$channel}', ".
+									"'{$y}-{$m}-${d}', ".
+									"'{$yosan_kind}', ".
+									"{$count} ".
+								')';
+						$this->_db_wizp->query($sql);
+						//var_dump($sql);
+						// エラー処理 ****************************************
+						// do anything
+					}
 				}
 			}
 		}
@@ -87,15 +113,7 @@ class Yosan extends CI_Controller_With_Auth {
 
         $sql = ''.
             'select '.
-                'channel, '.
-                'DATE_FORMAT(date, "%e") as day, '.
-                'yosan_introduction, '.
-                'yosan_contraction_a, '.
-                'yosan_contraction_b, '.
-                'yosan_contraction_c, '.
-                'yosan_contraction_d, '.
-                'yosan_contraction_e, '.
-                'yosan_contraction_f '.
+                'DATE_FORMAT(date, "%e") as day '.
             'from '.
                 'yosan '.
             'where '.
@@ -104,12 +122,48 @@ class Yosan extends CI_Controller_With_Auth {
                 'day';
 
         $query = $this->_db_wizp->query($sql);
-        $tmp = $query->result_array();
+        $days = $query->result_array();
 
 		$yosan_datas = array();
-		foreach ($tmp as $yosan_data)
+		foreach ($days as $tmp)
 		{
-			$yosan_datas[$yosan_data['day']] = $yosan_data;
+			$counts = array();
+			$day = $tmp['day'];
+			$d = sprintf('%02d', $day);
+			$yosan_kinds = array(
+				'i' => '紹介予算',
+				'a' => 'A(10-12)',
+				'b' => 'B(12-14)',
+				'c' => 'C(14-16)',
+				'd' => 'D(16-18)',
+				'e' => 'E(18-20)',
+				'f' => 'F(20-LAST)',
+			);
+			foreach ($yosan_kinds as $yosan_kind_id => $yosan_kind_val)
+			{
+				$sql = ''.
+					'select '.
+						'count '.
+					'from '.
+						'yosan '.
+					'where '.
+						"date = '{$y}-{$m}-{$d}' and ".
+						"channel = '{$channel}' and ".
+						"yosan_kind = '${yosan_kind_val}'";
+				$query = $this->_db_wizp->query($sql);
+				$row = $query->row();
+				$counts[$yosan_kind_id] = $row->count;
+			}
+			$yosan_datas[$day] = array(
+				'day' => $day,
+				'i'   => $counts['i'],
+				'a'   => $counts['a'],
+				'b'   => $counts['b'],
+				'c'   => $counts['c'],
+				'd'   => $counts['d'],
+				'e'   => $counts['e'],
+				'f'   => $counts['f'],
+			);
 		}
 
         // ------------------------------------

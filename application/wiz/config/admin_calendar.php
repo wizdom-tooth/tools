@@ -3,7 +3,7 @@
 $config['calendar_prefs']['start_day'] = 'monday';
 $config['calendar_prefs']['day_type'] = 'short';
 $config['calendar_prefs']['show_next_prev'] = TRUE;
-$config['calendar_prefs']['next_prev_url'] = base_url('addup/index');
+$config['calendar_prefs']['next_prev_url'] = base_url('addup_daily/index');
 $config['calendar_prefs']['template'] = <<<EOT
    {table_open}<table width="100%" height="100%">{/table_open}
    {heading_row_start}<tr style="background-color:#D8D8D8; text-align:center;">{/heading_row_start}

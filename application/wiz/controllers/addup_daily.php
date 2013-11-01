@@ -41,6 +41,7 @@ class Addup_Daily extends CI_Controller_With_Auth {
 		'hikari_tv',
 		'hikari_tel',
 		'ng',
+		'contract_yosan',
 	);
 
 	private $_db_wizp = NULL;
@@ -197,6 +198,7 @@ class Addup_Daily extends CI_Controller_With_Auth {
 				'hikari_tv' => 0,
 				'hikari_tel' => 0,
 				'ng' => 0,
+				'contract_yosan' => 0,
 			);
 			foreach ($time_zones as $time_zone)
 			{
@@ -230,6 +232,25 @@ class Addup_Daily extends CI_Controller_With_Auth {
 				if ($query->num_rows() > 0)
 				{
 					$tmp = $query->row_array();
+					$sql = ''.
+						'select '.
+							'count '.
+						'from '.
+							'yosan a '.
+						'where '.
+							$cond.' and '.
+							"yosan_kind = '{$tmp['time_zone']}' and ".
+							"channel = '${channel}'";
+					$q = $this->_db_wizp->query($sql);
+					if ($q->num_rows() > 0)
+					{
+						$row = $q->row();
+						$tmp['contract_yosan'] = $row->count;
+					}
+					else
+					{
+						$tmp['contract_yosan'] = 0;
+					}
 					foreach ($tmp as $key => $count)
 					{
 						if (isset($total[$key]))
@@ -258,6 +279,7 @@ class Addup_Daily extends CI_Controller_With_Auth {
 				'hikari_tel' => $total['hikari_tel'],
 				//'ng' => $total['ng'],
 				'ng' => '-',
+				'contract_yosan' => '0', // ***************************************
 			); 
 		}
 

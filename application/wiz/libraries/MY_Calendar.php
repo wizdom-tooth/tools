@@ -94,7 +94,7 @@ class MY_Calendar extends CI_Calendar {
 		$colspan = ($this->show_next_prev == TRUE) ? 5 : 7;
 
 		$headings = array();
-		$path_base = "addup/index";
+		$path_base = "addup_daily/index";
 
 		$headings[] = $year;
 		$headings[] = $this->get_month_name($month);
