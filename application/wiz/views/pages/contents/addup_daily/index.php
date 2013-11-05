@@ -30,17 +30,16 @@ foreach ($channels as $channel)
 					"[".
 						"'日付',".
 						"'時間帯',".
-						"'照会',".
-						"'契約実績',".
-						"'内フレ実績',".
+						"'照/予',".
+						"'契/予',".
+						"'内フレ',".
 						"'ISP',".
 						"'ウイルス',".
 						"'リモート',".
-						"'ひかりTVパ',".
-						"'ひかりTV',".
-						"'ひかり電話',".
+						"'ひTVパ',".
+						"'ひTV',".
+						"'ひ電話',".
 						"'NG',".
-						"'契約予算'".
 					"],".
 					$js_array_str.
 				"],\n";
@@ -133,9 +132,20 @@ function initializer(){
 	});
 	// 集計結果が0のセルをグレイアウト
 	$('.google-visualization-table-td').each(function(i){
-		if ($(this).text() == "0") {
+		var addup_count = $(this).text();
+		if (addup_count == "0" || addup_count == "0 / 0") {
 			/*$(this).css("background-color", "#D3D3D3");*/
 			$(this).css("color", "#D3D3D3");
+			$(this).css("font-size", "8px");
+		} else {
+			var yojitsu_count = addup_count.split(" / ");
+			var jisseki = Number(yojitsu_count[0]);
+			var yosan   = Number(yojitsu_count[1]);
+			if (jisseki > yosan) {
+				$(this).css("color", "blue");
+			} else if (jisseki < yosan) {
+				$(this).css("color", "red");
+			}
 		}
 	});
 }

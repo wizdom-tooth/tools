@@ -32,6 +32,7 @@ class Addup_Daily extends CI_Controller_With_Auth {
 		'date',
 		'time_zone',
 		'introduction_total',
+		//'contract_yosan',
 		'contract_total',
 		'contract_flets',
 		'isp',
@@ -41,7 +42,6 @@ class Addup_Daily extends CI_Controller_With_Auth {
 		'hikari_tv',
 		'hikari_tel',
 		'ng',
-		'contract_yosan',
 	);
 
 	private $_db_wizp = NULL;
@@ -58,23 +58,20 @@ class Addup_Daily extends CI_Controller_With_Auth {
 	// 対象データ無しの空集計配列を返す
 	private function _get_sum_empty($date, $time_zone)
 	{
-		$sum_empty  = array();
-		foreach ($this->_select_fields as $field)
-		{
-			if ($field === 'date')
-			{
-				$sum_empty['date'] = $date;
-			}
-			elseif ($field === 'time_zone')
-			{
-				$sum_empty['time_zone'] = $time_zone;
-			}
-			else
-			{
-				$sum_empty[$field] = 0;
-			}
-		}
-		return $sum_empty;
+		return array(
+			'date' => $date,
+			'time_zone' => $time_zone,
+			'introduction_total' => 0,
+			'contract_total' => '0 / 0',
+			'contract_flets' => 0,
+			'isp' => 0,
+			'virus' => 0,
+			'remote' => 0,
+			'hikari_tv_pa' => 0,
+			'hikari_tv' => 0,
+			'hikari_tel' => 0,
+			'ng' => 0,
+		);
 	}
 
 	public function index($year = '', $month = '', $day = '')
@@ -188,98 +185,148 @@ class Addup_Daily extends CI_Controller_With_Auth {
 		foreach ($this->_channels as $channel)
 		{
 			$total = array(
-				'introduction_total' => 0,
-				'contract_total' => 0,
-				'contract_flets' => 0,
-				'isp' => 0,
-				'virus' => 0,
-				'remote' => 0,
-				'hikari_tv_pa' => 0,
-				'hikari_tv' => 0,
-				'hikari_tel' => 0,
-				'ng' => 0,
-				'contract_yosan' => 0,
+				'02_introduction_total' => 0,
+				'03_contract_yosan'     => 0,
+				'04_contract_total'     => 0,
+				'05_contract_flets'     => 0,
+				'06_isp'                => 0,
+				'07_virus'              => 0,
+				'08_remote'             => 0,
+				'09_hikari_tv_pa'       => 0,
+				'10_hikari_tv'          => 0,
+				'11_hikari_tel'         => 0,
+				'12_ng'                 => 0,
 			);
+			if ($channel === 'able_and_realestate')
+			{
+				$cond_channel = ''.
+					'channel in ('.
+						'"realestate_east",'.
+						'"realestate_west",'.
+						'"able_east",'.
+						'"able_west"'.
+					')';
+			}
+			else
+			{
+				$cond_channel = "channel = '${channel}'";
+			}
 			foreach ($time_zones as $time_zone)
 			{
 				$sql = ''.
 					'select '.
-						'a.date, '.
-						'a.time_zone, '.
-						'a.introduction_total, '.
-						'b.contract_total, '.
-						'b.contract_flets, '.
-						'b.isp, '.
-						'b.virus, '.
-						'b.remote, '.
-						'b.hikari_tv_pa, '.
-						'b.hikari_tv, '.
-						'b.hikari_tel, '.
-						'b.ng '.
+						'a.date as 00_date, '.
+						'a.time_zone as 01_time_zone, '.
+						'ifnull(a.introduction_total, "0") as 02_introduction_total, '.
+						'ifnull(b.contract_total, "0") as 04_contract_total, '.
+						'ifnull(b.contract_flets, "0") as 05_contract_flets, '.
+						'ifnull(b.isp, "0") as 06_isp, '.
+						'ifnull(b.virus, "0") as 07_virus, '.
+						'ifnull(b.remote, "0") as 08_remote, '.
+						'ifnull(b.hikari_tv_pa, "0") as 09_hikari_tv_pa, '.
+						'ifnull(b.hikari_tv, "0") as 10_hikari_tv, '.
+						'ifnull(b.hikari_tel, "0") as 11_hikari_tel, '.
+						'ifnull(b.ng, "0") as 12_ng '.
 					'from '.
-						"addup_daily_introduction_${channel} a, ".
+						"addup_daily_introduction_${channel} a left join ".
 						"addup_daily_contraction_${channel} b ".
+					'on '.
+						'a.date = b.contract_date and '.
+						'a.time_zone = b.time_zone '.
 					'where '.
 						$cond.' and '.
-						'a.date = b.contract_date and '.
-						'a.time_zone = b.time_zone and '.
 						"a.time_zone = '${time_zone}' ".
 					'order by '.
-						'a.date,'.
-						'a.time_zone';
+						'00_date,'.
+						'01_time_zone';
 
 				$query = $this->_db_wizp->query($sql);
 				if ($query->num_rows() > 0)
 				{
+					// 時間帯ごとの契約予算情報を付加する
 					$tmp = $query->row_array();
 					$sql = ''.
 						'select '.
-							'count '.
+							'ifnull(sum(count), "0") as count '.
 						'from '.
 							'yosan a '.
 						'where '.
 							$cond.' and '.
-							"yosan_kind = '{$tmp['time_zone']}' and ".
-							"channel = '${channel}'";
+							"yosan_kind = '{$tmp['01_time_zone']}' and ".
+							$cond_channel;
 					$q = $this->_db_wizp->query($sql);
 					if ($q->num_rows() > 0)
 					{
 						$row = $q->row();
-						$tmp['contract_yosan'] = $row->count;
+						$tmp['03_contract_yosan'] = $row->count; 
 					}
 					else
 					{
-						$tmp['contract_yosan'] = 0;
+						$tmp['03_contract_yosan'] = 0;
 					}
-					foreach ($tmp as $key => $count)
+
+					// 表示用に配列を整形する
+					$view_data = array();
+					foreach ($tmp as $key => $val)
 					{
-						if (isset($total[$key]))
+						if (isset($total[$key])) $total[$key] += (int)$val;
+						if ($key === '03_contract_yosan')
 						{
-							$total[$key] += (int)$count;
+							continue;
+						}
+						if ($key !== '04_contract_total')
+						{
+							$view_data[$key] = $val;
+						}
+						else
+						{
+							$view_data['03_contact'] = $val.' / '.$tmp['03_contract_yosan'];
 						}
 					}
-					$sum[$channel][] = $tmp;
+					ksort($view_data);
+					$sum[$channel][] = $view_data;
 				}
 				else
 				{
 					$sum[$channel][] = $this->_get_sum_empty($date, $time_zone);
 				}
 			}
+
+			// 紹介予算情報を付加する
+			$sql = ''.
+				'select '.
+					'sum(count) as count '.
+				'from '.
+					'yosan a '.
+				'where '.
+					$cond.' and '.
+					"yosan_kind = '紹介予算' and ".
+					$cond_channel;
+			$q = $this->_db_wizp->query($sql);
+			if ($q->num_rows() > 0)
+			{
+				$row = $q->row();
+				$introduction_yosan = (empty($row->count)) ? 0 : $row->count;
+			}
+			else
+			{
+				$introduction_yosan = 0;
+			}
+
 			$sum[$channel][] = array(
-				'date' => $date,
-				'time_zone' => '計',
-				'introduction_total' => $total['introduction_total'],
-				'contract_total' => $total['contract_total'],
-				'contract_flets' => $total['contract_flets'],
-				'isp' => $total['isp'],
-				'virus' => $total['virus'],
-				'remote' => $total['remote'],
-				'hikari_tv_pa' => $total['hikari_tv_pa'],
-				'hikari_tv' => $total['hikari_tv'],
-				'hikari_tel' => $total['hikari_tel'],
-				//'ng' => $total['ng'],
-				'ng' => '-',
-				'contract_yosan' => '0', // ***************************************
+				'date'               => $date,
+				'time_zone'          => '計',
+				'introduction_total' => $total['02_introduction_total'].' / '.$introduction_yosan,
+				//'contract_yosan'     => $total['03_contract_yosan'],
+				'contract_total'     => $total['04_contract_total'].' / '.$total['03_contract_yosan'],
+				'contract_flets'     => $total['05_contract_flets'],
+				'isp'                => $total['06_isp'],
+				'virus'              => $total['07_virus'],
+				'remote'             => $total['08_remote'],
+				'hikari_tv_pa'       => $total['09_hikari_tv_pa'],
+				'hikari_tv'          => $total['10_hikari_tv'],
+				'hikari_tel'         => $total['11_hikari_tel'],
+				'ng'                 => $total['12_ng'], // ******************
 			); 
 		}
 

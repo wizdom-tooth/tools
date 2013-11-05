@@ -18,7 +18,7 @@ $CREATE_VIEW_SQL =
 			'sum(hikari_tv="案内了承") as hikari_tv_pa, '.
 			'sum(hikari_tv like "%プラン%") as hikari_tv, '.
 			'sum(hikari_tel!="未入力") as hikari_tel, '.
-			'"-" as ng '.
+			'"0" as ng '.
 		'from '.
 			'addup '.
 		'where '.

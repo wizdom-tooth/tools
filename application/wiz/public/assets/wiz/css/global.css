@@ -71,7 +71,7 @@ pre {
 	position: fixed;
 }
 #wrapper{
-	width 1000px;
+	width 100%;
 	margin:0 auto;
 }
 #header{}
@@ -211,7 +211,7 @@ strong{
     float: left;
 	margin: 0px;
 	padding: 0px;
-	width: 800px;
+	width: 870px;
     height: 100%;
 }
 #chart_wrapper{
@@ -329,7 +329,7 @@ div#improvement{
 	font-weight: bold;
 	font-size: 5em;
 }
-#div_able_and_realestate, #div_able, #div_able_east, #div_realestate_east, #div_realestate_west, #div_able_west, #div_ablehikkoshi_east, #div_ablehikkoshi_west, #div_aeras, #div_his_east, #div_his_west, #div_house2house, #div_housepartner, #div_nissei, #div_ponta_east, #div_ponst_west, #div_prime, #div_soleil, #div_univ, #div_isp, #div_fletsclub_iten, #div_ocn_upsell, #div_benefit, #div_user {
+#div_able_and_realestate, #div_able, #div_able_east, #div_realestate_east, #div_realestate_west, #div_able_west, #div_ablehikkoshi_east, #div_ablehikkoshi_west, #div_aeras, #div_his_east, #div_his_west, #div_house2house, #div_housepartner, #div_nissei, #div_ponta_east, #div_ponst_west, #div_prime, #div_soleil, #div_univ, #div_isp, #div_iten, #div_fletsclub_iten, #div_ocn_upsell, #div_benefit, #div_user {
 	display: none;
 }
 
