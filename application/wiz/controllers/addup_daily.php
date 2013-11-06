@@ -2,162 +2,55 @@
 
 class Addup_Daily extends CI_Controller_With_Auth {
 
-	private $_channels = array(
-		'able_and_realestate',
-		'able_east',
-		'able_west',
-		'realestate_east',
-		'realestate_west',
-		'ablehikkoshi_east',
-		'ablehikkoshi_west',
-		'aeras',
-		'his_east',
-		'his_west',
-		'house2house',
-		'housepartner',
-		'nissei',
-		'ponta_east',
-		'ponta_west',
-		'prime',
-		'soleil',
-		'univ',
-		'isp',
-		'iten',
-		'fletsclub_iten',
-		'ocn_upsell',
-		'benefit',
-	);
+	CONST BASEURL = 'addup_daily/index';
 
-	private $_select_fields = array(
-		'date',
-		'time_zone',
-		'introduction_total',
-		//'contract_yosan',
-		'contract_total',
-		'contract_flets',
-		'isp',
-		'virus',
-		'remote',
-		'hikari_tv_pa',
-		'hikari_tv',
-		'hikari_tel',
-		'ng',
-	);
-
-	private $_db_wizp = NULL;
+	private $_db_wizp              = NULL;
+	private $_daily_addup_channels = array();
+	private $_time_zones           = array();
 
 	public function __construct()
 	{
 		parent::__construct();
 		$this->ag_auth->restrict('manager');
-		$this->_db_wizp = $this->load->database('wizp', TRUE);
 		$this->config->load('admin_calendar');
+		$this->config->load('wiz_config');
 		$this->load->library('calendar', $this->config->item('calendar_prefs'));
+		$this->_db_wizp = $this->load->database('wizp', TRUE);
+		$this->_daily_addup_channels = $this->config->item('daily_addup_channels');
+		$this->_time_zones = $this->config->item('time_zones');
 	}
 
-	// 対象データ無しの空集計配列を返す
-	private function _get_sum_empty($date, $time_zone)
+	public function index($y = '', $m = '', $d = '')
 	{
-		return array(
-			'date' => $date,
-			'time_zone' => $time_zone,
-			'introduction_total' => 0,
-			'contract_total' => '0 / 0',
-			'contract_flets' => 0,
-			'isp' => 0,
-			'virus' => 0,
-			'remote' => 0,
-			'hikari_tv_pa' => 0,
-			'hikari_tv' => 0,
-			'hikari_tel' => 0,
-			'ng' => 0,
-		);
-	}
+		// 取得対象日付作成
+		if ($y === '' || $m === '' || $d === '')
+		{
+			$y  = date('Y');
+			$m  = date('m');
+			$d  = date('d');
+		}
+		$date = "{$y}-{$m}-{$d}";
 
-	public function index($year = '', $month = '', $day = '')
-	{
-		// 取得対象日付条件指定SQL WHERE句作成
-		if ($year !== '' && $month !== '' && $day !== '')
-		{
-			$y = sprintf('%04d', $year);
-			$m = sprintf('%02d', $month);
-			$d = sprintf('%02d', $day);
-			$date = "{$year}-{$month}-{$day}";
-			$cond = "a.date = '{$year}-{$month}-{$day}'";
-		}
-		elseif ($year !== '' && $month !== '' && $day === '')
-		{
-			$y = sprintf('%04d', $year);
-			$m = sprintf('%02d', $month);
-			$d = '01';
-			$date = "{$year}-{$month}-01";
-			$cond = "a.date like '{$year}-{$month}-%'";
-		}
-		elseif ($year !== '' && ($month === '' || $day === ''))
-		{
-			$y = sprintf('%04d', $year);
-			$m = '01';
-			$d = '01';
-			$date = "{$year}-01-01";
-			$cond = "a.date like '{$year}-%'";
-		}
-		else
-		{
-			$y = $year = date('Y');
-			$m = $month = date('m');
-			$d = $day = date('d');
-			$date = "{$y}-{$m}-{$d}";
-			$cond = "a.date = '{$y}-{$m}-{$d}'";
-		}
+		// カレンダー作成
+		$target_ym_is_current_ym = ("$y$m" === date('Ym')) ? TRUE : FALSE;
+		$last_day_of_the_month = date('t', strtotime($date));
+		$today = date('j');
 
-		// ------------------------------------
-		// カレンダー
-		// ------------------------------------
-
-		$calendar_links = array();
-		for ($i = 1; $i <= date('t', strtotime($y.$m.$d)); $i++)
+		$cal_data = array();
+		for ($i = 1; $i <= $last_day_of_the_month; $i++)
 		{
-			$target_ym = $year.$month;
-			$cur_ym = date('Ym');
-			if ($target_ym < $cur_ym || $i <= date('j'))
-			{
-				$calendar_links[$i] = base_url('addup_daily/index/'.$y.'/'.$m.'/'.sprintf('%02d', $i).'/');
-			}
-			else
-			{
-				break;
-			}
+			if ($i > $today && $target_ym_is_current_ym) break;
+			$url = self::BASEURL.'/'.$y.'/'.$m.'/'.sprintf('%02d', $i).'/';
+			$cal_data[$i] = base_url($url);
 		}
-		$calendar = $this->calendar->generate($y, $m, $calendar_links);
+		$calendar = $this->calendar->generate($y, $m, $cal_data);
 
-		// ------------------------------------
 		// 担当者別集計
-		// ------------------------------------
-
-		// 担当者一覧
-		$sum_user = array();
-		$sql = ''.
-			'select '.
-				'distinct user_name '.
-			'from '.
-				'addup_user a '.
-			'where '.
-				$cond.' '.
-			'order by '.
-				'user_name';
+		$sql = "SELECT DISTINCT user_name FROM addup_user WHERE date = '{$date}'"; // 担当者一覧
 		$query = $this->_db_wizp->query($sql);
 		$users = $query->result_array();
 
-		// 担当者毎の集計
-		$sql = ''.
-			'select '.
-				'* '.
-			'from '.
-				'addup_user a '.
-			'where '.
-				$cond.' '.
-			'order by '.
-				'time_zone';
+		$sql = "SELECT * FROM addup_user WHERE date = '{$date}' ORDER BY time_zone"; // 担当者毎の集計
 		$query = $this->_db_wizp->query($sql);
 		$sum_user = $query->result_array();
 
@@ -165,184 +58,186 @@ class Addup_Daily extends CI_Controller_With_Auth {
 		// チャンネル別集計
 		// ------------------------------------
 
-		// 時間帯情報を取得
-		$time_zones = array();
+		$sum = array();
+
+		// 予算情報を配列に展開
 		$sql = ''.
-			'select '.
-				'time_zone '.
-			'from '.
-				'time_zone_mst '.
-			'order by '.
-				'time_zone';
+			'SELECT '.
+				'channel, '.
+				'yosan_kind, '.
+				'IFNULL(SUM(count), "0") AS count '.
+			'FROM '.
+				'yosan '.
+			'WHERE '.
+				"date = '${date}' ".
+			'GROUP BY '.
+				'channel, '.
+				'yosan_kind';
+
 		$query = $this->_db_wizp->query($sql);
-		foreach ($query->result() as $row)
+		$yosan_data = array();
+		if ($query->num_rows() > 0)
 		{
-			$time_zones[] = $row->time_zone;
+			$row_yosan_datas = $query->result_array();
+			foreach ($row_yosan_datas as $row_yosan_data)
+			{
+				$channel    = $row_yosan_data['channel'];
+				$yosan_kind = $row_yosan_data['yosan_kind'];
+				$count      = (int)$row_yosan_data['count'];
+
+				$yosan_data[$channel][$yosan_kind] = $count;
+				if (isset($yosan_data['able_and_realestate'][$yosan_kind])) {
+					$yosan_data['able_and_realestate'][$yosan_kind] += $count;
+				} else {
+					$yosan_data['able_and_realestate'][$yosan_kind] = $count;
+				}
+			}
 		}
 
 		// チャンネル毎の集計情報を取得
-		$sum = array();
-		foreach ($this->_channels as $channel)
+		foreach ($this->_daily_addup_channels as $channel)
 		{
-			$total = array(
-				'02_introduction_total' => 0,
-				'03_contract_yosan'     => 0,
-				'04_contract_total'     => 0,
-				'05_contract_flets'     => 0,
-				'06_isp'                => 0,
-				'07_virus'              => 0,
-				'08_remote'             => 0,
-				'09_hikari_tv_pa'       => 0,
-				'10_hikari_tv'          => 0,
-				'11_hikari_tel'         => 0,
-				'12_ng'                 => 0,
-			);
-			if ($channel === 'able_and_realestate')
-			{
-				$cond_channel = ''.
-					'channel in ('.
-						'"realestate_east",'.
-						'"realestate_west",'.
-						'"able_east",'.
-						'"able_west"'.
-					')';
-			}
-			else
-			{
-				$cond_channel = "channel = '${channel}'";
-			}
-			foreach ($time_zones as $time_zone)
+			$sum_introduction_total = 0;
+			$sum_contract_yosan     = 0;
+			$sum_contract_total     = 0;
+			$sum_contract_flets     = 0;
+			$sum_isp                = 0;
+			$sum_virus              = 0;
+			$sum_remote             = 0;
+			$sum_hikari_tv_pa       = 0;
+			$sum_hikari_tv          = 0;
+			$sum_hikari_tel         = 0;
+			$sum_ng                 = 0;
+
+			foreach ($this->_time_zones as $time_zone)
 			{
 				$sql = ''.
-					'select '.
-						'a.date as 00_date, '.
-						'a.time_zone as 01_time_zone, '.
-						'ifnull(a.introduction_total, "0") as 02_introduction_total, '.
-						'ifnull(b.contract_total, "0") as 04_contract_total, '.
-						'ifnull(b.contract_flets, "0") as 05_contract_flets, '.
-						'ifnull(b.isp, "0") as 06_isp, '.
-						'ifnull(b.virus, "0") as 07_virus, '.
-						'ifnull(b.remote, "0") as 08_remote, '.
-						'ifnull(b.hikari_tv_pa, "0") as 09_hikari_tv_pa, '.
-						'ifnull(b.hikari_tv, "0") as 10_hikari_tv, '.
-						'ifnull(b.hikari_tel, "0") as 11_hikari_tel, '.
-						'ifnull(b.ng, "0") as 12_ng '.
-					'from '.
-						"addup_daily_introduction_${channel} a left join ".
-						"addup_daily_contraction_${channel} b ".
-					'on '.
-						'a.date = b.contract_date and '.
-						'a.time_zone = b.time_zone '.
-					'where '.
-						$cond.' and '.
-						"a.time_zone = '${time_zone}' ".
-					'order by '.
-						'00_date,'.
-						'01_time_zone';
+					'SELECT '.
+						'i.date                            AS date, '.
+						'i.time_zone                       AS time_zone, '.
+						'IFNULL(i.introduction_total, "0") AS introduction_total, '.
+						'IFNULL(c.contract_total,     "0") AS contract_total, '.
+						'IFNULL(c.contract_flets,     "0") AS contract_flets, '.
+						'IFNULL(c.isp,                "0") AS isp, '.
+						'IFNULL(c.virus,              "0") AS virus, '.
+						'IFNULL(c.remote,             "0") AS remote, '.
+						'IFNULL(c.hikari_tv_pa,       "0") AS hikari_tv_pa, '.
+						'IFNULL(c.hikari_tv,          "0") AS hikari_tv, '.
+						'IFNULL(c.hikari_tel,         "0") AS hikari_tel, '.
+						'IFNULL(c.ng,                 "0") AS ng '.
+					'FROM '.
+						"addup_daily_introduction_${channel} i LEFT JOIN ".
+						"addup_daily_contraction_${channel}  c ".
+					'ON '.
+						'i.date      = c.contract_date AND '.
+						'i.time_zone = c.time_zone '.
+					'WHERE '.
+						"i.date = '{$date}' AND ".
+						"i.time_zone = '${time_zone}' ".
+					'ORDER BY '.
+						'date,'.
+						'time_zone';
 
 				$query = $this->_db_wizp->query($sql);
-				if ($query->num_rows() > 0)
-				{
-					// 時間帯ごとの契約予算情報を付加する
-					$tmp = $query->row_array();
-					$sql = ''.
-						'select '.
-							'ifnull(sum(count), "0") as count '.
-						'from '.
-							'yosan a '.
-						'where '.
-							$cond.' and '.
-							"yosan_kind = '{$tmp['01_time_zone']}' and ".
-							$cond_channel;
-					$q = $this->_db_wizp->query($sql);
-					if ($q->num_rows() > 0)
-					{
-						$row = $q->row();
-						$tmp['03_contract_yosan'] = $row->count; 
-					}
-					else
-					{
-						$tmp['03_contract_yosan'] = 0;
-					}
-
-					// 表示用に配列を整形する
-					$view_data = array();
-					foreach ($tmp as $key => $val)
-					{
-						if (isset($total[$key])) $total[$key] += (int)$val;
-						if ($key === '03_contract_yosan')
-						{
-							continue;
-						}
-						if ($key !== '04_contract_total')
-						{
-							$view_data[$key] = $val;
-						}
-						else
-						{
-							$view_data['03_contact'] = $val.' / '.$tmp['03_contract_yosan'];
-						}
-					}
-					ksort($view_data);
-					$sum[$channel][] = $view_data;
-				}
-				else
+				if ($query->num_rows() <= 0)
 				{
 					$sum[$channel][] = $this->_get_sum_empty($date, $time_zone);
 				}
+				else
+				{
+					$row = $query->row();
+
+					// 時間帯ごとの契約予算情報を取得する
+					if (isset($yosan_data[$channel][$row->time_zone])) {
+						$contract_yosan = $yosan_data[$channel][$row->time_zone];
+					} else {
+						$contract_yosan = 0;
+					}
+
+					// チャンネル毎に各フィールドの小計を取る
+					$sum_introduction_total += $row->introduction_total;
+					$sum_contract_total     += $row->contract_total;
+					$sum_contract_flets     += $row->contract_flets ;
+					$sum_isp                += $row->isp;
+					$sum_virus              += $row->virus;
+					$sum_remote             += $row->remote;
+					$sum_hikari_tv_pa       += $row->hikari_tv_pa;
+					$sum_hikari_tv          += $row->hikari_tv;
+					$sum_hikari_tel         += $row->hikari_tel;
+					$sum_ng                 += $row->ng;
+					$sum_contract_yosan     += $contract_yosan;
+
+					// 表示用に配列を整形する
+					$sum[$channel][] = array(
+						$row->date,
+						$row->time_zone,
+						$row->introduction_total,
+						$row->contract_total.' / '.$contract_yosan,
+						$row->contract_flets,
+						$row->isp,
+						$row->virus,
+						$row->remote,
+						$row->hikari_tv_pa,
+						$row->hikari_tv,
+						$row->hikari_tel,
+						$row->ng,
+					);
+				}
 			}
 
-			// 紹介予算情報を付加する
-			$sql = ''.
-				'select '.
-					'sum(count) as count '.
-				'from '.
-					'yosan a '.
-				'where '.
-					$cond.' and '.
-					"yosan_kind = '紹介予算' and ".
-					$cond_channel;
-			$q = $this->_db_wizp->query($sql);
-			if ($q->num_rows() > 0)
-			{
-				$row = $q->row();
-				$introduction_yosan = (empty($row->count)) ? 0 : $row->count;
-			}
-			else
-			{
+			// 紹介予算情報を取得する
+			if (isset($yosan_data[$channel]['紹介予算'])) {
+				$introduction_yosan = $yosan_data[$channel]['紹介予算'];
+			} else {
 				$introduction_yosan = 0;
 			}
 
+			// チャンネル毎の小計行を追加する
 			$sum[$channel][] = array(
 				'date'               => $date,
-				'time_zone'          => '計',
-				'introduction_total' => $total['02_introduction_total'].' / '.$introduction_yosan,
-				//'contract_yosan'     => $total['03_contract_yosan'],
-				'contract_total'     => $total['04_contract_total'].' / '.$total['03_contract_yosan'],
-				'contract_flets'     => $total['05_contract_flets'],
-				'isp'                => $total['06_isp'],
-				'virus'              => $total['07_virus'],
-				'remote'             => $total['08_remote'],
-				'hikari_tv_pa'       => $total['09_hikari_tv_pa'],
-				'hikari_tv'          => $total['10_hikari_tv'],
-				'hikari_tel'         => $total['11_hikari_tel'],
-				'ng'                 => $total['12_ng'], // ******************
+				'time_zone'          => '小計',
+				'introduction_total' => $sum_introduction_total.' / '.$introduction_yosan,
+				'contract_total'     => $sum_contract_total.' / '.$sum_contract_yosan,
+				'contract_flets'     => $sum_contract_flets,
+				'isp'                => $sum_isp,
+				'virus'              => $sum_virus,
+				'remote'             => $sum_remote,
+				'hikari_tv_pa'       => $sum_hikari_tv_pa,
+				'hikari_tv'          => $sum_hikari_tv,
+				'hikari_tel'         => $sum_hikari_tel,
+				'ng'                 => $sum_ng,
 			); 
 		}
 
-		// ------------------------------------
 		// 出力
-		// ------------------------------------
-
 		$data = array(
-			'year' => $year,
-			'month' => $month,
-			'day' => $day,
+			'year'     => $y,
+			'month'    => $m,
+			'day'      => $d,
 			'calendar' => $calendar,
-			'sum' => $sum,
-			'users' => $users,
+			'sum'      => $sum,
+			'users'    => $users,
 			'sum_user' => $sum_user,
 		);
 		$this->ag_auth->view('contents/addup_daily/index', $data);
+	}
+
+	// 対象データ無しの空集計配列を返す
+	private function _get_sum_empty($date, $time_zone)
+	{
+		return array(
+			'date'               => $date,
+			'time_zone'          => $time_zone,
+			'introduction_total' => 0,
+			'contract_total'     => '0 / 0',
+			'contract_flets'     => 0,
+			'isp'                => 0,
+			'virus'              => 0,
+			'remote'             => 0,
+			'hikari_tv_pa'       => 0,
+			'hikari_tv'          => 0,
+			'hikari_tel'         => 0,
+			'ng'                 => 0,
+		);
 	}
 }

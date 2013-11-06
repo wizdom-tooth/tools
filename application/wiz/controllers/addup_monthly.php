@@ -208,11 +208,11 @@ class Addup_Monthly extends CI_Controller_With_Auth {
 			// ********************************************************
 			$sql = ''.
 				'select '.
-					'yosan_introduction '.
+					'sum(count) as count '.
 				'from '.
-					'yosan_monthly '.
+					'yosan a '.
 				'where '.
-					"month = '{$y}{$m}' and ".
+					"date like '{$y}-{$m}-%' and ".
 					"channel = '${channel}'";
 
 			$query = $this->_db_wizp->query($sql);
@@ -223,7 +223,7 @@ class Addup_Monthly extends CI_Controller_With_Auth {
 			else
 			{
 				$row = $query->row();
-				$addup_data['yosan'] = $row->yosan_introduction;
+				$addup_data['yosan'] = $row->count;
 			}
 			// ********************************************************
 			$addup_data['percent_yojitsu'] = '0';
