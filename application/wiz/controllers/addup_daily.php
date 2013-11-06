@@ -84,12 +84,19 @@ class Addup_Daily extends CI_Controller_With_Auth {
 				$channel    = $row_yosan_data['channel'];
 				$yosan_kind = $row_yosan_data['yosan_kind'];
 				$count      = (int)$row_yosan_data['count'];
-
-				$yosan_data[$channel][$yosan_kind] = $count;
-				if (isset($yosan_data['able_and_realestate'][$yosan_kind])) {
-					$yosan_data['able_and_realestate'][$yosan_kind] += $count;
-				} else {
-					$yosan_data['able_and_realestate'][$yosan_kind] = $count;
+				switch ($channel)
+				{
+					case 'realestate_east':
+					case 'realestate_west':
+					case 'able_east':
+					case 'able_west':
+						if (isset($yosan_data['able_and_realestate'][$yosan_kind])) {
+							$yosan_data['able_and_realestate'][$yosan_kind] += $count;
+						} else {
+							$yosan_data['able_and_realestate'][$yosan_kind] = $count;
+						}
+					default:
+						$yosan_data[$channel][$yosan_kind] = $count;
 				}
 			}
 		}
@@ -97,6 +104,7 @@ class Addup_Daily extends CI_Controller_With_Auth {
 		// チャンネル毎の集計情報を取得
 		foreach ($this->_daily_addup_channels as $channel)
 		{
+			// チャンネル毎の小計変数を初期化
 			$sum_introduction_total = 0;
 			$sum_contract_yosan     = 0;
 			$sum_contract_total     = 0;
@@ -111,6 +119,15 @@ class Addup_Daily extends CI_Controller_With_Auth {
 
 			foreach ($this->_time_zones as $time_zone)
 			{
+				// 時間帯ごとの契約予算情報を取得する
+				if (isset($yosan_data[$channel][$time_zone])) {
+					$contract_yosan = $yosan_data[$channel][$time_zone];
+				} else {
+					$contract_yosan = 0;
+				}
+				$sum_contract_yosan += $contract_yosan;
+
+				// チャンネル＆時間帯毎の集計情報を取得
 				$sql = ''.
 					'SELECT '.
 						'i.date                            AS date, '.
@@ -141,18 +158,11 @@ class Addup_Daily extends CI_Controller_With_Auth {
 				$query = $this->_db_wizp->query($sql);
 				if ($query->num_rows() <= 0)
 				{
-					$sum[$channel][] = $this->_get_sum_empty($date, $time_zone);
+					$sum[$channel][] = $this->_get_sum_empty($date, $time_zone, $contract_yosan);
 				}
 				else
 				{
 					$row = $query->row();
-
-					// 時間帯ごとの契約予算情報を取得する
-					if (isset($yosan_data[$channel][$row->time_zone])) {
-						$contract_yosan = $yosan_data[$channel][$row->time_zone];
-					} else {
-						$contract_yosan = 0;
-					}
 
 					// チャンネル毎に各フィールドの小計を取る
 					$sum_introduction_total += $row->introduction_total;
@@ -165,7 +175,6 @@ class Addup_Daily extends CI_Controller_With_Auth {
 					$sum_hikari_tv          += $row->hikari_tv;
 					$sum_hikari_tel         += $row->hikari_tel;
 					$sum_ng                 += $row->ng;
-					$sum_contract_yosan     += $contract_yosan;
 
 					// 表示用に配列を整形する
 					$sum[$channel][] = array(
@@ -223,13 +232,13 @@ class Addup_Daily extends CI_Controller_With_Auth {
 	}
 
 	// 対象データ無しの空集計配列を返す
-	private function _get_sum_empty($date, $time_zone)
+	private function _get_sum_empty($date, $time_zone, $contract_yosan)
 	{
 		return array(
 			'date'               => $date,
 			'time_zone'          => $time_zone,
 			'introduction_total' => 0,
-			'contract_total'     => '0 / 0',
+			'contract_total'     => '0 / '.$contract_yosan,
 			'contract_flets'     => 0,
 			'isp'                => 0,
 			'virus'              => 0,
