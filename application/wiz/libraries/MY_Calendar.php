@@ -118,7 +118,6 @@ class MY_Calendar extends CI_Calendar {
 		{
 			$headings[] = '<a href="'.base_url($month_segment).'">'.$this->get_month_name($month).'</a>';
 		}
-		*/
 
 		$day_segment = "${path_base}/{$cur_year}/{$cur_month}/{$cur_day}";
 		if ($day_segment === uri_string())
@@ -129,7 +128,8 @@ class MY_Calendar extends CI_Calendar {
 		{
 			$headings[] = '<a href="'.base_url($day_segment).'">Today</a>';
 		}
-		$heading = implode('&nbsp&nbsp&nbsp', $headings);
+		*/
+		$heading = implode('&nbsp;&nbsp;&nbsp;', $headings);
 
 		$this->temp['heading_title_cell'] = str_replace('{colspan}', $colspan, $this->temp['heading_title_cell']);
 		$this->temp['heading_title_cell'] = str_replace('{heading}', $heading, $this->temp['heading_title_cell']);

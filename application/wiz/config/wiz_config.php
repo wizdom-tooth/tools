@@ -176,6 +176,43 @@ $config['tbl_yosan_sqls_with_channel'] = $tbl_yosan_sqls_with_channel;
 
 /*
 |--------------------------------------------------------------------------
+| 種別配列 
+|--------------------------------------------------------------------------
+*/
+
+$config['addup_kinds'] = array(
+	'total',
+	'complete',
+	'flets',
+	'other',
+	'isp_total',
+	'isp_biglobe',
+	'isp_ocn',
+	'isp_yahoo',
+	'iten',
+	'iten_with_isp',
+	'only_isp',
+	'hikari_tel_total',
+	'hikari_tel_plan_base',
+	'hikari_tel_plan_anshin',
+	'hikari_tel_plan_anshin_more',
+	'hikari_tel_plan_a',
+	'option_virus',
+	'option_remote',
+	'option_hikari_tv_pa',
+	'option_hikari_tv',
+	'option_hikari_portable',
+	'e_hikari_fiber_kddi',
+	'e_hikari_fiber_ucom',
+	'mobile_adsl_emobile',
+	'mobile_adsl_eaccess',
+	'mobile_adsl_yahoobb',
+	'catv_itiscom',
+	'catv_jcnyokohama',
+);
+
+/*
+|--------------------------------------------------------------------------
 | 時間帯配列 
 |--------------------------------------------------------------------------
 */

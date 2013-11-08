@@ -127,7 +127,7 @@ function initializer(){
 	$('#calendar td a').each(function(i){
 		if ($(this).text() == "<?php echo (int)$day;?>") {
 			$(this).parent('td').addClass('cal_highlight_cell');
-			$(this).replaceWith('<span class="cal_highlight_text">' + $(this).text() + "</span>")
+			$(this).replaceWith('<span class="cal_highlight_text">' + $(this).text() + '<\/span>')
 		}
 	});
 	// 集計結果が0のセルをグレイアウト
@@ -298,7 +298,27 @@ if ($day !== '')   echo ' / ' . $day;
 <!--calendar area-->
 <div class="box_solid" id="calendar">
 <div class="space_20"></div>
-<?php echo $calendar;?>
+<div style="padding:2px; float:left;">
+<?php if ($prev_month_link !== ''):?>
+<a href="<?php echo $prev_month_link;?>"><img src="/assets/wiz/img/prev_button.gif"></a>
+<?php else:?>
+<img src="/assets/wiz/img/prev_button_off.gif">
+<?php endif;?>
+</div>
+<div style="padding:2px; float:right;">
+<?php if ($next_month_link !== ''):?>
+<a href="<?php echo $next_month_link;?>"><img src="/assets/wiz/img/next_button.gif"></a>
+<?php else:?>
+<img src="/assets/wiz/img/next_button_off.gif">
+<?php endif;?>
+</div>
+<table style="width:100%; height:100%;">
+<tr style="background-color:#1C1C1C; color:#FFFFFF; text-align:center;">
+<td style="width:20px; height:20px;">金</td><td style="width:20px; height:20px;">土</td><td style="width:20px; height:20px;">日</td><td style="width:20px; height:20px;">月</td><td style="width:20px; height:20px;">火</td><td style="width:20px; height:20px;">水</td><td style="width:20px; height:20px;">木</td>
+</tr>
+</table>
+<?php echo $calendar_1;?>
+<?php echo $calendar_2;?>
 </div>
 
 <div class="clear"></div>

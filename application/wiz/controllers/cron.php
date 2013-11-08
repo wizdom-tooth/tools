@@ -16,6 +16,8 @@ class Cron extends CI_Controller {
 	const MAIL_ADDUP_ERROR_FAIL_BACKUP = 'MAIL_ADDUP_ERROR_FAIL_BACKUP';
 	const MAIL_ADDUP_ERROR_FAIL_IMPORT = 'MAIL_ADDUP_ERORR_FAIL_IMPORT';
 
+	private $_db_wizp = NULL;
+
     public function __construct()
     {
         parent::__construct();
@@ -62,10 +64,136 @@ class Cron extends CI_Controller {
 		$this->email->send_wiz_admin($subject, $message);
 	}
 
+	// 月次マスタ作成
+	public function create_wiz_month_mst()
+	{
+		//if ($this->input->is_cli_request() !== TRUE) show_error('system error.');
+		$this->_db_wizp = $this->load->database('wizp', TRUE);
+		for ($year = 2010; $year <= 2040; $year++)
+		{
+			for ($month = 1; $month <= 12; $month++)
+			{
+				$m = sprintf('%02d', $month);
+				$this_month_timestamp = mktime(0, 0, 0, $month, 1, $year);
+				$next_ym = date('Ym', strtotime('+1 month', $this_month_timestamp));
+				$wiz_month_id = $next_ym;
+				$from_date = $year.$m.'21';
+				$to_date = $next_ym.'20';
+
+				// DBに書き出す
+				$sql = ''.
+					'REPLACE INTO '.
+						'wiz_month_mst '.
+					'VALUES '.
+						'('.
+							"{$wiz_month_id},".
+							"{$from_date},".
+							"{$to_date}".
+						')';
+				$query = $this->_db_wizp->query($sql);
+				// ****************
+				// エラー処理
+				// ****************
+			}
+		}
+		echo 'all green';
+	}
+
+	// 週マスタ作成
+	public function create_wiz_week_mst()
+	{
+		//if ($this->input->is_cli_request() !== TRUE) show_error('system error.');
+		$this->_db_wizp = $this->load->database('wizp', TRUE);
+		for ($year = 2010; $year <= 2040; $year++)
+		{
+			for ($month = 1; $month <= 12; $month++)
+			{
+				$m = sprintf('%02d', $month);
+				$this_month_timestamp = mktime(0, 0, 0, $month, 1, $year);
+				$this_month_lastday = date('t', $this_month_timestamp);
+
+				for ($day = 1; $day <= $this_month_lastday; $day++)
+				{
+					$this_day_timestamp = mktime(0, 0, 0, $month, $day, $year);
+					if ($day === 21)
+					{
+						switch (date('D', $this_day_timestamp))
+						{
+							case 'Mon':
+								$offset = 3;
+								break;
+							case 'Tue':
+								$offset = 2;
+								break;
+							case 'Wed':
+								$offset = 1;
+								break;
+							case 'Thu':
+								$offset = 0;
+								break;
+							case 'Fri':
+								$offset = 6;
+								break;
+							case 'Sat':
+								$offset = 5;
+								break;
+							case 'Sun':
+								$offset = 4;
+								break;
+						}
+						$week_number = 1;
+						$wiz_month = date('Ym', strtotime('+1 month', $this_month_timestamp));
+						$wiz_week_id = $wiz_month.'_'.$week_number;
+						$from_date = $year.$m.'21';
+						$to_date = date('Ymd', strtotime("+{$offset} day", $this_day_timestamp));
+						$week_number++;
+					}
+					else
+					{
+						if ( ! isset($week_number)) continue;
+						$this_day_weekday = date('D', $this_day_timestamp);
+						if ($this_day_weekday !== 'Fri') continue;
+
+						$d = sprintf('%02d', $day);
+						$wiz_week_id = $wiz_month.'_'.$week_number;
+						$from_date = $year.$m.$d;
+						$to_day = (int)date('j', strtotime('+6 day', $this_day_timestamp));
+						if ($to_day > 20)
+						{
+							$to_date = $year.$m.'20';
+						}
+						else
+						{
+							$to_date = date('Ymd', strtotime('+6 day', $this_day_timestamp));
+						}
+						$week_number++;
+					}
+
+					// DBに書き出す
+					$sql = ''.
+						'REPLACE INTO '.
+							'wiz_week_mst '.
+						'VALUES '.
+							'('.
+								"'{$wiz_week_id}',".
+								"'{$from_date}',".
+								"'{$to_date}'".
+							')';
+					$query = $this->_db_wizp->query($sql);
+					// ****************
+					// エラー処理
+					// ****************
+				}
+			}
+		}
+		echo 'all green';
+	}
+
 	// 集計用データをDBに取り込む
 	public function feed_addup_data()
 	{
-		if ($this->input->is_cli_request() !== TRUE) show_error('system error.');
+		//if ($this->input->is_cli_request() !== TRUE) show_error('system error.');
+		$this->_db_wizp = $this->load->database('wizp', TRUE);
 
 		// --------------------------------------
 		// ロック処理
@@ -113,6 +241,9 @@ class Cron extends CI_Controller {
 		$success_count = 1;
 		$skip_message = array();
 
+		$i_or_cs = array('introduction', 'contract');
+		$date_kinds = array('month', 'week');
+
 		while (($line = fgets($fpr)) !== FALSE)
 		{
 			$line = mb_convert_encoding($line, 'UTF-8', 'SJIS'); // UTF8に変換
@@ -126,8 +257,12 @@ class Cron extends CI_Controller {
 			{
 				$fields[$j] = preg_replace('/\s+/', '', $field); // ホワイトスペースのストリップ
 			}
-			$fields[1] = date('Ymd', strtotime($fields[1])); // 日付フ>ォーマット変更
-			$fields[18] = date('Ymd', strtotime($fields[18])); // 日付フ>ォーマット変更
+			$introduction_date = $fields[1] = date('Ymd', strtotime($fields[1])); // 紹介日 日付フォーマット変更
+			$contract_date = $fields[18] = date('Ymd', strtotime($fields[18])); // 契約日 日付フォーマット変更
+			if ($contract_date === '19700101')
+			{
+				$contract_date = $fields[18] = '';
+			}
 
 			// 不正なデータをスキップ
 			$is_invlid_emptyid = FALSE;
@@ -156,17 +291,51 @@ class Cron extends CI_Controller {
 				$skip_message[] = $message;
 			}
 
-			$i++;
 			if ($is_invlid_emptyid || $is_invlid_date || $is_invlid_timezone)
 			{
 				continue;
 			}
-			else
+
+			// 紹介日と契約日の月ID及び週IDを取り出す
+			foreach ($i_or_cs as $i_or_c)
 			{
-				$line = implode("\t", $fields)."\n";
-				fputs($fpw, $line);
-				$success_count++;
+				foreach ($date_kinds as $date_kind)
+				{
+					$target_date_var = "{$i_or_c}_date";
+					$target_date = $$target_date_var;
+					$select_field_name = "wiz_{$date_kind}_id";
+					$table_name = "wiz_{$date_kind}_mst";
+					$pickup_var = $i_or_c.'_'.$select_field_name;
+
+					if ($target_date !== '')
+					{
+						$sql = "SELECT $select_field_name FROM $table_name WHERE from_date <= '$target_date' AND to_date >= '$target_date'";
+						$query = $this->_db_wizp->query($sql);
+						if ($query->num_rows() > 0)
+						{
+							$row = $query->row();
+							$$pickup_var = $row->$select_field_name;
+						}
+						else
+						{
+							$$pickup_var = '';
+						}
+					}
+					else
+					{
+						$$pickup_var = '';
+					}
+				}
 			}
+			$fields[] = $introduction_wiz_month_id;
+			$fields[] = $introduction_wiz_week_id;
+			$fields[] = $contract_wiz_month_id;
+			$fields[] = $contract_wiz_week_id;
+
+			$line = implode("\t", $fields)."\n";
+			fputs($fpw, $line);
+			$success_count++;
+			$i++;
 		}
 		fclose($fpr);
 		fclose($fpw);

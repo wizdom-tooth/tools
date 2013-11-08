@@ -2,6 +2,9 @@
 
 class Addup_Monthly extends CI_Controller_With_Auth {
 
+	private $_addup_kinds = array();
+
+/*
 	private $_kinds = array(
 		'total',
 		'complete',
@@ -32,6 +35,7 @@ class Addup_Monthly extends CI_Controller_With_Auth {
 		'catv_itiscom',
 		'catv_jcnyokohama',
 	);
+*/
 
 	private $_select_fields = array(
 		'month',
@@ -66,9 +70,10 @@ class Addup_Monthly extends CI_Controller_With_Auth {
 		parent::__construct();
 		$this->ag_auth->restrict('manager');
 		$this->config->load('wiz_form');
-		//$this->load->library('form_validation');
+		$this->config->load('wiz_config');
 		$this->load->helper('form');
 		$this->_db_wizp = $this->load->database('wizp', TRUE);
+		$this->_addup_kinds = $this->config->item('addup_kinds');
 	}
 
 	public function index()
@@ -125,7 +130,7 @@ class Addup_Monthly extends CI_Controller_With_Auth {
 
 		// 種別毎の集計情報を取得
 		$sum = array();
-		foreach ($this->_kinds as $kind)
+		foreach ($this->_addup_kinds as $kind)
 		{
 			/*
 			$total = array(

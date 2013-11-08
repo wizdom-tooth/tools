@@ -22,6 +22,8 @@ class Addup_Daily extends CI_Controller_With_Auth {
 
 	public function index($y = '', $m = '', $d = '')
 	{
+		$today = date('Ymd');
+
 		// 取得対象日付作成
 		if ($y === '' || $m === '' || $d === '')
 		{
@@ -31,19 +33,76 @@ class Addup_Daily extends CI_Controller_With_Auth {
 		}
 		$date = "{$y}-{$m}-{$d}";
 
+		// -------------------
 		// カレンダー作成
-		$target_ym_is_current_ym = ("$y$m" === date('Ym')) ? TRUE : FALSE;
-		$last_day_of_the_month = date('t', strtotime($date));
-		$today = date('j');
+		// -------------------
 
+		$sql = ''.
+			'SELECT '.
+				'DATE_FORMAT(from_date, "%Y%m%d") as from_date, '.
+				'DATE_FORMAT(from_date, "%Y%m") as from_ym, '.
+				'DATE_FORMAT(from_date, "%Y") as from_year, '.
+				'DATE_FORMAT(from_date, "%c") as from_month, '.
+				'DATE_FORMAT(from_date, "%e") as from_day, '.
+				'DATE_FORMAT(to_date, "%Y%m%d") as to_date, '.
+				'DATE_FORMAT(to_date, "%Y%m") as to_ym, '.
+				'DATE_FORMAT(to_date, "%Y") as to_year, '.
+				'DATE_FORMAT(to_date, "%c") as to_month, '.
+				'DATE_FORMAT(to_date, "%e") as to_day '.
+			'FROM '.
+				'wiz_month_mst '.
+			'WHERE '.
+				"from_date <= '{$date}' AND ".
+				"to_date >= '{$date}'";
+		$query = $this->_db_wizp->query($sql);
+		$row = $query->row();
+
+		// カレンダー1
 		$cal_data = array();
-		for ($i = 1; $i <= $last_day_of_the_month; $i++)
+		$last_day_of_the_month = date('t', strtotime($row->from_date));
+		for ($i = 21; $i <= $last_day_of_the_month; $i++)
 		{
-			if ($i > $today && $target_ym_is_current_ym) break;
-			$url = self::BASEURL.'/'.$y.'/'.$m.'/'.sprintf('%02d', $i).'/';
+			$target_d = sprintf('%02d', $i); 
+			$target_date = $row->from_ym.$target_d;
+			if ($target_date > $today) break;
+			$url = self::BASEURL.'/'.$row->from_year.'/'.$row->from_month.'/'.$target_d.'/';
 			$cal_data[$i] = base_url($url);
 		}
-		$calendar = $this->calendar->generate($y, $m, $cal_data);
+		$calendar_1 = $this->calendar->generate($row->from_year, $row->from_month, $cal_data);
+
+		// カレンダー2
+		$cal_data = array();
+		for ($i = 1; $i <= 20; $i++)
+		{
+			$target_d = sprintf('%02d', $i); 
+			$target_date = $row->to_ym.$target_d;
+			if ($target_date > $today) break;
+			$url = self::BASEURL.'/'.$row->to_year.'/'.$row->to_month.'/'.$target_d.'/';
+			$cal_data[$i] = base_url($url);
+		}
+		$calendar_2 = $this->calendar->generate($row->to_year, $row->to_month, $cal_data);
+
+		// 前月、翌月リンクの作成
+		if ($y == '2013' && $m == '5')
+		{
+			$prev_month_link = '';
+		}
+		else
+		{
+			$from_date_timestamp = strtotime($row->from_date);
+			$prev_ym = date('Y/m', strtotime('-1 month', $from_date_timestamp));
+			$prev_month_link = '/'.self::BASEURL.'/'.$prev_ym.'/21/';
+		}
+
+		$current_month = date('Ym');
+		if ("$y$m" === $current_month)
+		{
+			$next_month_link = '';
+		}
+		else
+		{
+			$next_month_link = '/'.self::BASEURL.'/'.$row->to_year.'/'.$row->to_month.'/21/';
+		}
 
 		// 担当者別集計
 		$sql = "SELECT DISTINCT user_name FROM addup_user WHERE date = '{$date}'"; // 担当者一覧
@@ -220,13 +279,16 @@ class Addup_Daily extends CI_Controller_With_Auth {
 
 		// 出力
 		$data = array(
-			'year'     => $y,
-			'month'    => $m,
-			'day'      => $d,
-			'calendar' => $calendar,
-			'sum'      => $sum,
-			'users'    => $users,
-			'sum_user' => $sum_user,
+			'year'            => $y,
+			'month'           => $m,
+			'day'             => $d,
+			'calendar_1'      => $calendar_1,
+			'calendar_2'      => $calendar_2,
+			'prev_month_link' => $prev_month_link,
+			'next_month_link' => $next_month_link,
+			'sum'             => $sum,
+			'users'           => $users,
+			'sum_user'        => $sum_user,
 		);
 		$this->ag_auth->view('contents/addup_daily/index', $data);
 	}

@@ -1,0 +1,45 @@
+--
+-- Table structure for table `addup`
+--
+
+DROP TABLE IF EXISTS `addup`;
+CREATE TABLE `addup` (
+  `id` varchar(20) NOT NULL,
+  `date` date NOT NULL,
+  `time_zone` varchar(100) NOT NULL,
+  `store_id` varchar(100) NOT NULL,
+  `store_name` varchar(100) NOT NULL,
+  `channel` varchar(100) NOT NULL,
+  `area` varchar(100) NOT NULL,
+  `pref` varchar(100) NOT NULL,
+  `east_or_west` varchar(10) NOT NULL,
+  `status` varchar(100) NOT NULL,
+  `contract_time_zone` varchar(100),
+  `service` varchar(100),
+  `hikari` varchar(100) NOT NULL,
+  `isp` varchar(100) NOT NULL,
+  `hikari_tel` varchar(100) NOT NULL,
+  `virus` varchar(100) NOT NULL,
+  `remote` varchar(100) NOT NULL,
+  `router` varchar(100),
+  `contract_date` date,
+  `user_name` varchar(100),
+  `hikari_tv` varchar(100) NOT NULL,
+  `benefit` varchar(100),
+  `introduction_wiz_month_id` varchar(6) NOT NULL,
+  `introduction_wiz_week_id` varchar(8) NOT NULL,
+  `contract_wiz_month_id` varchar(6),
+  `contract_wiz_week_id` varchar(8),
+  PRIMARY KEY (`id`),
+  INDEX (`date`),
+  INDEX (`time_zone`),
+  INDEX (`channel`),
+  INDEX (`east_or_west`),
+  INDEX (`contract_time_zone`),
+  INDEX (`service`),
+  INDEX (`contract_date`),
+  INDEX (`introduction_wiz_month_id`),
+  INDEX (`introduction_wiz_week_id`),
+  INDEX (`contract_wiz_month_id`),
+  INDEX (`contract_wiz_week_id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
