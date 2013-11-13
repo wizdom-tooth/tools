@@ -39,6 +39,7 @@ class Addup_Daily extends CI_Controller_With_Auth {
 
 		$sql = ''.
 			'SELECT '.
+				'wiz_month_id, '.
 				'DATE_FORMAT(from_date, "%Y%m%d") as from_date, '.
 				'DATE_FORMAT(from_date, "%Y%m") as from_ym, '.
 				'DATE_FORMAT(from_date, "%Y") as from_year, '.
@@ -56,6 +57,7 @@ class Addup_Daily extends CI_Controller_With_Auth {
 				"to_date >= '{$date}'";
 		$query = $this->_db_wizp->query($sql);
 		$row = $query->row();
+		$wiz_month = (int)substr($row->wiz_month_id, 4, 2);
 
 		// カレンダー1
 		$cal_data = array();
@@ -289,6 +291,7 @@ class Addup_Daily extends CI_Controller_With_Auth {
 			'sum'             => $sum,
 			'users'           => $users,
 			'sum_user'        => $sum_user,
+			'wiz_month'       => $wiz_month,
 		);
 		$this->ag_auth->view('contents/addup_daily/index', $data);
 	}

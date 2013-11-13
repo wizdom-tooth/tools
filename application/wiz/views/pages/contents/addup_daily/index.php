@@ -304,6 +304,7 @@ if ($day !== '')   echo ' / ' . $day;
 <?php else:?>
 <img src="/assets/wiz/img/prev_button_off.gif">
 <?php endif;?>
+<span style="font-size:16px; font-weight:bold;"><?php echo $wiz_month;?>月度</span>
 </div>
 <div style="padding:2px; float:right;">
 <?php if ($next_month_link !== ''):?>

@@ -5,3 +5,4 @@ cache/
 *.new
 *.org
 *.tsv
+*.swp

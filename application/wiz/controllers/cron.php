@@ -18,6 +18,8 @@ class Cron extends CI_Controller {
 
 	private $_db_wizp = NULL;
 
+	private $_work_week_number = NULL;
+
     public function __construct()
     {
         parent::__construct();
@@ -64,6 +66,145 @@ class Cron extends CI_Controller {
 		$this->email->send_wiz_admin($subject, $message);
 	}
 
+	private function _get_wiz_month_info($real_year, $real_month)
+	{
+		$real_m = sprintf('%02d', $real_month);
+		$real_month_timestamp = mktime(0, 0, 0, $real_month, 1, $real_year);
+		$next_year  = date('Y', strtotime('+1 month', $real_month_timestamp));
+		$next_month = date('m', strtotime('+1 month', $real_month_timestamp));
+
+		$wiz_month_info = array(
+			'wiz_month_id'    => $next_year.$next_month,
+			'from_date'       => $real_year.$real_m.'21',
+			'to_date'         => $next_year.$next_month.'20',
+			'wiz_halfyear_id' => $this->_get_wiz_halfyear_id($next_year, $next_month),
+			'wiz_quarter_id'  => $this->_get_wiz_quarter_id($next_year, $next_month),
+		);
+		return $wiz_month_info;
+	}
+
+	private function _get_wiz_week_info($real_year, $real_month, $real_day)
+	{
+		$real_m = sprintf('%02d', $real_month);
+		$wiz_month_info = $this->_get_wiz_month_info($real_year, $real_month);
+		$real_day_timestamp = mktime(0, 0, 0, $real_month, $real_day, $real_year);
+		if ($real_day === 21)
+		{
+			$this->_work_week_number = 1;
+			switch (date('D', $real_day_timestamp))
+			{
+				case 'Mon':
+					$offset = 3;
+					break;
+				case 'Tue':
+					$offset = 2;
+					break;
+				case 'Wed':
+					$offset = 1;
+					break;
+				case 'Thu':
+					$offset = 0;
+					break;
+				case 'Fri':
+					$offset = 6;
+					break;
+				case 'Sat':
+					$offset = 5;
+					break;
+				case 'Sun':
+					$offset = 4;
+					break;
+			}
+			$wiz_week_id = $wiz_month_info['wiz_month_id'].'_'.$this->_work_week_number;
+			$from_date = $real_year.$real_m.'21';
+			$to_date = date('Ymd', strtotime("+{$offset} day", $real_day_timestamp));
+			$this->_work_week_number++;
+		}
+		else
+		{
+			if ($this->_work_week_number === NULL) return FALSE;
+			$real_day_weekday = date('D', $real_day_timestamp);
+			if ($real_day_weekday !== 'Fri') return FALSE;
+
+			$real_d = sprintf('%02d', $real_day);
+			$wiz_week_id = $wiz_month_info['wiz_month_id'].'_'.$this->_work_week_number;
+			$from_date = $real_year.$real_m.$real_d;
+			$to_day = (int)date('j', strtotime('+6 day', $real_day_timestamp));
+			if ($to_day > 20)
+			{
+				$to_date = $real_year.$real_m.'20';
+			}
+			else
+			{
+				$to_date = date('Ymd', strtotime('+6 day', $real_day_timestamp));
+			}
+			$this->_work_week_number++;
+		}
+
+		$wiz_week_info = array(
+			'wiz_week_id'     => $wiz_week_id,
+			'from_date'       => $from_date,
+			'to_date'         => $to_date,
+			'wiz_halfyear_id' => $wiz_month_info['wiz_halfyear_id'],
+			'wiz_quarter_id'  => $wiz_month_info['wiz_quarter_id'],
+			'wiz_month_id'    => $wiz_month_info['wiz_month_id'],
+		);
+
+		return $wiz_week_info;
+	}
+
+	private function _get_wiz_halfyear_id($year, $month)
+	{
+		switch ($month)
+		{
+			case '12':
+			case '01':
+			case '02':
+			case '03':
+			case '04':
+			case '05':
+				$wiz_halfyear_id = $year.'_1';
+				break;
+			case '06':
+			case '07':
+			case '08':
+			case '09':
+			case '10':
+			case '11':
+				$wiz_halfyear_id = $year.'_2';
+				break;
+		}
+		return $wiz_halfyear_id;
+	}
+
+	private function _get_wiz_quarter_id($year, $month)
+	{
+		switch ($month)
+		{
+			case '06':
+			case '07':
+			case '08':
+				$wiz_quarter_id = $year.'_1';
+				break;
+			case '09':
+			case '10':
+			case '11':
+				$wiz_quarter_id = $year.'_2';
+				break;
+			case '12':
+			case '01':
+			case '02':
+				$wiz_quarter_id = $year.'_3';
+				break;
+			case '03':
+			case '04':
+			case '05':
+				$wiz_quarter_id = $year.'_4';
+				break;
+		}
+		return $wiz_quarter_id;
+	}
+
 	// 月次マスタ作成
 	public function create_wiz_month_mst()
 	{
@@ -73,22 +214,17 @@ class Cron extends CI_Controller {
 		{
 			for ($month = 1; $month <= 12; $month++)
 			{
-				$m = sprintf('%02d', $month);
-				$this_month_timestamp = mktime(0, 0, 0, $month, 1, $year);
-				$next_ym = date('Ym', strtotime('+1 month', $this_month_timestamp));
-				$wiz_month_id = $next_ym;
-				$from_date = $year.$m.'21';
-				$to_date = $next_ym.'20';
-
-				// DBに書き出す
+				$wiz_month_info = $this->_get_wiz_month_info($year, $month);
 				$sql = ''.
 					'REPLACE INTO '.
 						'wiz_month_mst '.
 					'VALUES '.
 						'('.
-							"{$wiz_month_id},".
-							"{$from_date},".
-							"{$to_date}".
+							"'{$wiz_month_info['wiz_month_id']}',".
+							"'{$wiz_month_info['wiz_halfyear_id']}',".
+							"'{$wiz_month_info['wiz_quarter_id']}',".
+							"'{$wiz_month_info['from_date']}',".
+							"'{$wiz_month_info['to_date']}'".
 						')';
 				$query = $this->_db_wizp->query($sql);
 				// ****************
@@ -114,6 +250,9 @@ class Cron extends CI_Controller {
 
 				for ($day = 1; $day <= $this_month_lastday; $day++)
 				{
+					$wiz_week_info = $this->_get_wiz_week_info($year, $month, $day);
+					if ($wiz_week_info === FALSE) continue;
+					/*
 					$this_day_timestamp = mktime(0, 0, 0, $month, $day, $year);
 					if ($day === 21)
 					{
@@ -168,6 +307,7 @@ class Cron extends CI_Controller {
 						}
 						$week_number++;
 					}
+					*/
 
 					// DBに書き出す
 					$sql = ''.
@@ -175,9 +315,12 @@ class Cron extends CI_Controller {
 							'wiz_week_mst '.
 						'VALUES '.
 							'('.
-								"'{$wiz_week_id}',".
-								"'{$from_date}',".
-								"'{$to_date}'".
+								"'{$wiz_week_info['wiz_week_id']}',".
+								"'{$wiz_week_info['wiz_halfyear_id']}',".
+								"'{$wiz_week_info['wiz_quarter_id']}',".
+								"'{$wiz_week_info['wiz_month_id']}',".
+								"'{$wiz_week_info['from_date']}',".
+								"'{$wiz_week_info['to_date']}'".
 							')';
 					$query = $this->_db_wizp->query($sql);
 					// ****************
