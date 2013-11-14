@@ -10,6 +10,7 @@ class Yosan_Halfyear extends CI_Controller_With_Auth {
 		$this->ag_auth->restrict('manager');
 		$this->load->helper('wiz');
 		$this->_db = $this->load->database('wizp', TRUE);
+		$this->config->load('wiz_config');
 		/*
 		$this->config->load('wiz_form');
         $this->config->load('input_yosan_calendar');
@@ -24,7 +25,7 @@ class Yosan_Halfyear extends CI_Controller_With_Auth {
         // 対象半期整理
 		if ($this->input->get_post('halfyear') === FALSE)
 		{
-			$halfyear = get_wiz_halfyear_id($this);
+			$halfyear = get_wiz_halfyear_id();
 		}
 		else
 		{
@@ -40,27 +41,41 @@ class Yosan_Halfyear extends CI_Controller_With_Auth {
 		// 半期分の予算情報を取り出す
 		// --------------------
 
+		$channel_configs = $this->config->item('channel_configs');
+		$channels_include = $channel_configs[$channel]['channel_list'];
+
 		// 対象半期に内包される月情報を取り出す
 		$target_monthes = array();
 		$sql = ''.
 			'SELECT '.
-				'DISTINCT wiz_month_id '.
+				'wiz_quarter_id, '.
+				'wiz_month_id '.
 			'FROM '.
 				'wiz_month_mst '.
 			'WHERE '.
-				"wiz_halfyear_id = '{$halfyear}'";
+				"wiz_halfyear_id = '{$halfyear}'".
+			'ORDER BY '.
+				'wiz_month_id';
 		$query = $this->_db->query($sql);
 		if ($query->num_rows() > 0)
 		{
-		   foreach ($query->result() as $row)
-		   {
-			  $target_monthes[] = $row->wiz_month_id;
-		   }
+			foreach ($query->result() as $row)
+			{
+				$quarter_info = get_wiz_quarter_info($row->wiz_quarter_id);
+				$target_monthes[$quarter_info['quarter_name']][] = $row->wiz_month_id;
+			}
 		}
 		else
 		{
 			// ********************************* エラー処理
 		} 
+
+var_dump($target_monthes);
+
+/*
+var_dump($halfyear);
+var_dump($target_monthes);
+*/
 
 /*
         // 条件指定SQL WHERE句作成
@@ -211,10 +226,10 @@ class Yosan_Halfyear extends CI_Controller_With_Auth {
 
 		$data = array(
 			'halfyear' => $halfyear,
+			'target_monthes' => $target_monthes,
 			//'month' => $month,
 			//'calendar' => $calendar,
 			'channel' => $channel,
-			'target_monthes' => $channel,
             //'form_year' => $this->config->item('form_year'),
             //'form_month' => $this->config->item('form_month'),
             //'form_channel' => $this->config->item('form_channel'),

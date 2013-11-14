@@ -87,7 +87,7 @@ pre {
 }
 #nav_bg{
 	background: #0B0B3B;
-	height: 40px;
+	height: 25px;
 }
 #foot_bg{
 	color: white;
@@ -100,28 +100,26 @@ pre {
 	line-height: 20px;
 }
 ul#navigation{
+	font-size:10px;
 	list-style-type: none;
 	margin: 0;
 }
 ul#navigation li a{
 	color: white;
-	font-size:15px;
 	float:left;
-	padding:10px 10px 10px 10px;
+	padding: 5px;
 }
 ul#navigation li a:hover{
 	color: #0B0B3B;
 	background:white;
-	font-size:15px;
 	float:left;
-	padding:10px 10px 10px 10px;
+	padding: 5px;
 }
 ul#navigation li a.selected{
 	color: #0B0B3B;
 	background: white;
-	font-size: 15px;
 	float:left;
-	padding:10px 10px 10px 10px;
+	padding: 5px;
 }
 #ad_bg{
 	background: #ADFF2F;

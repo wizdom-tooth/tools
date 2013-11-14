@@ -1,185 +1,457 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
 
-/*
-|--------------------------------------------------------------------------
-| チャンネル配列 
-|--------------------------------------------------------------------------
-*/
+// --------------------------------------------------------------------------
+// チャンネル配列 
+// --------------------------------------------------------------------------
 
-$channel_sqls = array(
+$channel_configs = array(
 	'able_and_realestate' => array(
-		'target_daily_addup' => TRUE,
-		'tbl_addup_sql'      => 'channel in ("エイブル", "エイブル西", "ハウパ", "ハウス・トゥ", "既存店", "ミニミニ西日本", "既存店(西)")',
-		'tbl_yosan_sql'      => 'channel in ("realestate_east", "realestate_west", "able_east", "able_west")',
+		'name'                  => 'エイブル＆不動産',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => TRUE,
+		'sql_option'            => '',
+		'channel_list' => array(
+			'エイブル',
+			'エイブル西',
+			'ハウパ',
+			'ハウス・トゥ',
+			'既存店',
+			'ミニミニ西日本',
+			'既存店(西)',
+		),
+	),
+	'realestate' => array(
+		'name'                  => '不動産(東西)',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => '',
+		'channel_list' => array(
+			'ハウパ',
+			'ハウス・トゥ',
+			'既存店',
+			'ミニミニ西日本',
+			'既存店(西)',
+		),
+	),
+	'realestate_east' => array(
+		'name'                  => '不動産(東)',
+		'is_target_yosan'       => TRUE,
+		'is_target_daily_addup' => TRUE,
+		'sql_option'            => 'east_or_west = "東"',
+		'channel_list' => array(
+			'ハウパ',
+			'ハウス・トゥ',
+			'既存店',
+		),
+	),
+	'realestate_west' => array(
+		'name'                  => '不動産(西)',
+		'is_target_yosan'       => TRUE,
+		'is_target_daily_addup' => TRUE,
+		'sql_option'            => 'east_or_west = "西"',
+		'channel_list' => array(
+            'ミニミニ西日本',
+            '既存店(西)',
+		),
+	),
+	'able' => array(
+		'name'                  => 'エイブル(東西)',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => '',
+		'channel_list' => array(
+			'エイブル',
+			'エイブル西',
+		),
 	),
 	'able_east' => array(
-		'target_daily_addup' => TRUE,
-        'tbl_addup_sql'      => 'channel = "エイブル"',
-        'tbl_yosan_sql'      => 'channel = "able_east"',
-    ),
+		'name'                  => 'エイブル(東)',
+		'is_target_yosan'       => TRUE,
+		'is_target_daily_addup' => TRUE,
+		'sql_option'            => 'east_or_west = "東"',
+		'channel_list' => array(
+			'エイブル',
+		),
+	),
 	'able_west' => array(
-		'target_daily_addup' => TRUE,
-        'tbl_addup_sql'      => 'channel = "エイブル西"',
-        'tbl_yosan_sql'      => 'channel = "able_west"',
-    ),
-	'realestate' => array(
-		'target_daily_addup' => FALSE,
-        'tbl_addup_sql'      => 'channel in ("ハウパ", "ハウス・トゥ", "既存店", "ミニミニ西日本", "既存店(西)")',
-        'tbl_yosan_sql'      => 'channel in ("realestate_east", "realestate_west")',
-    ),
-	'realestate_east' => array(
-		'target_daily_addup' => TRUE,
-        'tbl_addup_sql'      => 'channel in ("ハウパ", "ハウス・トゥ", "既存店")',
-        'tbl_yosan_sql'      => 'channel = "realestate_east"',
-    ),
-	'realestate_west' => array(
-		'target_daily_addup' => TRUE,
-        'tbl_addup_sql'      => 'channel in ("ミニミニ西日本", "既存店(西)")',
-        'tbl_yosan_sql'      => 'channel = "realestate_west"',
-    ),
+		'name'                  => 'エイブル(西)',
+		'is_target_yosan'       => TRUE,
+		'is_target_daily_addup' => TRUE,
+		'sql_option'            => 'east_or_west = "西"',
+		'channel_list' => array(
+			'エイブル西',
+		),
+	),
+	'ablehikkoshi' => array(
+		'name'                  => 'エイブル引越(東西)',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => '',
+		'channel_list' => array(
+			'エイブル引越',
+		),
+	),
 	'ablehikkoshi_east' => array(
-		'target_daily_addup' => TRUE,
-        'tbl_addup_sql'      => '',
-        'tbl_yosan_sql'      => '',
-    ),
+		'name'                  => 'エイブル引越(東)',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => TRUE,
+		'sql_option'            => 'east_or_west = "東"',
+		'channel_list' => array(
+			'エイブル引越',
+		),
+	),
 	'ablehikkoshi_west' => array(
-		'target_daily_addup' => TRUE,
-        'tbl_addup_sql'      => '',
-        'tbl_yosan_sql'      => '',
-    ),
+		'name'                  => 'エイブル引越(西)',
+		'east_or_west'          => '西',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => TRUE,
+		'sql_option'            => 'east_or_west = "西"',
+		'channel_list' => array(
+			'エイブル引越',
+		),
+	),
 	'aeras' => array(
-		'target_daily_addup' => TRUE,
-        'tbl_addup_sql'      => '',
-        'tbl_yosan_sql'      => '',
-    ),
+		'name'                  => 'アエラス',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => TRUE,
+		'sql_option'            => 'store_name like "アエラス%"',
+		'channel_list' => array(
+			'既存店',
+		),
+	),
 	'his' => array(
-		'target_daily_addup' => FALSE,
-        'tbl_addup_sql'      => 'channel = "HIS"',
-        'tbl_yosan_sql'      => '',
-    ),
+		'name'                  => 'HIS(東西)',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => TRUE,
+		'sql_option'            => 'store_name like "アエラス%"',
+		'channel_list' => array(
+			'HIS',
+		),
+	),
 	'his_east' => array(
-		'target_daily_addup' => TRUE,
-        'tbl_addup_sql'      => 'channel = "HIS" and east_or_west = "東"',
-        'tbl_yosan_sql'      => '',
-    ),
+		'name'                  => 'HIS(東)',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => TRUE,
+		'sql_option'            => 'east_or_west = "東"',
+		'channel_list' => array(
+			'HIS',
+		),
+	),
 	'his_west' => array(
-		'target_daily_addup' => TRUE,
-        'tbl_addup_sql'      => 'channel = "HIS" and east_or_west = "西"',
-        'tbl_yosan_sql'      => '',
-    ),
+		'name'                  => 'HIS(西)',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => TRUE,
+		'sql_option'            => 'east_or_west = "西"',
+		'channel_list' => array(
+			'HIS',
+		),
+	),
 	'house2house' => array(
-		'target_daily_addup' => TRUE,
-        'tbl_addup_sql'      => '',
-        'tbl_yosan_sql'      => '',
-    ),
+		'name'                  => 'ハウス・トゥ',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => TRUE,
+		'sql_option'            => '',
+		'channel_list' => array(
+			'ハウス・トゥ',
+		),
+	),
 	'housepartner' => array(
-		'target_daily_addup' => TRUE,
-        'tbl_addup_sql'      => '',
-        'tbl_yosan_sql'      => '',
-    ),
+		'name'                  => 'ハウパ',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => TRUE,
+		'sql_option'            => '',
+		'channel_list' => array(
+			'ハウパ',
+		),
+	),
 	'nissei' => array(
-		'target_daily_addup' => TRUE,
-        'tbl_addup_sql'      => 'channel = "日本生命"',
-        'tbl_yosan_sql'      => '',
-    ),
+		'name'                  => '日本生命(東西)',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => TRUE,
+		'sql_option'            => '',
+		'channel_list' => array(
+			'日本生命',
+		),
+	),
 	'nissei_east' => array(
-		'target_daily_addup' => FALSE,
-        'tbl_addup_sql'      => 'channel = "日本生命" and east_or_west = "東"',
-        'tbl_yosan_sql'      => '',
-    ),
+		'name'                  => '日本生命(東)',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'east_or_west = "東"',
+		'channel_list' => array(
+			'日本生命',
+		),
+	),
 	'nissei_west' => array(
-		'target_daily_addup' => FALSE,
-        'tbl_addup_sql'      => 'channel = "日本生命" and east_or_west = "西"',
-        'tbl_yosan_sql'      => '',
-    ),
+		'name'                  => '日本生命(西)',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'east_or_west = "西"',
+		'channel_list' => array(
+			'日本生命',
+		),
+	),
 	'ponta' => array(
-		'target_daily_addup' => FALSE,
-        'tbl_addup_sql'      => 'channel = "Ponta"',
-        'tbl_yosan_sql'      => '',
-    ),
+		'name'                  => 'ポンタ(東西)',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => '',
+		'channel_list' => array(
+			'Ponta',
+		),
+	),
 	'ponta_east' => array(
-		'target_daily_addup' => TRUE,
-        'tbl_addup_sql'      => 'channel = "Ponta" and east_or_west = "東"',
-        'tbl_yosan_sql'      => '',
-    ),
+		'name'                  => 'ポンタ(東)',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => TRUE,
+		'sql_option'            => 'east_or_west = "東"',
+		'channel_list' => array(
+			'Ponta',
+		),
+	),
 	'ponta_west' => array(
-		'target_daily_addup' => TRUE,
-        'tbl_addup_sql'      => 'channel = "Ponta" and east_or_west = "西"',
-        'tbl_yosan_sql'      => '',
-    ),
+		'name'                  => 'ポンタ(西)',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => TRUE,
+		'sql_option'            => 'east_or_west = "西"',
+		'channel_list' => array(
+			'Ponta',
+		),
+	),
 	'prime' => array(
-		'target_daily_addup' => TRUE,
-        'tbl_addup_sql'      => '',
-        'tbl_yosan_sql'      => '',
-    ),
+		'name'                  => 'プライム',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => TRUE,
+		'sql_option'            => 'store_name like "プライム%"',
+		'channel_list' => array(
+			'既存店',
+		),
+	),
 	'soleil' => array(
-		'target_daily_addup' => TRUE,
-        'tbl_addup_sql'      => '',
-        'tbl_yosan_sql'      => '',
-    ),
+		'name'                  => 'ソレイユ',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => TRUE,
+		'sql_option'            => 'store_name like "ソレイユ%"',
+		'channel_list' => array(
+			'既存店',
+		),
+	),
 	'univ' => array(
-		'target_daily_addup' => TRUE,
-        'tbl_addup_sql'      => 'channel in ("大学東", "大学西")',
-        'tbl_yosan_sql'      => '',
-    ),
+		'name'                  => '大学(東西)',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => TRUE,
+		'sql_option'            => '',
+		'channel_list' => array(
+			'大学東',
+			'大学西',
+		),
+	),
 	'univ_east' => array(
-		'target_daily_addup' => FALSE,
-        'tbl_addup_sql'      => 'channel = "大学東"',
-        'tbl_yosan_sql'      => '',
-    ),
+		'name'                  => '大学(東)',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'east_or_west = "東"',
+		'channel_list' => array(
+			'大学東',
+		),
+	),
 	'univ_west' => array(
-		'target_daily_addup' => FALSE,
-        'tbl_addup_sql'      => 'channel = "大学西"',
-        'tbl_yosan_sql'      => '',
-    ),
-	'isp' => array(
-		'target_daily_addup' => TRUE,
-        'tbl_addup_sql'      => '',
-        'tbl_yosan_sql'      => '',
-    ),
-	'iten' => array(
-		'target_daily_addup' => TRUE,
-        'tbl_addup_sql'      => '',
-        'tbl_yosan_sql'      => '',
-    ),
-	'fletsclub_iten' => array(
-		'target_daily_addup' => TRUE,
-        'tbl_addup_sql'      => '',
-        'tbl_yosan_sql'      => '',
-    ),
-	'ocn_upsell' => array(
-		'target_daily_addup' => TRUE,
-        'tbl_addup_sql'      => '',
-        'tbl_yosan_sql'      => '',
-    ),
-	'benefit' => array(
-		'target_daily_addup' => TRUE,
-        'tbl_addup_sql'      => '',
-        'tbl_yosan_sql'      => '',
-    ),
+		'name'                  => '大学(西)',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'east_or_west = "西"',
+		'channel_list' => array(
+			'大学西',
+		),
+	),
 );
 
-$daily_addup_channels = array();
-$tbl_addup_sqls_with_channel = array();
-$tbl_yosan_sqls_with_channel = array();
+// --------------------------------------------------------------------------
+// 種別配列 
+// --------------------------------------------------------------------------
 
-foreach ($channel_sqls as $channel => $info)
+$kind_configs = array(
+	'flets' => array(
+		'name'                  => 'フレッツ光',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'service = "フレッツ光"',
+	),
+	'without_flets' => array(
+		'name'                  => 'フレッツ光以外',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'service != "フレッツ光',
+	),
+	'isp_total' => array(
+		'name'                  => 'ISP - 合計',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'isp in ("OCN", "OCN(2年割)", "OCN(安心パック)", "YAHOO", "BIGLOBE")',
+	),
+	'isp_biglobe' => array(
+		'name'                  => 'ISP - BIGLOBE',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'isp = "BIGLOBE"',
+	),
+	'isp_ocn' => array(
+		'name'                  => 'ISP - OCN',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'isp in ("OCN", "OCN(2年割)", "OCN(安心パック)")',
+	),
+	'isp_yahoo' => array(
+		'name'                  => 'ISP - YAHOO',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'isp = "YAHOO"',
+	),
+	'iten' => array(
+		'name'                  => '移転',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'service like "%移転%"',
+	),
+	'iten_with_isp' => array(
+		'name'                  => '移転＆ISP',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'service like "%移転%" and isp in ("OCN", "OCN(2年割)", "OCN(安心パ>ック)", "YAHOO", "BIGLOBE")',
+	),
+	'only_isp' => array(
+		'name'                  => 'ISPのみ',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'service not like "%移転%" and isp in ("OCN", "OCN(2年割)", "OCN(安心パッ
+ク)", "YAHOO", "BIGLOBE")',
+	),
+	'hikari_tel_total' => array(
+		'name'                  => 'ひかり電話 - 合計',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'hikari_tel not in ("", "無", "無し", "未入力")',
+	),
+	'hikari_tel_plan_base' => array(
+		'name'                  => 'ひかり電話 - 基本プラン',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'hikari_tel like "%基本%"',
+	),
+	'hikari_tel_plan_anshin' => array(
+		'name'                  => 'ひかり電話 - 安心',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'hikari_tel like "%安心%"',
+	),
+	'hikari_tel_plan_anshin_more' => array(
+		'name'                  => 'ひかり電話 - もっと安心',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'hikari_tel like "%安心%"',
+	),
+	'hikari_tel_plan_a' => array(
+		'name'                  => 'ひかり電話 - エース',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'hikari_tel like "%エース%"',
+	),
+	'option_virus' => array(
+		'name'                  => 'オプション - ウィルス',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'virus not in ("", "未入力", "客意NG", "ウィルス無")',
+	),
+	'option_remote' => array(
+		'name'                  => 'オプション - リモート',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'remote not in ("", "未入力", "客意NG", "リモート無")',
+	),
+	'option_hikari_tv_pa' => array(
+		'name'                  => 'オプション - ひかりTVパ',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'hikari_tv not in ("", "未入力", "不可", "客意NG")',
+	),
+	'option_hikari_tv' => array(
+		'name'                  => 'オプション - ひかりTV',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'hikari_tv not in ("", "未入力", "不可", "客意NG")',
+	),
+	'option_hikari_portable' => array(
+		'name'                  => 'オプション - ひかりポータブル',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'router = "光ポータブル"',
+	),
+	'e_hikari_fiber_kddi' => array(
+		'name'                  => '光ファイバ - KDDI',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'service = "AUひかり"',
+	),
+	'e_hikari_fiber_ucom' => array(
+		'name'                  => '光ファイバ - UCOM',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'service = "UCOM"',
+	),
+	'mobile_adsl_emobile' => array(
+		'name'                  => 'モバイルADSL - EMOBILE',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'service = "イーモバイル"',
+	),
+	'mobile_adsl_eaccess' => array(
+		'name'                  => 'モバイルADSL - イーアクセス',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'service = "SO-NETイー・アクセス"',
+	),
+	'mobile_adsl_yahoobb' => array(
+		'name'                  => 'モバイルADSL - YAHOOBB',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'service = "YAHOOBB"',
+	),
+	'catv_itiscom' => array(
+		'name'                  => 'CATV - イッツコム',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'service = "イッツコミュニケーションズ"',
+	),
+	'catv_jcnyokohama' => array(
+		'name'                  => 'CATV - JCNよこはま',
+		'is_target_yosan'       => FALSE,
+		'is_target_daily_addup' => FALSE,
+		'sql_option'            => 'service = "イッツコミュニケーションズ"',
+	),
+);
+
+$channel_names_for_daily_addup = array();
+//$tbl_addup_sqls_with_channel = array();
+//$tbl_yosan_sqls_with_channel = array();
+
+foreach ($channel_configs as $channel_name => $config)
 {
-	if ($info['target_daily_addup']) $daily_addup_channels[] = $channel;
+	if ($config['is_target_daily_addup'] === TRUE)
+	{
+		$channel_names_for_daily_addup[] = $channel_name;
+	}
+	/*
 	$tbl_addup_sqls_with_channel[$channel] = $info['tbl_addup_sql'];
 	$tbl_yosan_sqls_with_channel[$channel] = $info['tbl_yosan_sql'];
+	*/
 }
 
-$config['daily_addup_channels']        = $daily_addup_channels;
-$config['tbl_addup_sqls_with_channel'] = $tbl_addup_sqls_with_channel;
-$config['tbl_yosan_sqls_with_channel'] = $tbl_yosan_sqls_with_channel;
+$config['channel_configs'] = $channel_configs;
+$config['channel_names_for_daily_addup'] = $channel_names_for_daily_addup;
+//$config['tbl_addup_sqls_with_channel'] = $tbl_addup_sqls_with_channel;
+//$config['tbl_yosan_sqls_with_channel'] = $tbl_yosan_sqls_with_channel;
 
 /*
-|--------------------------------------------------------------------------
-| 種別配列 
-|--------------------------------------------------------------------------
-*/
-
 $config['addup_kinds'] = array(
 	'total',
 	'complete',
@@ -210,12 +482,11 @@ $config['addup_kinds'] = array(
 	'catv_itiscom',
 	'catv_jcnyokohama',
 );
-
-/*
-|--------------------------------------------------------------------------
-| 時間帯配列 
-|--------------------------------------------------------------------------
 */
+
+// --------------------------------------------------------------------------
+// 時間帯配列 
+// --------------------------------------------------------------------------
 
 $config['time_zones'] = array(
 	'A(10-12)',
