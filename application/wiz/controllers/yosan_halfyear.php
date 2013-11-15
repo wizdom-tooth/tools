@@ -31,46 +31,38 @@ class Yosan_Halfyear extends CI_Controller_With_Auth {
 		{
 			$halfyear = $this->input->get_post('halfyear');
 		}
-		$_GET['halfyear'] = $_POST['halfyear'] = $halfyear;
 
         // 対象チャネル整理
-		$channel = ($this->input->get_post('channel') === FALSE) ? 'realestate_east' : $this->input->get_post('channel');
-		$_GET['channel'] = $_POST['channel'] = $channel;
+		$channel = $this->input->get_post('channel');
+		if ($channel === FALSE)
+		{
+			$channel = 'realestate_east';
+		}
+
+		$_GET['halfyear'] = $_POST['halfyear'] = $halfyear;
+		$_GET['channel']  = $_POST['channel']  = $channel;
 
 		// --------------------
 		// 半期分の予算情報を取り出す
 		// --------------------
 
+		$yosan_month_infos = array();
+		$m_infos = get_wiz_month_infos_from_wiz_halfyear_id($halfyear);
+		if ($m_infos === FALSE)
+		{
+			// do error handling ********
+		}
+		foreach ($m_infos as $m_info)
+		{
+			$q_info = get_wiz_quarter_info($m_info['wiz_quarter_id']);
+			$yosan_month_info = get_yosan_month_info($channel, $m_info['wiz_month_id']);
+			$yosan_month_infos[$q_info['quarter_name']][] = $yosan_month_info;
+		}
+
+		/*
 		$channel_configs = $this->config->item('channel_configs');
 		$channels_include = $channel_configs[$channel]['channel_list'];
-
-		// 対象半期に内包される月情報を取り出す
-		$target_monthes = array();
-		$sql = ''.
-			'SELECT '.
-				'wiz_quarter_id, '.
-				'wiz_month_id '.
-			'FROM '.
-				'wiz_month_mst '.
-			'WHERE '.
-				"wiz_halfyear_id = '{$halfyear}'".
-			'ORDER BY '.
-				'wiz_month_id';
-		$query = $this->_db->query($sql);
-		if ($query->num_rows() > 0)
-		{
-			foreach ($query->result() as $row)
-			{
-				$quarter_info = get_wiz_quarter_info($row->wiz_quarter_id);
-				$target_monthes[$quarter_info['quarter_name']][] = $row->wiz_month_id;
-			}
-		}
-		else
-		{
-			// ********************************* エラー処理
-		} 
-
-var_dump($target_monthes);
+		*/
 
 /*
 var_dump($halfyear);
@@ -226,7 +218,7 @@ var_dump($target_monthes);
 
 		$data = array(
 			'halfyear' => $halfyear,
-			'target_monthes' => $target_monthes,
+			'yosan_month_infos' => $yosan_month_infos,
 			//'month' => $month,
 			//'calendar' => $calendar,
 			'channel' => $channel,
