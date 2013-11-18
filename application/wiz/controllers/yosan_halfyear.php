@@ -9,6 +9,7 @@ class Yosan_Halfyear extends CI_Controller_With_Auth {
 		parent::__construct();
 		$this->ag_auth->restrict('manager');
 		$this->load->helper('wiz');
+		$this->load->helper('wiz_template');
 		$this->_db = $this->load->database('wizp', TRUE);
 		$this->config->load('wiz_config');
 		/*
@@ -219,6 +220,7 @@ var_dump($target_monthes);
 		$data = array(
 			'halfyear' => $halfyear,
 			'yosan_month_infos' => $yosan_month_infos,
+			'yosan_month_info_for_sum' => get_yosan_month_info($channel, 'empty'),
 			//'month' => $month,
 			//'calendar' => $calendar,
 			'channel' => $channel,

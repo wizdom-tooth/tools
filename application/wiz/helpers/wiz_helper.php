@@ -74,9 +74,8 @@ function get_wiz_quarter_info($wiz_quarter_id)
 /**
  * チャンネルと月IDから月次予算情報を取り出す
  */
-function get_yosan_month_info($channel, $wiz_month_id)
+function get_yosan_month_info($channel, $wiz_month_id = 'empty')
 {
-	$empty_serialize = serialize('');
 	$template_yosan_month_info = array(
 		'channel'                        => $channel,
 		'wiz_month_id'                   => $wiz_month_id,
@@ -94,6 +93,10 @@ function get_yosan_month_info($channel, $wiz_month_id)
 		'benefit_contract_ratio'         => 0.0,
 		'benefit_complete_ratio'         => 0.0,
 	);
+	if ($wiz_month_id === 'empty')
+	{
+		return $template_yosan_month_info;
+	}
 	$select_fields = array_keys($template_yosan_month_info);
 	$select_fields_str = implode(',', $select_fields);
 
