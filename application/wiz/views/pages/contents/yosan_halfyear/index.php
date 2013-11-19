@@ -1,5 +1,42 @@
 <script type="text/javascript">
 <!--
+jQuery.expr[':'].regex = function(elem, index, match) {
+    var matchParams = match[3].split(','),
+        validLabels = /^(data|css):/,
+        attr = {
+            method: matchParams[0].match(validLabels) ? 
+                        matchParams[0].split(':')[0] : 'attr',
+            property: matchParams.shift().replace(validLabels,'')
+        },
+        regexFlags = 'ig',
+        regex = new RegExp(matchParams.join('').replace(/^\s+|\s+$/g,''), regexFlags);
+    return regex.test(jQuery(elem)[attr.method](attr.property));
+}
+
+function sum() {
+	var sum = {};
+	$('div:regex(id, ^block[0-8]$) tr[class$="_unit"]').each(function(i){
+		var sum_id = $(this).attr('class').replace('unit', 'sum');
+		$(this).find('.sum_target').each(function(j){
+			if ( ! (sum_id in sum)) {
+				sum[sum_id] = 0;
+			}
+			val = parseInt($(this).val());
+			if ( ! isNaN(val)) {
+				sum[sum_id] += val;
+			} else {
+				val = parseInt($(this).text());
+				if ( ! isNaN(val)) {
+					sum[sum_id] += val;
+				}
+			}
+		});
+	});
+	for(var key in sum){
+		$('#' + key).text(sum[key]);
+	}
+}
+
 $(function() {
 	for (i = 0; i <= 7; i++){
 		$('#title' + i).bind('click', {x:i}, function(e) {
@@ -13,10 +50,15 @@ $(function() {
 	}
 	for (i = 0; i <= 1; i++){
 		$('#box_title' + i).bind('click', {x:i}, function(e) {
-			$('#box_block' + e.data.x).animate({height:'toggle'}, {duration:1200, easing:'swing'});
+			$('#box_block' + e.data.x).animate({height:'toggle'}, {duration:'slow', easing:'swing'});
 		});
 	}
+	sum();
+	$('input').change(function (){
+		sum();
+	});
 });
+
 // -->
 </script>
 
@@ -31,7 +73,10 @@ $(function() {
 	width: auto; 
 	text-align: center;
 }
-#box_title0, #box_title1 {
+/*タイトル*/
+#box_title0,
+#box_title1
+{
 	background-color: #FFBE00;
 	height: auto;
 	width: 100%;
@@ -39,15 +84,33 @@ $(function() {
 	font-weight: 900;
 	font-size: 20px;
 }
-#box_block0, #box_block1 {
-}
-#title0, #title1, #title2, #title3, #title4, #title5, #title6, #title7 {
+#title0,
+#title1,
+#title2,
+#title3,
+#title4,
+#title5,
+#title6,
+#title7
+{
 	background-image: -moz-linear-gradient(bottom, #FFFFFF 0%, #A65E00 100%);
 }
-#title_sum0, #title_sum1 {
+#title_sum0,
+#title_sum1
+{
 	background-image: -moz-linear-gradient(bottom, #FFFFFF 0%, #FF5F00 100%);
 }
-#title0, #title1, #title2, #title3, #title4, #title5, #title6, #title7, #title_sum0, #title_sum1 {
+#title0,
+#title1,
+#title2,
+#title3,
+#title4,
+#title5,
+#title6,
+#title7,
+#title_sum0,
+#title_sum1
+{
 	float: left;
 	height: 1000px;
 	width: 15px;
@@ -55,12 +118,41 @@ $(function() {
 	text-align: center;
 	margin: 1px;
 }
-#block0, #block1, #block2, #block3, #block4, #block5, #block6, #block7, #block_sum0, #block_sum1 {
+#title0:hover,
+#title1:hover,
+#title2:hover,
+#title3:hover,
+#title4:hover,
+#title5:hover,
+#title6:hover,
+#title7:hover,
+#title_sum0:hover,
+#title_sum1:hover,
+#box_title0:hover,
+#box_title1:hover
+{
+	background-image: -moz-linear-gradient(bottom, #FFFFFF 0%, #38E156 100%);
+	color: #000000;
+}
+
+/*ブロック*/
+#block0,
+#block1,
+#block2,
+#block3,
+#block4,
+#block5,
+#block6,
+#block7,
+#block_sum0,
+#block_sum1
+{
 	float: left;
 	background-color: #ffffcc;
 	width: 23%;
 }
 
+/*テーブル*/
 table.yosan_halfyear {
 	width: 100%;
 }
@@ -91,7 +183,7 @@ table.yosan_halfyear input[type="text"]:focus {
 <div class="space_5"></div>
 <!--
 <div class="space_5"></div>
-<div id="sum">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</div>
+<div id="sum">hoge</div>
 <div class="space_5"></div>
 -->
 
