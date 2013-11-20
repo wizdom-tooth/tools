@@ -503,8 +503,8 @@ $config['time_zones'] = array(
 
 // フレッツ＆ISP
 $config['yosan_flets_isps'] = array(
-	'OCN(2年割)',
-	'OCN(2年割無)',
+	'OCN_2年割',
+	'OCN_2年割無',
 	'BIGLOBE',
 );
 

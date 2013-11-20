@@ -1,16 +1,16 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-function get_html_yosan_halfyear_rows($yosan_serialize, $view_id, $kind_id, $label, $unit)
+function get_html_yosan_halfyear_rows($yosan_serialize, $view_id, $kind_id, $label, $unit, $is_sum)
 {
 	switch ($unit)
 	{
 		case 'ratio':
 			$unit_view = '%';
-			$sum_target = '';
+			$class = '';
 			break;
 		case 'count':
 			$unit_view = '件';
-			$sum_target = 'class="sum_target"';
+			$class = 'sum_target';
 			break;
 	}
 
@@ -20,31 +20,38 @@ function get_html_yosan_halfyear_rows($yosan_serialize, $view_id, $kind_id, $lab
 	{
 		$html .= '<tr class="unit_'.$kind_id.'_'.$view_id.'">'."\n";
 		$html .= '<td>'.$name.'</td>'."\n";
-		$html .= '<td><input type="text" '.$sum_target.' name="'.$name.'_'.$view_id.'" value="'.$val.'"/>'.$unit_view.'</td>'."\n";
+		if (preg_match('/^.*_sum$/', $view_id))
+		{
+			$class = 'sum_area';
+		}
+		$html .= '<td><input type="text" class="'.$class.'" name="'.$kind_id.'_'.$name.'_'.$view_id.'" value="'.$val.'"/>'.$unit_view.'</td>'."\n";
 		if ($unit === 'ratio')
 		{
-			$html .= '<td><span class="sum_target" id="'.$name.'_'.$view_id.'_cook">0</span></td>'."\n";
+			$html .= '<td><span class="sum_target" id="'.$kind_id.'_'.$name.'_'.$view_id.'_cooked">0</span> 件</td>'."\n";
 		}
 		elseif ($unit === 'count')
 		{
-			$html .= '<td>&nbsp</td>'."\n";
+			$html .= '<td>&nbsp;</td>'."\n";
 		}
 		$html .= '</tr>'."\n";
 	}
-	$html .= '<tr>'."\n";
-	if ($unit === 'ratio')
+	if ($is_sum === TRUE)
 	{
-		$html .= '<td>小計</td>'."\n";
-		$html .= '<td>&nbsp</td>'."\n";
-		$html .= '<td><span id="sum_'.$kind_id.'_'.$view_id.'">9999</span></td>'."\n";
+		$html .= '<tr>'."\n";
+		if ($unit === 'ratio')
+		{
+			$html .= '<td>小計</td>'."\n";
+			$html .= '<td>&nbsp;</td>'."\n";
+			$html .= '<td><span id="sum_'.$kind_id.'_'.$view_id.'">9999</span> 件</td>'."\n";
+		}
+		elseif ($unit === 'count')
+		{
+			$html .= '<td>小計</td>'."\n";
+			$html .= '<td><span id="sum_'.$kind_id.'_'.$view_id.'">9999</span> 件</td>'."\n";
+			$html .= '<td>&nbsp;</td>'."\n";
+		}
+		$html .= '</tr>'."\n";
 	}
-	elseif ($unit === 'count')
-	{
-		$html .= '<td>小計</td>'."\n";
-		$html .= '<td><span id="sum_'.$kind_id.'_'.$view_id.'">9999</span></td>'."\n";
-		$html .= '<td>&nbsp</td>'."\n";
-	}
-	$html .= '</tr>'."\n";
 	return $html;
 }
 
@@ -66,72 +73,82 @@ function get_html_yosan_halfyear_table($yosan_month_info, $view_id)
 	$html_flets_introduction_count = get_html_yosan_halfyear_rows(
 		$yosan_month_info['introduction_count_complex'],
 		$view_id,
-		'flets_introduction_count',
+		'introduction_count',
 		'照会予算',
-		'count'
+		'count',
+		TRUE
 	);
 	$html_flets_contract_ratio = get_html_yosan_halfyear_rows(
 		$flets_contract_ratio_complex,
 		$view_id,
 		'flets_contract_ratio',
 		'フレッツ契約率＆開通率',
-		'ratio'
+		'ratio',
+		FALSE
 	);
 	$html_flets_isp_set_ratio = get_html_yosan_halfyear_rows(
 		$yosan_month_info['flets_isp_set_ratio_complex'],
 		$view_id,
 		'flets_isp_set_ratio',
 		'ISPセット率',
-		'ratio'
+		'ratio',
+		TRUE
 	);
 	$html_flets_option_set_ratio = get_html_yosan_halfyear_rows(
 		$yosan_month_info['flets_option_set_ratio_complex'],
 		$view_id,
 		'flets_option_set_ratio',
 		'オプションセット率',
-		'ratio'
+		'ratio',
+		TRUE
 	);
 	$html_iten_contract_count = get_html_yosan_halfyear_rows(
 		$yosan_month_info['iten_contract_count_complex'],
 		$view_id,
 		'iten_contract_count',
 		'移転契約数',
-		'count'
+		'count',
+		TRUE
 	);
 	$html_iten_isp_set_ratio = get_html_yosan_halfyear_rows(
 		$yosan_month_info['iten_isp_set_ratio_complex'],
 		$view_id,
 		'iten_isp_set_ratio',
 		'移転セット率',
-		'ratio'
+		'ratio',
+		TRUE
 	);
 	$html_other_contract_ratio = get_html_yosan_halfyear_rows(
 		$yosan_month_info['other_contract_ratio_complex'],
 		$view_id,
 		'other_contract_ratio',
 		'その他回線契約率',
-		'ratio'
+		'ratio',
+		TRUE
 	);
 	$html_other_complete_ratio = get_html_yosan_halfyear_rows(
 		$yosan_month_info['other_complete_ratio_complex'],
 		$view_id,
 		'other_complete_ratio',
 		'その他回線開通率',
-		'ratio'
+		'ratio',
+		TRUE
 	);
 	$html_onlyisp_contract_ratio = get_html_yosan_halfyear_rows(
 		$onlyisp_contract_ratio_complex,
 		$view_id,
 		'onlyisp_contract_ratio',
 		'ISPのみ契約率＆開通率',
-		'ratio'
+		'ratio',
+		TRUE
 	);
 	$html_benefit_contract_ratio = get_html_yosan_halfyear_rows(
 		$benefit_contract_ratio_complex,
 		$view_id,
 		'benefit_contract_ratio',
 		'特典施策契約率＆開通率',
-		'ratio'
+		'ratio',
+		TRUE
 	);
 
 echo <<< EOF
