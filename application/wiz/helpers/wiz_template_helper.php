@@ -18,7 +18,7 @@ function get_html_yosan_halfyear_rows($yosan_serialize, $view_id, $kind_id, $lab
 	$html .= '<tr><td class="label_row" colspan="3">'.$label.'</td></tr>'."\n";
 	foreach (unserialize($yosan_serialize) as $name => $val)
 	{
-		$html .= '<tr class="'.$kind_id.'_'.$view_id.'_unit">'."\n";
+		$html .= '<tr class="unit_'.$kind_id.'_'.$view_id.'">'."\n";
 		$html .= '<td>'.$name.'</td>'."\n";
 		$html .= '<td><input type="text" '.$sum_target.' name="'.$name.'_'.$view_id.'" value="'.$val.'"/>'.$unit_view.'</td>'."\n";
 		if ($unit === 'ratio')
@@ -36,12 +36,12 @@ function get_html_yosan_halfyear_rows($yosan_serialize, $view_id, $kind_id, $lab
 	{
 		$html .= '<td>小計</td>'."\n";
 		$html .= '<td>&nbsp</td>'."\n";
-		$html .= '<td><span id="'.$kind_id.'_'.$view_id.'_sum">9999</span></td>'."\n";
+		$html .= '<td><span id="sum_'.$kind_id.'_'.$view_id.'">9999</span></td>'."\n";
 	}
 	elseif ($unit === 'count')
 	{
 		$html .= '<td>小計</td>'."\n";
-		$html .= '<td><span id="'.$kind_id.'_'.$view_id.'_sum">9999</span></td>'."\n";
+		$html .= '<td><span id="sum_'.$kind_id.'_'.$view_id.'">9999</span></td>'."\n";
 		$html .= '<td>&nbsp</td>'."\n";
 	}
 	$html .= '</tr>'."\n";

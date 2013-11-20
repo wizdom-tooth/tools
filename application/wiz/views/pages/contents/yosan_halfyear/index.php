@@ -1,5 +1,6 @@
 <script type="text/javascript">
 <!--
+/* {{{ */
 jQuery.expr[':'].regex = function(elem, index, match) {
     var matchParams = match[3].split(','),
         validLabels = /^(data|css):/,
@@ -12,10 +13,11 @@ jQuery.expr[':'].regex = function(elem, index, match) {
         regex = new RegExp(matchParams.join('').replace(/^\s+|\s+$/g,''), regexFlags);
     return regex.test(jQuery(elem)[attr.method](attr.property));
 }
+/* }}} */
 
-function sum() {
+function sum_introduction() {
 	var sum = {};
-	$('div:regex(id, ^block[0-8]$) tr[class$="_unit"]').each(function(i){
+	$('div:regex(id, ^block[0-8]$) tr[class^="unit_flets_introduction_count_"]').each(function(i){
 		var sum_id = $(this).attr('class').replace('unit', 'sum');
 		$(this).find('.sum_target').each(function(j){
 			if ( ! (sum_id in sum)) {
@@ -32,8 +34,9 @@ function sum() {
 			}
 		});
 	});
-	for(var key in sum){
+	for (var key in sum) {
 		$('#' + key).text(sum[key]);
+		$('#' + key).css('background-color', 'red'); // DEBUG
 	}
 }
 
@@ -53,9 +56,9 @@ $(function() {
 			$('#box_block' + e.data.x).animate({height:'toggle'}, {duration:'slow', easing:'swing'});
 		});
 	}
-	sum();
+	sum_introduction();
 	$('input').change(function (){
-		sum();
+		sum_introduction();
 	});
 });
 
