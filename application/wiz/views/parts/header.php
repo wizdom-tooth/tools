@@ -4,6 +4,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta http-equiv="content-script-type" content="text/javascript" />
 		<meta http-equiv="content-style-type" content="text/css" />
+		<link rel="stylesheet" href="/assets/wiz/css/reset.css" type="text/css" />
 		<link rel="stylesheet" href="/assets/wiz/css/global.css" type="text/css" />
 		<link rel="stylesheet" href="/assets/wiz/css/jquery-ui.css" type="text/css" />
 		<script type="text/javascript" src="https://www.google.com/jsapi"></script>

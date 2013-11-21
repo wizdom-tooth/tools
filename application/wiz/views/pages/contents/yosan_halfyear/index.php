@@ -141,6 +141,7 @@ function sum_introduction()
 
 $(function() {
 	$('.sum_area').each(function(i) {
+		//$(this).replaceWith('<div class="sum_area">aaaa</div>');
 		$(this).attr('disabled', 'disabled');
 	});
 	for (i = 0; i <= 7; i++){
@@ -169,35 +170,39 @@ $(function() {
 
 <style type="text/css">
 <!--
-#wrapper{
-	background-color: #ffffcc;
+td {
+	padding-top: 3px;
+	padding-left: 3px;
+	padding-bottom: 3px;
 }
-#sum {
-	background-color: silver;
-	height: 60px;
-	width: auto; 
-	text-align: center;
+#wrapper{
+	width: 1240px;
+}
+#box_block0, #box_block1 {
+	height: 1320px;
 }
 /*タイトル*/
 #box_title0, #box_title1
 {
-	background-color: #FFBE00;
+	background-color: #FF7400;
 	height: auto;
 	width: 100%;
 	text-align: center;
 	font-weight: 900;
 	font-size: 20px;
+	margin-top: 2px;
+	margin-bottom: 2px;
 }
 
 #title0, #title1, #title2,
 #title3, #title4, #title5
 {
-	background-image: -moz-linear-gradient(bottom, #FFFFFF 0%, #A65E00 100%);
+	background-image: -moz-linear-gradient(bottom, #FFFBC7 0%, #C8A580 100%);
 }
 
 #title0_sum, #title1_sum
 {
-	background-image: -moz-linear-gradient(bottom, #FFFFFF 0%, #FF5F00 100%);
+	background-image: -moz-linear-gradient(bottom, #FFF799 0%, #76421B 100%);
 }
 
 #title0, #title1, #title2,
@@ -205,19 +210,20 @@ $(function() {
 #title0_sum, #title1_sum
 {
 	float: left;
-	height: 1000px;
-	width: 15px;
+	width: 2%;
+	height: 100%;
 	color: #FFFFFF;
 	text-align: center;
-	margin: 1px;
 }
 #title0:hover, #title1:hover, #title2:hover,
-#title3:hover, #title4:hover, #title5:hover,
+#title3:hover, #title4:hover, #title5:hover
+{
+	background-image: -moz-linear-gradient(bottom, #FFFBC7 0%, #FF5640 100%);
+}
 #title0_sum:hover, #title1_sum:hover,
 #box_title0:hover, #box_title1:hover
 {
-	background-image: -moz-linear-gradient(bottom, #FFFFFF 0%, #38E156 100%);
-	color: #000000;
+	background-image: -moz-linear-gradient(bottom, #FFF799 0%, #FF5640 100%);
 }
 
 /*ブロック*/
@@ -226,10 +232,27 @@ $(function() {
 #block0_sum, #block1_sum
 {
 	float: left;
-	background-color: #ffffcc;
 	width: 23%;
+	height: 100%;
 }
-
+#block0, #block1, #block2,
+#block3, #block4, #block5
+{
+	background-color: #FFFBC7; /*薄イエロー*/
+}
+[id^="sum_"] {
+	font-size: 15px;
+	font-weight: bold;
+	color: green;
+}
+[id$="_cooked"] {
+	font-size: 12px;
+	color: purple;
+}
+#block0_sum, #block1_sum
+{
+	background-color: #FFF799; /*薄オレンジ*/
+}
 /*テーブル*/
 table.yosan_halfyear {
 	width: 100%;
@@ -246,6 +269,7 @@ table.yosan_halfyear input[type="text"] {
 	-moz-border-radius: 3px;
 	border-radius: 3px;
 	width: 35px;
+	height: 15px;
 }
 table.yosan_halfyear input[class="sum_target"]:focus,
 table.yosan_halfyear input[class=""]:focus
@@ -255,6 +279,11 @@ table.yosan_halfyear input[class=""]:focus
 .label_row {
 	background-color: gray;
 	color: #FFFFFF;
+}
+.sum_area {
+	background-color: #FEECD2;
+	color: red;
+	font-weight: bold;
 }
 -->
 </style>
@@ -295,10 +324,10 @@ table.yosan_halfyear input[class=""]:focus
 
 <div style="clear: both;"></div>
 </div>
-<div class="space_5"></div>
 <?php $box_counter++;?>
 <?php endforeach;?>
 
-
 </form>
 </div>
+
+<div class="space_5"></div>
