@@ -57,6 +57,30 @@ function get_wiz_month_infos_from_wiz_halfyear_id($wiz_halfyear_id)
 }
 
 /**
+ * wiz_halfyear_id から情報取得
+ */
+function get_wiz_halfyear_info($wiz_halfyear_id)
+{
+	list($year, $halfyear_kind) = explode('_', $wiz_halfyear_id);
+	switch ($halfyear_kind)
+	{
+		case '1':
+			$halfyear_name = '上半期';
+			break;
+		case '2':
+			$halfyear_name = '下半期';
+			break;
+	}
+	$halfyear_info = array(
+		'wiz_halfyear_id' => $wiz_halfyear_id,
+		'year'            => $year,
+		'halfyear_kind'   => $halfyear_kind,
+		'halfyear_name'   => $halfyear_name,
+	);
+	return $halfyear_info;
+}
+
+/**
  * wiz_quarter_id から情報取得
  */
 function get_wiz_quarter_info($wiz_quarter_id)

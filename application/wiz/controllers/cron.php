@@ -158,6 +158,8 @@ class Cron extends CI_Controller {
 		switch ($month)
 		{
 			case '12':
+				$wiz_halfyear_id = ($year + 1).'_1';
+				break;
 			case '01':
 			case '02':
 			case '03':
@@ -181,24 +183,25 @@ class Cron extends CI_Controller {
 	{
 		switch ($month)
 		{
-			case '06':
-			case '07':
-			case '08':
-				$wiz_quarter_id = $year.'_1';
-				break;
-			case '09':
-			case '10':
-			case '11':
-				$wiz_quarter_id = $year.'_2';
-				break;
 			case '12':
+				$wiz_quarter_id = ($year + 1).'_1';
 			case '01':
 			case '02':
-				$wiz_quarter_id = $year.'_3';
+				$wiz_quarter_id = $year.'_1';
 				break;
 			case '03':
 			case '04':
 			case '05':
+				$wiz_quarter_id = $year.'_2';
+				break;
+			case '06':
+			case '07':
+			case '08':
+				$wiz_quarter_id = $year.'_3';
+				break;
+			case '09':
+			case '10':
+			case '11':
 				$wiz_quarter_id = $year.'_4';
 				break;
 		}

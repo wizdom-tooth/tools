@@ -218,7 +218,7 @@ var_dump($target_monthes);
 		*/
 
 		$data = array(
-			'halfyear' => $halfyear,
+			'halfyear_info' => get_wiz_halfyear_info($halfyear),
 			'yosan_month_infos' => $yosan_month_infos,
 			'yosan_month_info_for_sum' => get_yosan_month_info($channel, 'empty'),
 			//'month' => $month,

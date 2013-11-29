@@ -42,12 +42,12 @@ function get_html_yosan_halfyear_rows($yosan_serialize, $view_id, $kind_id, $lab
 		{
 			$html .= '<td>小計</td>'."\n";
 			$html .= '<td>&nbsp;</td>'."\n";
-			$html .= '<td><span id="sum_'.$kind_id.'_'.$view_id.'">9999</span> 件</td>'."\n";
+			$html .= '<td><span id="sum_'.$kind_id.'_'.$view_id.'">0</span> 件</td>'."\n";
 		}
 		elseif ($unit === 'count')
 		{
 			$html .= '<td>小計</td>'."\n";
-			$html .= '<td><span id="sum_'.$kind_id.'_'.$view_id.'">9999</span> 件</td>'."\n";
+			$html .= '<td><span id="sum_'.$kind_id.'_'.$view_id.'">0</span> 件</td>'."\n";
 			$html .= '<td>&nbsp;</td>'."\n";
 		}
 		$html .= '</tr>'."\n";
@@ -140,7 +140,7 @@ function get_html_yosan_halfyear_table($yosan_month_info, $view_id)
 		'onlyisp_contract_ratio',
 		'ISPのみ契約率＆開通率',
 		'ratio',
-		TRUE
+		FALSE
 	);
 	$html_benefit_contract_ratio = get_html_yosan_halfyear_rows(
 		$benefit_contract_ratio_complex,
@@ -148,7 +148,7 @@ function get_html_yosan_halfyear_table($yosan_month_info, $view_id)
 		'benefit_contract_ratio',
 		'特典施策契約率＆開通率',
 		'ratio',
-		TRUE
+		FALSE
 	);
 
 echo <<< EOF

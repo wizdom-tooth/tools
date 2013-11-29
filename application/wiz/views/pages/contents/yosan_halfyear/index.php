@@ -15,10 +15,94 @@ jQuery.expr[':'].regex = function(elem, index, match) {
 }
 /* }}} */
 
-function sum_introduction()
+function sum_quarter()
+{
+	var quarter_blocks = {
+		0 : '0-2',
+		1 : '3-5'
+	}
+
+	/**
+	 * クオーター毎に集計
+	 */
+	for (var quarter_num in quarter_blocks) {
+		var target_block = quarter_blocks[quarter_num];
+
+		// 件数部分の集計
+		var quarter_sum = {};
+		$('input:regex(name, ^.*count.*_['+target_block+']$)').each(function(i){
+			var val = $(this).val();
+			var quarter_sum_name = $(this).attr('name').replace(/\d$/, quarter_num+'_sum');  ;
+			var haskey = (quarter_sum_name in quarter_sum);
+			if ( ! haskey) {
+				quarter_sum[quarter_sum_name] = [];
+			}
+			quarter_sum[quarter_sum_name].push(parseInt(val));
+		});
+		for (var quarter_sum_name in quarter_sum) {
+			var sum = 0;
+			for (var i = 0; i < quarter_sum[quarter_sum_name].length; i++) sum += quarter_sum[quarter_sum_name][i];
+			$('[name="'+quarter_sum_name+'"]').val(sum);
+		}
+
+		// 確率部分の平均
+		var quarter_avg = {};
+		$('input:regex(name, ^.*ratio.*_['+target_block+'].*$)').each(function(i){
+			var val = $(this).val();
+			var quarter_avg_name = $(this).attr('name').replace(/\d$/, quarter_num+'_sum');  ;
+			var haskey = (quarter_avg_name in quarter_avg);
+			if ( ! haskey) {
+				quarter_avg[quarter_avg_name] = [];
+			}
+			quarter_avg[quarter_avg_name].push(parseInt(val));
+		});	
+		for (var quarter_avg_name in quarter_avg) {
+			var sum = 0;
+			var length = quarter_avg[quarter_avg_name].length;
+			for (var i = 0; i < length; i++) sum += quarter_avg[quarter_avg_name][i];
+			var avg = Math.floor(sum / length);
+			$('[name="'+quarter_avg_name+'"]').val(avg);
+		}
+
+		// 加工件数の集計
+		var quarter_sum = {};
+		$('span:regex(id, ^.*count.*_['+target_block+'].*$)').each(function(i){
+			var val = $(this).text();
+			var quarter_sum_name = $(this).attr('id').replace(/\d/, quarter_num+'_sum');  ;
+			var haskey = (quarter_sum_name in quarter_sum);
+			if ( ! haskey) {
+				quarter_sum[quarter_sum_name] = [];
+			}
+			quarter_sum[quarter_sum_name].push(parseInt(val));
+		});
+		for (var quarter_sum_name in quarter_sum) {
+			var sum = 0;
+			for (var i = 0; i < quarter_sum[quarter_sum_name].length; i++) sum += quarter_sum[quarter_sum_name][i];
+			$('#'+quarter_sum_name+'').text(sum);
+		}
+
+		var quarter_sum = {};
+		$('span:regex(id, ^.*ratio.*_['+target_block+'].*$)').each(function(i){
+			var val = $(this).text();
+			var quarter_sum_name = $(this).attr('id').replace(/\d/, quarter_num+'_sum');  ;
+			var haskey = (quarter_sum_name in quarter_sum);
+			if ( ! haskey) {
+				quarter_sum[quarter_sum_name] = [];
+			}
+			quarter_sum[quarter_sum_name].push(parseInt(val));
+		});
+		for (var quarter_sum_name in quarter_sum) {
+			var sum = 0;
+			for (var i = 0; i < quarter_sum[quarter_sum_name].length; i++) sum += quarter_sum[quarter_sum_name][i];
+			$('#'+quarter_sum_name+'').text(sum);
+		}
+	} 
+}
+
+function sum_month()
 {
 	/**
-	 * ブロック毎に処理
+	 * 月ブロック毎に処理
 	 */
 	$('div:regex(id, ^block[0-8]$)').each(function(i)
 	{
@@ -51,23 +135,29 @@ function sum_introduction()
 		$('#' + flets_complete_count_id).text(flets_complete_count);
 
 		// ISPセット数
+		var sum = 0;
 		$(this).find('tr[class="unit_flets_isp_set_ratio_' + box_id + '"]').each(function(j) {
 			var input = $(this).find('input');
 			var flets_isp_set_count_id = input.attr('name') + '_cooked';
 			var flets_isp_set_count    = Math.round(flets_contract_count * parseInt(input.val()) / 100);
+			sum += flets_isp_set_count;
 			$('#' + flets_isp_set_count_id).text(flets_isp_set_count);
 		});
+		$('#sum_flets_isp_set_ratio_' + box_id).text(sum);
 
 		// オプションセット数
+		var sum = 0;
 		$(this).find('tr[class="unit_flets_option_set_ratio_' + box_id + '"]').each(function(j) {
 			var input = $(this).find('input');
 			var flets_option_set_count_id = input.attr('name') + '_cooked';
 			var flets_option_set_count    = Math.round(flets_contract_count * parseInt(input.val()) / 100);
+			sum += flets_option_set_count;
 			$('#' + flets_option_set_count_id).text(flets_option_set_count);
 		});
+		$('#sum_flets_option_set_ratio_' + box_id).text(sum);
 
 		// ----------------------------
-		// フレッツ移転セット数
+		// フレッツ移転契約数＆セット数
 		// ----------------------------
 
 		var sum_iten_contract_count_id = 'sum_iten_contract_count_' + box_id;
@@ -77,35 +167,45 @@ function sum_introduction()
 		});
 		$('#' + sum_iten_contract_count_id).text(sum_iten_contract_count);
 
+		var sum = 0;
 		$(this).find('tr[class="unit_iten_isp_set_ratio_' + box_id + '"]').each(function(j) {
 			var input = $(this).find('input');
 			var iten_isp_set_count_id = input.attr('name') + '_cooked';
 			var iten_isp_set_count    = Math.round(sum_iten_contract_count * parseInt(input.val()) / 100);
+			sum += iten_isp_set_count;
 			$('#' + iten_isp_set_count_id).text(iten_isp_set_count);
 		});
+		$('#sum_iten_isp_set_ratio_' + box_id).text(sum);
 
 		// ----------------------------
 		// 契約数(その他回線) = 照会予算件数 * その他回線契約比率
 		// ----------------------------
 
+		var sum = 0;
 		$(this).find('tr[class="unit_other_contract_ratio_' + box_id + '"]').each(function(j) {
 			var input = $(this).find('input');
 			var other_contract_count_id = input.attr('name') + '_cooked';
 			var other_contract_count    = Math.round(sum_introduction_count * parseInt(input.val()) / 100);
+			sum += other_contract_count;
 			$('#' + other_contract_count_id).text(other_contract_count);
 		});
+		$('#sum_other_contract_ratio_' + box_id).text(sum);
 
 		// ----------------------------
 		// 開通数(その他回線) = 契約数(その他回線) * その他回線開通比率
 		// ----------------------------
 
+		var sum = 0;
 		$(this).find('tr[class="unit_other_complete_ratio_' + box_id + '"]').each(function(j) {
 			var input = $(this).find('input');
 			var other_complete_count_id = input.attr('name') + '_cooked';
-			var other_contract_count    = parseInt($('#' + other_complete_count_id.replace('contract', 'complete')).text());
+			//var other_contract_count    = parseInt($('#' + other_complete_count_id.replace('contract', 'complete')).text());
+			var other_contract_count    = parseInt($('#' + other_complete_count_id.replace('complete', 'contract')).text());
 			var other_complete_count    = Math.round(other_contract_count * parseInt(input.val()) / 100);
+			sum += other_complete_count;
 			$('#' + other_complete_count_id).text(other_complete_count);
 		});
+		$('#sum_other_complete_ratio_' + box_id).text(sum);
 
 		// ----------------------------
 		// ISPのみ
@@ -140,8 +240,8 @@ function sum_introduction()
 }
 
 $(function() {
+	/* 表示制御 */
 	$('.sum_area').each(function(i) {
-		//$(this).replaceWith('<div class="sum_area">aaaa</div>');
 		$(this).attr('disabled', 'disabled');
 	});
 	for (i = 0; i <= 7; i++){
@@ -159,9 +259,14 @@ $(function() {
 			$('#box_block' + e.data.x).animate({height:'toggle'}, {duration:'slow', easing:'swing'});
 		});
 	}
-	sum_introduction();
+
+	/* 計算処理 */
+	sum_month();
+	sum_quarter();
+
 	$('input').change(function (){
-		sum_introduction();
+		sum_month();
+		sum_quarter();
 	});
 });
 
@@ -170,6 +275,9 @@ $(function() {
 
 <style type="text/css">
 <!--
+h1 {
+	background-color: #FF5F00;
+}
 td {
 	padding-top: 3px;
 	padding-left: 3px;
@@ -184,7 +292,7 @@ td {
 /*タイトル*/
 #box_title0, #box_title1
 {
-	background-color: #FF7400;
+	background-color: #FFA940;
 	height: auto;
 	width: 100%;
 	text-align: center;
@@ -218,12 +326,12 @@ td {
 #title0:hover, #title1:hover, #title2:hover,
 #title3:hover, #title4:hover, #title5:hover
 {
-	background-image: -moz-linear-gradient(bottom, #FFFBC7 0%, #FF5640 100%);
+	background-image: -moz-linear-gradient(bottom, #FFFBC7 0%, #FF4900 100%);
 }
 #title0_sum:hover, #title1_sum:hover,
 #box_title0:hover, #box_title1:hover
 {
-	background-image: -moz-linear-gradient(bottom, #FFF799 0%, #FF5640 100%);
+	background-image: -moz-linear-gradient(bottom, #FFF799 0%, #FF4900 100%);
 }
 
 /*ブロック*/
@@ -290,6 +398,7 @@ table.yosan_halfyear input[class=""]:focus
 
 
 <div class="space_5"></div>
+<h1><?php echo $halfyear_info['year'];?>年度 <?php echo $halfyear_info['halfyear_name'];?></h1>
 <!--
 <div class="space_5"></div>
 <div id="sum">hoge</div>
