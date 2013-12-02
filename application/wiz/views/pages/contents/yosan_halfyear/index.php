@@ -123,15 +123,15 @@ function sum_month()
 		// フレッツ契約件数 * 各種比率 = 各種件数
 		// ----------------------------
 
-		var flets_contract_ratio = parseInt($('[name="flets_contract_ratio_契約率_' + box_id + '"]').val()) / 100;
-		var flets_complete_ratio = parseInt($('[name="flets_contract_ratio_開通率_' + box_id + '"]').val()) / 100;
+		var flets_contract_ratio = parseInt($('[name="flets_contract_ratio___contract_ratio_' + box_id + '"]').val()) / 100;
+		var flets_complete_ratio = parseInt($('[name="flets_contract_ratio___complete_ratio_' + box_id + '"]').val()) / 100;
 
 		// フレッツ契約数＆開通数
 		var flets_contract_count = Math.round(sum_introduction_count * flets_contract_ratio);
 		var flets_complete_count = Math.round(flets_contract_count * flets_complete_ratio);
-		var flets_contract_count_id = 'flets_contract_ratio_契約率_' + box_id + '_cooked';
+		var flets_contract_count_id = 'flets_contract_ratio___contract_ratio_' + box_id + '_cooked';
 		$('#' + flets_contract_count_id).text(flets_contract_count);
-		var flets_complete_count_id = 'flets_contract_ratio_開通率_' + box_id + '_cooked';
+		var flets_complete_count_id = 'flets_contract_ratio___complete_ratio_' + box_id + '_cooked';
 		$('#' + flets_complete_count_id).text(flets_complete_count);
 
 		// ISPセット数
@@ -211,30 +211,30 @@ function sum_month()
 		// ISPのみ
 		// ----------------------------
 
-		var onlyisp_contract_ratio = parseInt($('[name="onlyisp_contract_ratio_契約率_' + box_id + '"]').val()) / 100;
-		var onlyisp_complete_ratio = parseInt($('[name="onlyisp_contract_ratio_開通率_' + box_id + '"]').val()) / 100;
+		var onlyisp_contract_ratio = parseInt($('[name="onlyisp_contract_ratio_contract_ratio_' + box_id + '"]').val()) / 100;
+		var onlyisp_complete_ratio = parseInt($('[name="onlyisp_contract_ratio_complete_ratio_' + box_id + '"]').val()) / 100;
 
 		// 契約数＆開通数
 		var onlyisp_contract_count = Math.round(sum_introduction_count * onlyisp_contract_ratio);
 		var onlyisp_complete_count = Math.round(onlyisp_contract_count * onlyisp_complete_ratio);
-		var onlyisp_contract_count_id = 'onlyisp_contract_ratio_契約率_' + box_id + '_cooked';
+		var onlyisp_contract_count_id = 'onlyisp_contract_ratio_contract_ratio_' + box_id + '_cooked';
 		$('#' + onlyisp_contract_count_id).text(onlyisp_contract_count);
-		var onlyisp_complete_count_id = 'onlyisp_contract_ratio_開通率_' + box_id + '_cooked';
+		var onlyisp_complete_count_id = 'onlyisp_contract_ratio_complete_ratio_' + box_id + '_cooked';
 		$('#' + onlyisp_complete_count_id).text(onlyisp_complete_count);
 
 		// ----------------------------
 		// 特典施策
 		// ----------------------------
 
-		var benefit_contract_ratio = parseInt($('[name="benefit_contract_ratio_契約率_' + box_id + '"]').val()) / 100;
-		var benefit_complete_ratio = parseInt($('[name="benefit_contract_ratio_開通率_' + box_id + '"]').val()) / 100;
+		var benefit_contract_ratio = parseInt($('[name="benefit_contract_ratio_contract_ratio_' + box_id + '"]').val()) / 100;
+		var benefit_complete_ratio = parseInt($('[name="benefit_contract_ratio_complete_ratio_' + box_id + '"]').val()) / 100;
 
 		// 契約数＆開通数
 		var benefit_contract_count = Math.round(sum_introduction_count * benefit_contract_ratio);
 		var benefit_complete_count = Math.round(benefit_contract_count * benefit_complete_ratio);
-		var benefit_contract_count_id = 'benefit_contract_ratio_契約率_' + box_id + '_cooked';
+		var benefit_contract_count_id = 'benefit_contract_ratio_contract_ratio_' + box_id + '_cooked';
 		$('#' + benefit_contract_count_id).text(benefit_contract_count);
-		var benefit_complete_count_id = 'benefit_contract_ratio_開通率_' + box_id + '_cooked';
+		var benefit_complete_count_id = 'benefit_contract_ratio_complete_ratio_' + box_id + '_cooked';
 		$('#' + benefit_complete_count_id).text(benefit_complete_count);
 	});
 }
@@ -436,6 +436,8 @@ table.yosan_halfyear input[class=""]:focus
 <?php $box_counter++;?>
 <?php endforeach;?>
 
+<input type="text" name="_channel" value="<?php echo $channel;?>">
+<input type="submit">
 </form>
 </div>
 

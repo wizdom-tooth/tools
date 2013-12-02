@@ -11,6 +11,14 @@ $channel_configs = array(
 		'is_target_daily_addup' => TRUE,
 		'sql_option'            => '',
 		'channel_list' => array(
+			'able',
+			'able_west',
+			'housepartner',
+			'house2house',
+			'kizonten',
+			'minimini_west',
+			'kizonten_west',
+			/*
 			'エイブル',
 			'エイブル西',
 			'ハウパ',
@@ -18,6 +26,7 @@ $channel_configs = array(
 			'既存店',
 			'ミニミニ西日本',
 			'既存店(西)',
+			*/
 		),
 	),
 	'realestate' => array(
@@ -26,11 +35,18 @@ $channel_configs = array(
 		'is_target_daily_addup' => FALSE,
 		'sql_option'            => '',
 		'channel_list' => array(
+			'housepartner',
+			'house2house',
+			'kizonten',
+			'minimini_west',
+			'kizonten_west',
+			/*
 			'ハウパ',
 			'ハウス・トゥ',
 			'既存店',
 			'ミニミニ西日本',
 			'既存店(西)',
+			*/
 		),
 	),
 	'realestate_east' => array(
@@ -39,9 +55,14 @@ $channel_configs = array(
 		'is_target_daily_addup' => TRUE,
 		'sql_option'            => 'east_or_west = "東"',
 		'channel_list' => array(
+			'housepartner',
+			'house2house',
+			'kizonten',
+			/*
 			'ハウパ',
 			'ハウス・トゥ',
 			'既存店',
+			*/
 		),
 	),
 	'realestate_west' => array(
@@ -50,8 +71,12 @@ $channel_configs = array(
 		'is_target_daily_addup' => TRUE,
 		'sql_option'            => 'east_or_west = "西"',
 		'channel_list' => array(
+			'minimini_west',
+			'kizonten_west',
+			/*
             'ミニミニ西日本',
             '既存店(西)',
+			*/
 		),
 	),
 	'able' => array(
@@ -60,8 +85,12 @@ $channel_configs = array(
 		'is_target_daily_addup' => FALSE,
 		'sql_option'            => '',
 		'channel_list' => array(
+			'able',
+			'able_west',
+			/*
 			'エイブル',
 			'エイブル西',
+			*/
 		),
 	),
 	'able_east' => array(
@@ -70,7 +99,10 @@ $channel_configs = array(
 		'is_target_daily_addup' => TRUE,
 		'sql_option'            => 'east_or_west = "東"',
 		'channel_list' => array(
+			'able',
+			/*
 			'エイブル',
+			*/
 		),
 	),
 	'able_west' => array(
@@ -79,7 +111,10 @@ $channel_configs = array(
 		'is_target_daily_addup' => TRUE,
 		'sql_option'            => 'east_or_west = "西"',
 		'channel_list' => array(
+			'able_west',
+			/*
 			'エイブル西',
+			*/
 		),
 	),
 	'ablehikkoshi' => array(
@@ -88,7 +123,10 @@ $channel_configs = array(
 		'is_target_daily_addup' => FALSE,
 		'sql_option'            => '',
 		'channel_list' => array(
+			'able_hikkoshi',
+			/*
 			'エイブル引越',
+			*/
 		),
 	),
 	'ablehikkoshi_east' => array(
@@ -97,7 +135,10 @@ $channel_configs = array(
 		'is_target_daily_addup' => TRUE,
 		'sql_option'            => 'east_or_west = "東"',
 		'channel_list' => array(
+			'able_hikkoshi',
+			/*
 			'エイブル引越',
+			*/
 		),
 	),
 	'ablehikkoshi_west' => array(
@@ -107,7 +148,10 @@ $channel_configs = array(
 		'is_target_daily_addup' => TRUE,
 		'sql_option'            => 'east_or_west = "西"',
 		'channel_list' => array(
+			'able_hikkoshi',
+			/*
 			'エイブル引越',
+			*/
 		),
 	),
 	'aeras' => array(
@@ -116,7 +160,10 @@ $channel_configs = array(
 		'is_target_daily_addup' => TRUE,
 		'sql_option'            => 'store_name like "アエラス%"',
 		'channel_list' => array(
+			'kizonten',
+			/*
 			'既存店',
+			*/
 		),
 	),
 	'his' => array(
@@ -152,7 +199,10 @@ $channel_configs = array(
 		'is_target_daily_addup' => TRUE,
 		'sql_option'            => '',
 		'channel_list' => array(
+			'house2house',
+			/*
 			'ハウス・トゥ',
+			*/
 		),
 	),
 	'housepartner' => array(
@@ -161,7 +211,10 @@ $channel_configs = array(
 		'is_target_daily_addup' => TRUE,
 		'sql_option'            => '',
 		'channel_list' => array(
+			'housepartner',
+			/*
 			'ハウパ',
+			*/
 		),
 	),
 	'nissei' => array(
@@ -170,7 +223,10 @@ $channel_configs = array(
 		'is_target_daily_addup' => TRUE,
 		'sql_option'            => '',
 		'channel_list' => array(
+			'nissei',
+			/*
 			'日本生命',
+			*/
 		),
 	),
 	'nissei_east' => array(
@@ -179,7 +235,10 @@ $channel_configs = array(
 		'is_target_daily_addup' => FALSE,
 		'sql_option'            => 'east_or_west = "東"',
 		'channel_list' => array(
+			'nissei',
+			/*
 			'日本生命',
+			*/
 		),
 	),
 	'nissei_west' => array(
@@ -188,7 +247,10 @@ $channel_configs = array(
 		'is_target_daily_addup' => FALSE,
 		'sql_option'            => 'east_or_west = "西"',
 		'channel_list' => array(
+			'nissei',
+			/*
 			'日本生命',
+			*/
 		),
 	),
 	'ponta' => array(
@@ -224,7 +286,10 @@ $channel_configs = array(
 		'is_target_daily_addup' => TRUE,
 		'sql_option'            => 'store_name like "プライム%"',
 		'channel_list' => array(
+			'kizonten',
+			/*
 			'既存店',
+			*/
 		),
 	),
 	'soleil' => array(
@@ -233,7 +298,10 @@ $channel_configs = array(
 		'is_target_daily_addup' => TRUE,
 		'sql_option'            => 'store_name like "ソレイユ%"',
 		'channel_list' => array(
+			'kizonten',
+			/*
 			'既存店',
+			*/
 		),
 	),
 	'univ' => array(
@@ -242,8 +310,12 @@ $channel_configs = array(
 		'is_target_daily_addup' => TRUE,
 		'sql_option'            => '',
 		'channel_list' => array(
+			'univ_east',
+			'univ_west',
+			/*
 			'大学東',
 			'大学西',
+			*/
 		),
 	),
 	'univ_east' => array(
@@ -252,7 +324,10 @@ $channel_configs = array(
 		'is_target_daily_addup' => FALSE,
 		'sql_option'            => 'east_or_west = "東"',
 		'channel_list' => array(
+			'univ_east',
+			/*
 			'大学東',
+			*/
 		),
 	),
 	'univ_west' => array(
@@ -261,7 +336,10 @@ $channel_configs = array(
 		'is_target_daily_addup' => FALSE,
 		'sql_option'            => 'east_or_west = "西"',
 		'channel_list' => array(
+			'univ_west',
+			/*
 			'大学西',
+			*/
 		),
 	),
 );
@@ -503,13 +581,27 @@ $config['time_zones'] = array(
 
 // フレッツ＆ISP
 $config['yosan_flets_isps'] = array(
+	'ocn2_on',
+	'ocn2_off',
+	'biglobe',
+	/*
 	'OCN_2年割',
 	'OCN_2年割無',
 	'BIGLOBE',
+	*/
 );
 
 // フレッツオプション
 $config['yosan_flets_options'] = array(
+	'virus',
+	'remote',
+	'hikari_tel_plan_base',
+	'hikari_tel_plan_anshin',
+	'hikari_tel_plan_a',
+	'hikari_tel_plan_anshin_more',
+	'hikari_portable',
+	'hikari_tv_pa',
+	/*
 	'ウィルス',
 	'リモート',
 	'ひ電_基本',
@@ -518,24 +610,39 @@ $config['yosan_flets_options'] = array(
 	'ひ電_もっと安心',
 	'光ポータブル',
 	'ひかりTVパ',
+	*/
 );
 
 // 移転回線
 $config['yosan_iten_lines'] = array(
+	'flets',
+	/*
 	'フレッツ光',
+	*/
 );
 
 // 移転 - フレッツISP
 $config['yosan_iten_flets_isps'] = array(
+	'isp_total',
+	/*
 	'ISP合計',
+	*/
 );
 
 // その他回線
 $config['yosan_other_lines'] = array(
+	'au_hikari',
+	'ucom',
+	'emobile',
+	'eaccess',
+	'itscom',
+	'jcnyokohama',
+	/*
 	'auひかり',
 	'UCOM',
 	'イーモバ',
 	'イーアクセス',
 	'イッツコム',
 	'JCNよこはま',
+	*/
 );

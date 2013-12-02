@@ -23,6 +23,7 @@ class Yosan_Halfyear extends CI_Controller_With_Auth {
 
 	public function index()
 	{
+
         // 対象半期整理
 		if ($this->input->get_post('halfyear') === FALSE)
 		{
@@ -40,11 +41,13 @@ class Yosan_Halfyear extends CI_Controller_With_Auth {
 			$channel = 'realestate_east';
 		}
 
+/*
 		$_GET['halfyear'] = $_POST['halfyear'] = $halfyear;
 		$_GET['channel']  = $_POST['channel']  = $channel;
+*/
 
 		// --------------------
-		// 半期分の予算情報を取り出す
+		// 対象期間情報取得
 		// --------------------
 
 		$yosan_month_infos = array();
@@ -53,12 +56,88 @@ class Yosan_Halfyear extends CI_Controller_With_Auth {
 		{
 			// do error handling ********
 		}
+
+var_dump($m_infos);
+
+		// --------------------
+		// 予算情報を書き出す
+		// --------------------
+
+$post = $this->input->post();
+//var_dump($post);
+if ($post !== FALSE)
+{
+	$written_infos = array();
+	foreach ($post as $key => $val)
+	{
+		if ( ! preg_match('/^_/', $key))
+		{
+			list($kind, $name_and_id) = explode('___', $key);
+			preg_match('/^(.*)_(\d)$/', $name_and_id, $matches);
+			$name = $matches[1];
+			$wiz_month_id = $m_infos[$matches[2]]['wiz_month_id'];
+			$written_infos[$wiz_month_id][$kind][$name] = $val;
+		}
+	}
+	//var_dump($written_infos);
+	foreach ($written_infos as $wiz_month_id => $written_info)
+	{
+		$serialize_targets = array(
+			'introduction_count',
+			'flets_isp_set_ratio',
+			'flets_option_set_ratio',
+			'iten_contract_count',
+			'iten_isp_set_ratio',
+			'other_contract_ratio',
+			'other_complete_ratio',
+		);
+		foreach ($serialize_targets as $target)
+		{
+			$variable_name = $target.'_complex';
+			${$variable_name} = serialize($written_info[$target]);
+		}
+		$sql = ''.
+			'replace into yosan_month values ('.
+				"'{$channel}', ".
+				"'{$wiz_month_id}', ".
+				"'{$introduction_count_complex}', ".
+				$written_info['flets_contract_ratio']['contract_ratio'].", ".
+				$written_info['flets_contract_ratio']['complete_ratio'].", ".
+				"'{$flets_isp_set_ratio_complex}', ".
+				"'{$flets_option_set_ratio_complex}', ".
+				"'{$iten_contract_count_complex}', ".
+				"'{$iten_isp_set_ratio_complex}', ".
+				"'{$other_contract_ratio_complex}', ".
+				"'{$other_complete_ratio_complex}', ".
+				$written_info['onlyisp_contract_ratio']['contract_ratio'].", ".
+				$written_info['onlyisp_contract_ratio']['complete_ratio'].", ".
+				$written_info['benefit_contract_ratio']['contract_ratio'].", ".
+				$written_info['benefit_contract_ratio']['complete_ratio'].
+			')';
+		//var_dump($sql);
+		//$this->_db->query($sql);
+		/* *******************************************_
+		if (is error)
+		{
+			// do error handling
+		}
+		*/
+	}
+}
+
+		// --------------------
+		// 半期分の予算情報を取り出す
+		// --------------------
+
 		foreach ($m_infos as $m_info)
 		{
 			$q_info = get_wiz_quarter_info($m_info['wiz_quarter_id']);
 			$yosan_month_info = get_yosan_month_info($channel, $m_info['wiz_month_id']);
 			$yosan_month_infos[$q_info['quarter_name']][] = $yosan_month_info;
 		}
+
+var_dump($yosan_month_infos);
+
 
 		/*
 		$channel_configs = $this->config->item('channel_configs');
@@ -221,9 +300,9 @@ var_dump($target_monthes);
 			'halfyear_info' => get_wiz_halfyear_info($halfyear),
 			'yosan_month_infos' => $yosan_month_infos,
 			'yosan_month_info_for_sum' => get_yosan_month_info($channel, 'empty'),
+			'channel' => $channel,
 			//'month' => $month,
 			//'calendar' => $calendar,
-			'channel' => $channel,
             //'form_year' => $this->config->item('form_year'),
             //'form_month' => $this->config->item('form_month'),
             //'form_channel' => $this->config->item('form_channel'),

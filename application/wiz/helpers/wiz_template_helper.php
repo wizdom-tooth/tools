@@ -24,10 +24,10 @@ function get_html_yosan_halfyear_rows($yosan_serialize, $view_id, $kind_id, $lab
 		{
 			$class = 'sum_area';
 		}
-		$html .= '<td><input type="text" class="'.$class.'" name="'.$kind_id.'_'.$name.'_'.$view_id.'" value="'.$val.'"/>'.$unit_view.'</td>'."\n";
+		$html .= '<td><input type="text" class="'.$class.'" name="'.$kind_id.'___'.$name.'_'.$view_id.'" value="'.$val.'"/>'.$unit_view.'</td>'."\n";
 		if ($unit === 'ratio')
 		{
-			$html .= '<td><span class="sum_target" id="'.$kind_id.'_'.$name.'_'.$view_id.'_cooked">0</span> 件</td>'."\n";
+			$html .= '<td><span class="sum_target" id="'.$kind_id.'___'.$name.'_'.$view_id.'_cooked">0</span> 件</td>'."\n";
 		}
 		elseif ($unit === 'count')
 		{
@@ -58,16 +58,16 @@ function get_html_yosan_halfyear_rows($yosan_serialize, $view_id, $kind_id, $lab
 function get_html_yosan_halfyear_table($yosan_month_info, $view_id)
 {
 	$flets_contract_ratio_complex = serialize(array(
-		'契約率' => $yosan_month_info['flets_contract_ratio'],
-		'開通率' => $yosan_month_info['flets_complete_ratio'],
+		'contract_ratio' => $yosan_month_info['flets_contract_ratio'],
+		'complete_ratio' => $yosan_month_info['flets_complete_ratio'],
 	));
 	$onlyisp_contract_ratio_complex = serialize(array(
-		'契約率' => $yosan_month_info['onlyisp_contract_ratio'],
-		'開通率' => $yosan_month_info['onlyisp_complete_ratio'],
+		'contract_ratio' => $yosan_month_info['onlyisp_contract_ratio'],
+		'complete_ratio' => $yosan_month_info['onlyisp_complete_ratio'],
 	));
 	$benefit_contract_ratio_complex = serialize(array(
-		'契約率' => $yosan_month_info['benefit_contract_ratio'],
-		'開通率' => $yosan_month_info['benefit_complete_ratio'],
+		'contract_ratio' => $yosan_month_info['benefit_contract_ratio'],
+		'complete_ratio' => $yosan_month_info['benefit_complete_ratio'],
 	));
 
 	$html_flets_introduction_count = get_html_yosan_halfyear_rows(

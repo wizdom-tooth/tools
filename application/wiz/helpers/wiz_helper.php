@@ -185,5 +185,6 @@ function get_yosan_default_complex($kind, $default_val)
 	{
 		$tmp[$element] = $default_val;
 	}
+	//var_dump(serialize($tmp));
 	return serialize($tmp);
 }
