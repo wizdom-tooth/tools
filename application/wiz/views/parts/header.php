@@ -11,6 +11,7 @@
 		<script type="text/javascript" src="/assets/wiz/js/jquery-1.9.1.min.js"></script>
 		<script type="text/javascript" src="/assets/wiz/js/jquery-1.9.1.ui.min.js"></script>
 		<script type="text/javascript" src="/assets/wiz/js/jquery-contained-sticky-scroll-min.js"></script>
+		<script type="text/javascript" src="/assets/wiz/js/jquery.corner.js"></script>
 		<title><?php echo ENV_LABEL.' ';?>Wiz Group Corp Portal</title>
 	</head>
 	<body>

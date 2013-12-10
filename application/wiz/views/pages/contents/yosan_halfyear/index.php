@@ -1,6 +1,6 @@
 <script type="text/javascript">
 <!--
-/* {{{ */
+/* {{{ jquery extensiton regex */
 jQuery.expr[':'].regex = function(elem, index, match) {
     var matchParams = match[3].split(','),
         validLabels = /^(data|css):/,
@@ -14,7 +14,7 @@ jQuery.expr[':'].regex = function(elem, index, match) {
     return regex.test(jQuery(elem)[attr.method](attr.property));
 }
 /* }}} */
-
+/* {{{ jquery bussines logic */
 function sum_quarter()
 {
 	var quarter_blocks = {
@@ -54,7 +54,7 @@ function sum_quarter()
 			if ( ! haskey) {
 				quarter_avg[quarter_avg_name] = [];
 			}
-			quarter_avg[quarter_avg_name].push(parseInt(val));
+			quarter_avg[quarter_avg_name].push(parseFloat(val));
 		});	
 		for (var quarter_avg_name in quarter_avg) {
 			var sum = 0;
@@ -89,7 +89,7 @@ function sum_quarter()
 			if ( ! haskey) {
 				quarter_sum[quarter_sum_name] = [];
 			}
-			quarter_sum[quarter_sum_name].push(parseInt(val));
+			quarter_sum[quarter_sum_name].push(parseFloat(val));
 		});
 		for (var quarter_sum_name in quarter_sum) {
 			var sum = 0;
@@ -123,8 +123,8 @@ function sum_month()
 		// フレッツ契約件数 * 各種比率 = 各種件数
 		// ----------------------------
 
-		var flets_contract_ratio = parseInt($('[name="flets_contract_ratio___contract_ratio_' + box_id + '"]').val()) / 100;
-		var flets_complete_ratio = parseInt($('[name="flets_contract_ratio___complete_ratio_' + box_id + '"]').val()) / 100;
+		var flets_contract_ratio = parseFloat($('[name="flets_contract_ratio___contract_ratio_' + box_id + '"]').val()) / 100;
+		var flets_complete_ratio = parseFloat($('[name="flets_contract_ratio___complete_ratio_' + box_id + '"]').val()) / 100;
 
 		// フレッツ契約数＆開通数
 		var flets_contract_count = Math.round(sum_introduction_count * flets_contract_ratio);
@@ -139,7 +139,7 @@ function sum_month()
 		$(this).find('tr[class="unit_flets_isp_set_ratio_' + box_id + '"]').each(function(j) {
 			var input = $(this).find('input');
 			var flets_isp_set_count_id = input.attr('name') + '_cooked';
-			var flets_isp_set_count    = Math.round(flets_contract_count * parseInt(input.val()) / 100);
+			var flets_isp_set_count    = Math.round(flets_contract_count * parseFloat(input.val()) / 100);
 			sum += flets_isp_set_count;
 			$('#' + flets_isp_set_count_id).text(flets_isp_set_count);
 		});
@@ -150,7 +150,7 @@ function sum_month()
 		$(this).find('tr[class="unit_flets_option_set_ratio_' + box_id + '"]').each(function(j) {
 			var input = $(this).find('input');
 			var flets_option_set_count_id = input.attr('name') + '_cooked';
-			var flets_option_set_count    = Math.round(flets_contract_count * parseInt(input.val()) / 100);
+			var flets_option_set_count    = Math.round(flets_contract_count * parseFloat(input.val()) / 100);
 			sum += flets_option_set_count;
 			$('#' + flets_option_set_count_id).text(flets_option_set_count);
 		});
@@ -171,7 +171,7 @@ function sum_month()
 		$(this).find('tr[class="unit_iten_isp_set_ratio_' + box_id + '"]').each(function(j) {
 			var input = $(this).find('input');
 			var iten_isp_set_count_id = input.attr('name') + '_cooked';
-			var iten_isp_set_count    = Math.round(sum_iten_contract_count * parseInt(input.val()) / 100);
+			var iten_isp_set_count    = Math.round(sum_iten_contract_count * parseFloat(input.val()) / 100);
 			sum += iten_isp_set_count;
 			$('#' + iten_isp_set_count_id).text(iten_isp_set_count);
 		});
@@ -185,7 +185,7 @@ function sum_month()
 		$(this).find('tr[class="unit_other_contract_ratio_' + box_id + '"]').each(function(j) {
 			var input = $(this).find('input');
 			var other_contract_count_id = input.attr('name') + '_cooked';
-			var other_contract_count    = Math.round(sum_introduction_count * parseInt(input.val()) / 100);
+			var other_contract_count    = Math.round(sum_introduction_count * parseFloat(input.val()) / 100);
 			sum += other_contract_count;
 			$('#' + other_contract_count_id).text(other_contract_count);
 		});
@@ -201,7 +201,7 @@ function sum_month()
 			var other_complete_count_id = input.attr('name') + '_cooked';
 			//var other_contract_count    = parseInt($('#' + other_complete_count_id.replace('contract', 'complete')).text());
 			var other_contract_count    = parseInt($('#' + other_complete_count_id.replace('complete', 'contract')).text());
-			var other_complete_count    = Math.round(other_contract_count * parseInt(input.val()) / 100);
+			var other_complete_count    = Math.round(other_contract_count * parseFloat(input.val()) / 100);
 			sum += other_complete_count;
 			$('#' + other_complete_count_id).text(other_complete_count);
 		});
@@ -211,8 +211,8 @@ function sum_month()
 		// ISPのみ
 		// ----------------------------
 
-		var onlyisp_contract_ratio = parseInt($('[name="onlyisp_contract_ratio_contract_ratio_' + box_id + '"]').val()) / 100;
-		var onlyisp_complete_ratio = parseInt($('[name="onlyisp_contract_ratio_complete_ratio_' + box_id + '"]').val()) / 100;
+		var onlyisp_contract_ratio = parseFloat($('[name="onlyisp_contract_ratio_contract_ratio_' + box_id + '"]').val()) / 100;
+		var onlyisp_complete_ratio = parseFloat($('[name="onlyisp_contract_ratio_complete_ratio_' + box_id + '"]').val()) / 100;
 
 		// 契約数＆開通数
 		var onlyisp_contract_count = Math.round(sum_introduction_count * onlyisp_contract_ratio);
@@ -226,8 +226,8 @@ function sum_month()
 		// 特典施策
 		// ----------------------------
 
-		var benefit_contract_ratio = parseInt($('[name="benefit_contract_ratio_contract_ratio_' + box_id + '"]').val()) / 100;
-		var benefit_complete_ratio = parseInt($('[name="benefit_contract_ratio_complete_ratio_' + box_id + '"]').val()) / 100;
+		var benefit_contract_ratio = parseFloat($('[name="benefit_contract_ratio_contract_ratio_' + box_id + '"]').val()) / 100;
+		var benefit_complete_ratio = parseFloat($('[name="benefit_contract_ratio_complete_ratio_' + box_id + '"]').val()) / 100;
 
 		// 契約数＆開通数
 		var benefit_contract_count = Math.round(sum_introduction_count * benefit_contract_ratio);
@@ -269,12 +269,13 @@ $(function() {
 		sum_quarter();
 	});
 });
-
-// -->
+/* }}} */
+-->
 </script>
 
 <style type="text/css">
 <!--
+/* {{{ style */
 h1 {
 	background-color: #FF5F00;
 }
@@ -393,12 +394,13 @@ table.yosan_halfyear input[class=""]:focus
 	color: red;
 	font-weight: bold;
 }
+/* }}} */
 -->
 </style>
 
 
 <div class="space_5"></div>
-<h1><?php echo $halfyear_info['year'];?>年度 <?php echo $halfyear_info['halfyear_name'];?></h1>
+<h1><?php echo $halfyear_info['year'];?>年度 <?php echo $halfyear_info['halfyear_name'];?> - <?php echo $channel;?></h1>
 <!--
 <div class="space_5"></div>
 <div id="sum">hoge</div>

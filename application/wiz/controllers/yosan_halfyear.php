@@ -35,7 +35,7 @@ class Yosan_Halfyear extends CI_Controller_With_Auth {
 		}
 
         // 対象チャネル整理
-		$channel = $this->input->get_post('channel');
+		$channel = $this->input->get_post('_channel');
 		if ($channel === FALSE)
 		{
 			$channel = 'realestate_east';
@@ -56,8 +56,6 @@ class Yosan_Halfyear extends CI_Controller_With_Auth {
 		{
 			// do error handling ********
 		}
-
-var_dump($m_infos);
 
 		// --------------------
 		// 予算情報を書き出す
@@ -101,21 +99,20 @@ if ($post !== FALSE)
 				"'{$channel}', ".
 				"'{$wiz_month_id}', ".
 				"'{$introduction_count_complex}', ".
-				$written_info['flets_contract_ratio']['contract_ratio'].", ".
-				$written_info['flets_contract_ratio']['complete_ratio'].", ".
+				"'".$written_info['flets_contract_ratio']['contract_ratio']."', ".
+				"'".$written_info['flets_contract_ratio']['complete_ratio']."', ".
 				"'{$flets_isp_set_ratio_complex}', ".
 				"'{$flets_option_set_ratio_complex}', ".
 				"'{$iten_contract_count_complex}', ".
 				"'{$iten_isp_set_ratio_complex}', ".
 				"'{$other_contract_ratio_complex}', ".
 				"'{$other_complete_ratio_complex}', ".
-				$written_info['onlyisp_contract_ratio']['contract_ratio'].", ".
-				$written_info['onlyisp_contract_ratio']['complete_ratio'].", ".
-				$written_info['benefit_contract_ratio']['contract_ratio'].", ".
-				$written_info['benefit_contract_ratio']['complete_ratio'].
+				"'".$written_info['onlyisp_contract_ratio']['contract_ratio']."', ".
+				"'".$written_info['onlyisp_contract_ratio']['complete_ratio']."', ".
+				"'".$written_info['benefit_contract_ratio']['contract_ratio']."', ".
+				"'".$written_info['benefit_contract_ratio']['complete_ratio']."'".
 			')';
-		//var_dump($sql);
-		//$this->_db->query($sql);
+		$this->_db->query($sql);
 		/* *******************************************_
 		if (is error)
 		{
@@ -136,7 +133,7 @@ if ($post !== FALSE)
 			$yosan_month_infos[$q_info['quarter_name']][] = $yosan_month_info;
 		}
 
-var_dump($yosan_month_infos);
+//var_dump($yosan_month_infos);
 
 
 		/*

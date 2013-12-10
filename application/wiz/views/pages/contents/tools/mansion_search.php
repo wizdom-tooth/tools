@@ -132,7 +132,7 @@ if ($east_or_west === 'west')
 <iframe name="iframe_flets" class="iframe_box" id="iframe_flets"></iframe>
 <form style="display:none" target="iframe_flets" id="form_iframe_flets_login" method="post" action="<?php echo $url['flets_login'];?>">
 <input type="hidden" name="id" value="1001181152" />
-<input type="hidden" name="password" value="wizp1309" />
+<input type="hidden" name="password" value="wizp1312" />
 </form>
 <form style="display:none" target="iframe_flets" id="form_iframe_flets_search" method="post" action="<?php echo $url['flets_search'];?>">
 <input type="hidden" value="zipcode" name="skind">

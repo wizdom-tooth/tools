@@ -31,7 +31,37 @@ function get_wiz_halfyear_id($date = '')
 }
 
 /**
- * 半期IDから月ID配列を取り出す
+ * 日付から月ID取得
+ */
+function get_wiz_month_id($date = '')
+{
+	$db = load_database_wizp();
+	if ($date === '')
+	{
+		$date = date('Y-m-d');
+	}
+	$sql = ''.
+		'SELECT '.
+			'wiz_month_id '.
+		'FROM '.
+			'wiz_month_mst '.
+		'WHERE '.
+			"from_date <= '{$date}' AND ".
+			"to_date >= '{$date}'";
+	$query = $db->query($sql);
+	if ($query->num_rows() === 0)
+	{
+		return FALSE;
+	}
+	else
+	{
+		$row = $query->row();
+		return $row->wiz_month_id;
+	}
+}
+
+/**
+ * 半期IDから月情報配列を取り出す
  */
 function get_wiz_month_infos_from_wiz_halfyear_id($wiz_halfyear_id)
 {
@@ -45,6 +75,32 @@ function get_wiz_month_infos_from_wiz_halfyear_id($wiz_halfyear_id)
 			"wiz_halfyear_id = '{$wiz_halfyear_id}'".
 		'ORDER BY '.
 			'wiz_month_id';
+	$query = $db->query($sql);
+	if ($query->num_rows() === 0)
+	{
+		return FALSE;
+	}
+	else
+	{
+		return $query->result_array();
+	}
+}
+
+/**
+ * 月IDから週情報配列を取り出す
+ */
+function get_wiz_week_infos_from_wiz_month_id($wiz_month_id)
+{
+	$db = load_database_wizp();
+	$sql = ''.
+		'SELECT '.
+			'* '.
+		'FROM '.
+			'wiz_week_mst '.
+		'WHERE '.
+			"wiz_month_id = '{$wiz_month_id}'".
+		'ORDER BY '.
+			'wiz_week_id';
 	$query = $db->query($sql);
 	if ($query->num_rows() === 0)
 	{
@@ -96,6 +152,32 @@ function get_wiz_quarter_info($wiz_quarter_id)
 }
 
 /**
+ * wiz_month_id から情報取得
+ */
+function get_wiz_month_info($wiz_month_id)
+{
+	$db = load_database_wizp();
+	$sql = ''.
+		'SELECT '.
+			'* '.
+		'FROM '.
+			'wiz_month_mst '.
+		'WHERE '.
+			"wiz_month_id = '{$wiz_month_id}'".
+		'ORDER BY '.
+			'wiz_month_id';
+	$query = $db->query($sql);
+	if ($query->num_rows() === 0)
+	{
+		return FALSE;
+	}
+	else
+	{
+		return $query->row_array();
+	}
+}
+
+/**
  * チャンネルと月IDから月次予算情報を取り出す
  */
 function get_yosan_month_info($channel, $wiz_month_id = 'empty')
@@ -142,7 +224,7 @@ function get_yosan_month_info($channel, $wiz_month_id = 'empty')
 	}
 	else
 	{
-		return $query->result_array();
+		return $query->row_array();
 	}
 }
 

@@ -24,6 +24,7 @@ class Cron extends CI_Controller {
     {
         parent::__construct();
         $this->load->library('email');
+        $this->load->helper('wiz');
     }
 
 	// レポートメール送信
@@ -85,8 +86,13 @@ class Cron extends CI_Controller {
 
 	private function _get_wiz_week_info($real_year, $real_month, $real_day)
 	{
+		$real_y = $real_year;
 		$real_m = sprintf('%02d', $real_month);
-		$wiz_month_info = $this->_get_wiz_month_info($real_year, $real_month);
+		$real_d = sprintf('%02d', $real_day);
+		$target_date = $real_y.'-'.$real_m.'-'.$real_d;
+		$wiz_month_id = get_wiz_month_id($target_date);
+		if ($wiz_month_id === FALSE) return FALSE;
+		$wiz_month_info = get_wiz_month_info($wiz_month_id);
 		$real_day_timestamp = mktime(0, 0, 0, $real_month, $real_day, $real_year);
 		if ($real_day === 21)
 		{
@@ -129,14 +135,15 @@ class Cron extends CI_Controller {
 			$real_d = sprintf('%02d', $real_day);
 			$wiz_week_id = $wiz_month_info['wiz_month_id'].'_'.$this->_work_week_number;
 			$from_date = $real_year.$real_m.$real_d;
-			$to_day = (int)date('j', strtotime('+6 day', $real_day_timestamp));
-			if ($to_day > 20)
+			$to_date_timestamp = strtotime('+6 day', $real_day_timestamp);
+			$to_day = (int)date('j', $to_date_timestamp);
+			if ($real_d <= 20 && $to_day > 20)
 			{
 				$to_date = $real_year.$real_m.'20';
 			}
 			else
 			{
-				$to_date = date('Ymd', strtotime('+6 day', $real_day_timestamp));
+				$to_date = date('Ymd', $to_date_timestamp);
 			}
 			$this->_work_week_number++;
 		}
@@ -158,14 +165,14 @@ class Cron extends CI_Controller {
 		switch ($month)
 		{
 			case '12':
-				$wiz_halfyear_id = ($year + 1).'_1';
+				$wiz_halfyear_id = $year.'_2';
 				break;
 			case '01':
 			case '02':
 			case '03':
 			case '04':
 			case '05':
-				$wiz_halfyear_id = $year.'_1';
+				$wiz_halfyear_id = ($year - 1).'_2';
 				break;
 			case '06':
 			case '07':
@@ -173,7 +180,7 @@ class Cron extends CI_Controller {
 			case '09':
 			case '10':
 			case '11':
-				$wiz_halfyear_id = $year.'_2';
+				$wiz_halfyear_id = $year.'_1';
 				break;
 		}
 		return $wiz_halfyear_id;
@@ -184,25 +191,26 @@ class Cron extends CI_Controller {
 		switch ($month)
 		{
 			case '12':
-				$wiz_quarter_id = ($year + 1).'_1';
+				$wiz_quarter_id = $year.'_3';
+				break;
 			case '01':
 			case '02':
-				$wiz_quarter_id = $year.'_1';
+				$wiz_quarter_id = ($year - 1).'_3';
 				break;
 			case '03':
 			case '04':
 			case '05':
-				$wiz_quarter_id = $year.'_2';
+				$wiz_quarter_id = ($year - 1).'_4';
 				break;
 			case '06':
 			case '07':
 			case '08':
-				$wiz_quarter_id = $year.'_3';
+				$wiz_quarter_id = $year.'_1';
 				break;
 			case '09':
 			case '10':
 			case '11':
-				$wiz_quarter_id = $year.'_4';
+				$wiz_quarter_id = $year.'_2';
 				break;
 		}
 		return $wiz_quarter_id;
