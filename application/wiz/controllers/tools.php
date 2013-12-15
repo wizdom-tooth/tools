@@ -280,6 +280,7 @@ class Tools extends CI_Controller_With_Auth {
 			'is_aichi_starcat' => $is_aichi_starcat,
 			'is_aichi_greencity' => $is_aichi_greencity,
 			'is_aichi_himawari' => $is_aichi_himawari,
+			'governmentcode' => $governmentcode,
 		);
 		$this->ag_auth->view('contents/tools/mansion_search', $data);
 	}

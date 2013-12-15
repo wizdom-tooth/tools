@@ -71,7 +71,7 @@ pre {
 }
 #wrapper{
 	width 100%;
-	margin:0 auto;
+	/*margin:0 auto;*/
 }
 #header{}
 #logo{
@@ -312,7 +312,7 @@ div#improvement{
 	width:1200px;
 	height:600px;
 }
-#loading_must, #loading_jcom_jcn, #remote_src, #flets_box, #au_box, #spaaqs_box, #jcom_box, #jcn_box, #flets_nishi_box, #commufa_box, #starcat_box, #greencity_box, #himawari_box, #eo_hikari_box, #bbiq_box {
+#loading_must, #loading_jcom_jcn, #remote_src, #flets_box, #au_box, #spaaqs_box, #jcom_box, #jcn_box, #flets_nishi_box, #commufa_box, #starcat_box, #greencity_box, #himawari_box, #eo_hikari_box, #bbiq_box, #itscom_box, #megaegg_box {
 	display: none;
 }
 #jcom_jcn_button {

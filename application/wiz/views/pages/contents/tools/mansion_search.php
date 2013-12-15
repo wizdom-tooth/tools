@@ -14,6 +14,7 @@ $url = array(
 	'himawari'     => 'http://www.himawari.co.jp/thinking/area/',
 	'eo_hikari'    => 'http://eonet.jp/area/mansion.html',
 	'bbiq'         => 'http://www2.info-mapping.com/qtnet/map/mn-listzip.asp',
+	'megaegg'      => 'https://www.megaegg.jp/area_check/mansion/search.php?action=Index',
 );
 
 $tel_flets_nishi = array();
@@ -106,18 +107,16 @@ if ($east_or_west === 'west')
 郵便番号 or 住所：<input type="text" name="query" value="<?php echo $query;?>" size="40"/>
 <span>※全半角は不問です。入力後にEnterキーを押してください。</span>
 </form>
+</div><!--form_manken-->
 
 <?php if ($is_success === FALSE):?>
 <span id="red">当該キーワードでは有効な郵便番号情報が見つかりませんでした。郵便番号を識別できるキーワードを入力して下さい。</span>
-
 <?php else:?>
 <?php if ($address != ''):?>
 <hr />
 郵便番号：<?php echo $zip1.'-'.$zip2;?><br />
 住所：<?php echo $searched_address;?><br />
-
 <?php endif;?>
-</div><!--form_manken-->
 
 
 <?php if ($address != ''):?>
@@ -276,6 +275,30 @@ if ($east_or_west === 'west')
 </div>
 
 
+<!--イッツコム-->
+<div id="itscom_box">
+<h3 class="accordion_head label_blue">・イッツコム</h3>
+<div>
+<span class="tel">0120-109-199</span><br />
+<iframe name="iframe_itscom" class="iframe_box" id="iframe_itscom"></iframe>
+<form style="display:none" target="iframe_itscom" id="form_iframe_itscom" method="get" action="">
+</form>
+</div>
+</div>
+
+
+<!--メガエッグ-->
+<div id="megaegg_box">
+<h3 class="accordion_head label_blue">・メガエッグ</h3>
+<div>
+ごめんね。自動入力はサポートしてないよ。手入力して検索してね。<br />郵便番号：<?php echo $zip1.' '.$zip2;?><br />
+<iframe name="iframe_megaegg" class="iframe_box" id="iframe_megaegg"></iframe>
+<form style="display:none" target="iframe_megaegg" id="form_iframe_megaegg" method="get" action="<?php echo $url['megaegg'];?>">
+</form>
+</div>
+</div>
+
+
 <!--jcom jcn-->
 <button type="button" id="jcom_jcn_button">JCOM ＆ JCN も検索する</button>
 <div id="loading_jcom_jcn">
@@ -334,6 +357,50 @@ $(document).ready(function(){
 		$("#form_iframe_flets_nishi").submit();
 		$("#flets_nishi_box").show();
 	}
+	var itscom_url = '';
+	switch ("<?php echo $governmentcode;?>") {
+		case '13110': // 東京都 目黒区
+			itscom_url = 'http://www.itscom.net/apartment/apart_list_08meguro.chtml';
+			break;
+		case '13111': // 東京都 大田区
+			itscom_url = 'http://www.itscom.net/apartment/apart_list_09ota.chtml';
+			break;
+		case '13112': // 東京都 世田谷区
+			itscom_url = 'http://www.itscom.net/apartment/apart_list_10setagaya.chtml';
+			break;
+		case '13113': // 東京都 渋谷区
+			itscom_url = 'http://www.itscom.net/apartment/apart_list_11shibuya.chtml';
+			break;
+		case '13209': // 東京都 町田市
+			itscom_url = 'http://www.itscom.net/apartment/apart_list_12machida.chtml';
+			break;
+		case '14109': // 神奈川県 横浜市 港北区
+			itscom_url = 'http://www.itscom.net/apartment/apart_list_06kohoku.chtml';
+			break;
+		case '14113': // 神奈川県 横浜市 緑区
+			itscom_url = 'http://www.itscom.net/apartment/apart_list_05midori.chtml';
+			break;
+		case '14117': // 神奈川県 横浜市 青葉区
+			itscom_url = 'http://www.itscom.net/apartment/apart_list_04aoba.chtml';
+			break;
+		case '14118': // 神奈川県 横浜市 都筑区
+			itscom_url = 'http://www.itscom.net/apartment/apart_list_07tsuzuki.chtml';
+			break;
+		case '14133': // 神奈川県 川崎市 中原区
+			itscom_url = 'http://www.itscom.net/apartment/apart_list_02nakahara.chtml';
+			break;
+		case '14134': // 神奈川県 川崎市 高津区
+			itscom_url = 'http://www.itscom.net/apartment/apart_list_01takatsu.chtml';
+			break;
+		case '14136': // 神奈川県 川崎市 宮前区
+			itscom_url = 'http://www.itscom.net/apartment/apart_list_03miyamae.chtml';
+			break;
+	}
+	if (itscom_url !== '') {
+			$("#form_iframe_itscom").attr('action', itscom_url);
+			$("#form_iframe_itscom").submit();
+			$("#itscom_box").show();
+	}
 	switch ("<?php echo $prefcode;?>") {
 		// コミュファ
 		case '23': // 愛知の場合は地域によって更に下記を追加
@@ -361,6 +428,10 @@ $(document).ready(function(){
 		case '30': // 和歌山
 			$("#form_iframe_eo_hikari").submit();
 			$("#eo_hikari_box").show();
+			break;
+		case '34': // 広島
+			$("#form_iframe_megaegg").submit();
+            $("#megaegg_box").show();
 			break;
 		// BBIQ
 		case '40': // 福岡

@@ -1,35 +1,48 @@
 <script type="text/javascript">
 $(function(){
-	/*$('#input_area').corner().corner('dog tr 20px');*/
+	$('.tmp').each(function(i){
+		var val = $(this).text();
+		if (/^\+/.test(val)) {
+			$(this).css('color', 'blue');
+			$(this).css('font-weight', 'bold');
+		} else if (/^\-/.test(val)) {
+			$(this).css('color', 'red');
+			$(this).css('font-weight', 'bold');
+		}
+	});
+	/*
 	$('#summary_area').corner();
     $('#summary_area').containedStickyScroll({
         duration: 150,
         closeChar: ''
     });
+	*/
 });
 </script>
 
 
 <style type="text/css">
 <!--
+.tmp_day th {
+	font-size: 9px;
+	width: 25%;
+	background-image: -moz-linear-gradient(left, #FFFBC7, #C8A580);
+	color: #000000;
+	text-align: center;
+	vertical-align: middle;
+}
 td.tmp {
 	font-size: 9px;
-}
-td.tmp_l {
-	width: 55px;
-}
-td.tmp_r {
-	width: auto;
+	/*width: 25%;*/
+	text-align: center;
+	vertical-align: middle;
 }
 h1 {
     background-color: #FF5F00;
 }
-#wrapper{
-    width: 1240px;
-}
 #input_area {
 	float: left;
-	width: 950px;
+	width: 1300px;
 	height: auto;
 	margin: 4px;
 	padding: 10px;
@@ -96,9 +109,10 @@ input[type="text"] {
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
-    width: 32px;
+    width: 23px;
     height: 15px;
-	margin: 3px;
+	margin-top: 3px;
+	margin-bottom: 3px;
 }
 input[type="text"]:focus {
     border:solid 2px #FF4500;
@@ -109,7 +123,6 @@ input[type="text"]:focus {
 
 <div class="space_5"></div>
 <h1>ほげほげほげ</h1>
-<div id="wrapper">
 
 
 <div id="input_area">
@@ -137,13 +150,14 @@ input[type="text"]:focus {
 <td class="Total">hogehoge</td>
 <?php elseif (isset($yosan_week_info[$week_order])):?>
 <td class="<?php echo $week_order;?>">
-<table>
-<tr><td class="tmp tmp_l">ハウパ</td><td class="tmp tmp_r"><input type="text" value="aaaa" />件</td></tr>
-<tr><td class="tmp tmp_l">ハウストゥ</td><td class="tmp tmp_r"><input type="text" value="aaaa" />件</td></tr>
-<tr><td class="tmp tmp_l">既存店</td><td class="tmp tmp_r"><input type="text" value="aaaa" />件</td></tr>
-<tr><td class="tmp tmp_l">既存店西</td><td class="tmp tmp_r"><input type="text" value="aaaa" />件</td></tr>
-<tr><td class="tmp tmp_l">エイブル東</td><td class="tmp tmp_r"><input type="text" value="aaaa" />件</td></tr>
-<tr><td class="tmp tmp_l">エイブル西</td><td class="tmp tmp_r"><input type="text" value="aaaa" />件</td></tr>
+<table class="tmp_day">
+<tr><th>ch</th><th>予</th><th>実</th><th>差</th></tr>
+<tr><td class="tmp">ハウパ</td><td class="tmp"><input type="text" value="000" /></td><td class="tmp">99</td><td class="tmp">+5</td></tr>
+<tr><td class="tmp">ハウストゥ</td><td class="tmp"><input type="text" value="000" /></td><td class="tmp">99</td><td class="tmp">+2</td></tr>
+<tr><td class="tmp">既存店</td><td class="tmp"><input type="text" value="000" /></td><td class="tmp">99</td><td class="tmp">-7</td></tr>
+<tr><td class="tmp">既存店西</td><td class="tmp"><input type="text" value="000" /></td><td class="tmp">99</td><td class="tmp">0</td></tr>
+<tr><td class="tmp">エイブル東</td><td class="tmp"><input type="text" value="000" /></td><td class="tmp">99</td><td class="tmp">-4</td></tr>
+<tr><td class="tmp">エイブル西</td><td class="tmp"><input type="text" value="000" /></td><td class="tmp">99</td><td class="tmp">+1</td></tr>
 </table>
 </td>
 <?php else:?>
@@ -157,10 +171,11 @@ input[type="text"]:focus {
 <?php endforeach;?>
 </div>
 
+<!--
 <div id="summary_area">
 aaaaa
 </div>
+-->
+
 
 <div style="clear: both;"></div>
-
-</div>

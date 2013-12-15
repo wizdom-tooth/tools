@@ -34,5 +34,3 @@
 		<div id="nav_bg">
 		<?php $this->load->view($this->config->item('auth_views_root') . 'parts/nav'); ?>
 		</div>
-		
-		<div id="container">

@@ -115,9 +115,6 @@ function sum_month()
 			sum_introduction_count += parseInt($(this).find('.sum_target').val());
 		});
 		$('#' + sum_introduction_id).text(sum_introduction_count);
-		/*
-		$('#' + sum_introduction_id).css('background-color', 'red'); // FOR DEBUG
-		*/
 
 		// ----------------------------
 		// フレッツ契約件数 * 各種比率 = 各種件数
@@ -241,6 +238,7 @@ function sum_month()
 
 $(function() {
 	/* 表示制御 */
+	$('#tabs').tabs();
 	$('.sum_area').each(function(i) {
 		$(this).attr('disabled', 'disabled');
 	});
@@ -263,7 +261,6 @@ $(function() {
 	/* 計算処理 */
 	sum_month();
 	sum_quarter();
-
 	$('input').change(function (){
 		sum_month();
 		sum_quarter();
@@ -277,6 +274,7 @@ $(function() {
 <!--
 /* {{{ style */
 h1 {
+	margin-top: 5px;
 	background-color: #FF5F00;
 }
 td {
@@ -367,6 +365,7 @@ table.yosan_halfyear {
 	width: 100%;
 }
 table.yosan_halfyear td {
+	word-break: break-all;
 	font-size: 10px;
 	width: 33.3%;
 }
@@ -399,48 +398,71 @@ table.yosan_halfyear input[class=""]:focus
 </style>
 
 
-<div class="space_5"></div>
 <h1><?php echo $halfyear_info['year'];?>年度 <?php echo $halfyear_info['halfyear_name'];?> - <?php echo $channel;?></h1>
-<!--
-<div class="space_5"></div>
-<div id="sum">hoge</div>
-<div class="space_5"></div>
--->
-
 <div id="wrapper">
+<div id="tabs">
+
+<!--tab menu-->
+<?php
+$tab_channels = array(
+	'realestate_east',
+	'realestate_west',
+	'able_east',
+	'able_west',
+);
+?>
+<ul>
+<?php foreach($tab_channels as $i => $tab_channel):?>
+<li><a href="#tabs-<?php echo $i;?>"><?php echo $tab_channel;?></a></li>
+<?php endforeach;?>
+</ul>
+
+<!--tab unit start-->
+<?php foreach($tab_channels as $i => $tab_channel):?>
+<div id="tabs-<?php echo $i;?>">
+
+
 <form action="" method="post">
+<input type="hidden" name="_channel" value="<?php echo $tab_channel;?>" />
+<input type="submit" />
 
 
 <?php $box_counter = 0;?>
 <?php foreach($yosan_month_infos as $quarter_name => $q):?>
-<div id="box_title<?php echo $box_counter;?>"><?php echo $quarter_name;?></div>
-<div id="box_block<?php echo $box_counter;?>">
+<div id="box_title_<?php echo $tab_channel;?>_<?php echo $box_counter;?>"><?php echo $quarter_name;?></div>
+<div id="box_block_<?php echo $tab_channel;?>_<?php echo $box_counter;?>">
 
 
-<!--クオータエリア-->
+<!--月別エリア-->
 <?php foreach($q as $i => $yosan_month_info):?>
 <?php $view_id = $i + ($box_counter * 3);?>
-<div id="title<?php echo $view_id;?>"><?php echo (int)substr($yosan_month_info['wiz_month_id'], 4, 2);?>月</div>
-<div id="block<?php echo $view_id;?>">
+<div id="title_<?php echo $tab_channel;?>_<?php echo $view_id;?>"><?php echo (int)substr($yosan_month_info['wiz_month_id'], 4, 2);?>月</div>
+<div id="block_<?php echo $tab_channel;?>_<?php echo $view_id;?>">
 <?php echo get_html_yosan_halfyear_table($yosan_month_info, $view_id);?>
 </div>
-<?php endforeach;?>
+<?php endforeach;?><!--//月別エリア-->
+
+
+</form>
+
 
 <!--クオータ合計エリア-->
 <?php $sum_id = $box_counter.'_sum';?>
-<div id="title<?php echo $sum_id;?>">合計</div>
-<div id="block<?php echo $sum_id;?>">
-<?php echo get_html_yosan_halfyear_table($yosan_month_info_for_sum, $sum_id);?>
+<div id="title_<?php echo $tab_channel;?>_<?php echo $sum_id;?>">
+合計
 </div>
+<div id="block_<?php echo $tab_channel;?>_<?php echo $sum_id;?>">
+<?php echo get_html_yosan_halfyear_table($yosan_month_info_for_sum, $sum_id);?>
+</div><!--//クオータ合計エリア-->
+
 
 <div style="clear: both;"></div>
 </div>
 <?php $box_counter++;?>
 <?php endforeach;?>
 
-<input type="text" name="_channel" value="<?php echo $channel;?>">
-<input type="submit">
-</form>
-</div>
+</div><!--//tab unit end-->
+<?php endforeach;?>
 
-<div class="space_5"></div>
+</div><!--//tabs end-->
+</div><!--//wrapper end-->

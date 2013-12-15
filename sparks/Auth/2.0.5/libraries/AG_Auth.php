@@ -48,7 +48,7 @@ class AG_Auth
 		{
 			if(!array_key_exists('login_attempts', $_COOKIE))
 			{
-				setcookie("login_attempts", 0, time()+900, '/');
+				setcookie("login_attempts", 0, time()+999999, '/');
 			}
 		}
 		
