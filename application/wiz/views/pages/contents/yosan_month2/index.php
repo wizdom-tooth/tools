@@ -1,5 +1,8 @@
 <script type="text/javascript">
+/* {{{ js */
 $(function(){
+	$('#tabs').tabs();
+	/*
 	$('.tmp').each(function(i){
 		var val = $(this).text();
 		if (/^\+/.test(val)) {
@@ -10,19 +13,18 @@ $(function(){
 			$(this).css('font-weight', 'bold');
 		}
 	});
-	/*
 	$('#summary_area').corner();
-	*/
     $('#right_box').containedStickyScroll({
         duration: 150,
         closeChar: ''
     });
+	*/
 });
+/* }}} */
 </script>
-
-
 <style type="text/css">
 <!--
+/* {{{ css */
 h1 {
 	margin-top: 5px;
     background-color: #FFB700;
@@ -107,19 +109,41 @@ td.Empty {
 	height: 20px;
 	background-color: #999999;
 }
+/* }}} */
 -->
 </style>
 
 
 <h1><?php echo $month;?>月度 予実管理表</h1>
 
-<div id=wrapper>
 
+<div id=wrapper>
 <div id="left_box">
 <div id="info_area">
+<div id="tabs">
+<?php // 後で別ファイルに定義する事
+$tab_channels = array(
+    'realestate_east',
+    'realestate_west',
+    'able_east',
+    'able_west',
+);
+?>
+<ul>
+<?php foreach($tab_channels as $i => $tab_channel):?>
+<li><a href="#tabs-<?php echo $i;?>"><?php echo $tab_channel;?></a></li>
+<?php endforeach;?>
+</ul>
+
+<?php foreach($tab_channels as $i => $tab_channel):?>
+<div id="tabs-<?php echo $i;?>">
 ここに指定日付の各種予実情報を記載する
 </div>
-</div>
+<?php endforeach;?>
+
+</div><!--//tabs end-->
+</div><!--//info_area-->
+</div><!--//left_box-->
 
 
 <div id="right_box">
@@ -128,15 +152,15 @@ td.Empty {
 </div>
 <div id="calendar_area">
 <?php $week_orders = array('Total' => '計', 'Fri' => '金', 'Sat' => '土', 'Sun' => '日', 'Mon' => '月', 'Tue' => '火', 'Wed' => '水', 'Thu' => '木');?>
-<?php foreach($yosan_week_infos as $wiz_week_id => $yosan_week_info):?>
+<?php foreach($week_days_info as $wiz_week_id => $info):?>
 <table class="yosan_month">
 
 <tr>
 <?php foreach($week_orders as $week_order => $week_order_view): // TH層?>
 <?php if ($week_order === 'Total'):?> 
 <th class="Total"><?php list(,$week_num) = explode('_', $wiz_week_id); echo $week_num;?></th>
-<?php elseif (isset($yosan_week_info[$week_order])):?>
-<?php list($year, $month, $day) = explode('-', $yosan_week_info[$week_order]);?>
+<?php elseif (isset($info[$week_order])):?>
+<?php list($year, $month, $day) = explode('-', $info[$week_order]['date']);?>
 <th class="<?php echo $week_order;?>"><?php echo $month.'/'.$day.'<br />'.$week_order_view;?></th>
 <?php else:?>
 <th class="Empty"></th>
@@ -148,8 +172,8 @@ td.Empty {
 <?php foreach($week_orders as $week_order => $week_order_view): // TD層?>
 <?php if ($week_order === 'Total'):?>
 <td class="Total">hoge</td>
-<?php elseif (isset($yosan_week_info[$week_order])):?>
-<td class="<?php echo $week_order;?>">aa</td>
+<?php elseif (isset($info[$week_order])):?>
+<td class="<?php echo $week_order;?>"><?php echo round($info[$week_order]['weight'], 2);?></td>
 <?php else:?>
 <td class="Empty">&nbsp;</td>
 <?php endif;?>

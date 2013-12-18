@@ -216,6 +216,47 @@ class Cron extends CI_Controller {
 		return $wiz_quarter_id;
 	}
 
+	// 祝日マスタ作成
+	public function create_holiday_mst()
+	{
+		$this->_db_wizp = $this->load->database('wizp', TRUE);
+		$holidays = array();
+		for ($y = 2010; $y <= 2040; $y++)
+		{
+			$holidays_url = sprintf(
+				'http://www.google.com/calendar/feeds/%s/public/full-noattendees?start-min=%s&start-max=%s&max-results=%d&alt=json' ,
+				'outid3el0qkcrsuf89fltf7a4qbacgt9@import.calendar.google.com' , // 'japanese@holiday.calendar.google.com' ,
+				$y.'-01-01',    // 取得開始日
+				$y.'-12-31',
+				50              // 最大取得数
+			);
+			if ( ! $results = file_get_contents($holidays_url))
+			{
+				trigger_error('aaaaa');
+			}
+			$results = json_decode($results, TRUE);
+			foreach($results['feed']['entry'] as $val) {
+				$date = $val['gd$when'][0]['startTime']; // 日付を取得
+				list($title) = explode(' / ', $val['title']['$t']); // 何の日かを取得
+				$holidays[$date] = $title; // 日付をキーに、祝日名を値に格納
+			}
+		}
+		ksort($holidays);
+		foreach ($holidays as $date => $name)
+		{
+			$sql = ''.
+				'REPLACE INTO '.
+					'holiday_mst '.
+				'VALUES '.
+					'('.
+						"'{$date}',".
+						"'{$name}'".
+					')';
+			$query = $this->_db_wizp->query($sql);
+		}
+		echo 'all green';
+	}
+
 	// 月次マスタ作成
 	public function create_wiz_month_mst()
 	{

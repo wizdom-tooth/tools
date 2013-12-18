@@ -3,6 +3,7 @@
 class Yosan_Month2 extends CI_Controller_With_Auth {
 
 	private $_db = NULL;
+	private $_wiz_month_id = NULL;
 
 	public function __construct()
 	{
@@ -12,7 +13,20 @@ class Yosan_Month2 extends CI_Controller_With_Auth {
 		$this->load->helper('wiz_template');
 		$this->_db = $this->load->database('wizp', TRUE);
 		$this->config->load('wiz_config');
-		$this->load->library('yosanmonth');
+
+        // 対象半期整理
+		if ($this->input->get_post('wiz_month_id') === FALSE)
+		{
+			$this->_wiz_month_id = get_wiz_month_id();
+		}
+		else
+		{
+			$this->_wiz_month_id = $this->input->get_post('wiz_month_id');
+		}
+		$params = array(
+			'wiz_month_id' => $this->_wiz_month_id,
+		);
+		$this->load->library('wizweek', $params);
 		/*
 		$this->config->load('wiz_form');
         $this->config->load('input_yosan_calendar');
@@ -24,30 +38,24 @@ class Yosan_Month2 extends CI_Controller_With_Auth {
 
 	public function index()
 	{
-
-        // 対象半期整理
-		if ($this->input->get_post('wiz_month_id') === FALSE)
-		{
-			$wiz_month_id = get_wiz_month_id();
-		}
-		else
-		{
-			$wiz_month_id = $this->input->get_post('wiz_month_id');
-		}
+		$week_days_info = $this->wizweek->get_week_days_info();
 
         // 対象チャネル整理
+		/*
 		$channel = $this->input->get_post('_channel');
 		if ($channel === FALSE)
 		{
 			$channel = 'realestate_east';
 		}
+		*/
 
 		// --------------------
 		// 対象期間情報取得
 		// --------------------
 
+/*
 		$yosan_week_infos = array();
-		$w_infos = get_wiz_week_infos_from_wiz_month_id($wiz_month_id);
+		$w_infos = get_wiz_week_infos_from_wiz_month_id($this->_wiz_month_id);
 		if ($w_infos === FALSE)
 		{
 			// do error handling ********
@@ -74,6 +82,7 @@ class Yosan_Month2 extends CI_Controller_With_Auth {
 			}
 			while ($target_date <= $to_date);
 		}
+*/
 
 		// --------------------
 		// 予算情報を書き出す
@@ -141,6 +150,7 @@ if ($post !== FALSE)
 */
 
 		// 対象月の予算情報を取り出す
+		/*
 		$yosan_month_info = get_yosan_month_info($channel, $wiz_month_id);
 		$this->yosanmonth->init($yosan_month_info);
 		$introduction_info = $this->yosanmonth->get('introduction_info');
@@ -151,6 +161,7 @@ if ($post !== FALSE)
 		$flets_option_set_count_info = $this->yosanmonth->get('flets_option_set_count_info');
 		$sum_iten_contract_count = $this->yosanmonth->get('sum_iten_contract_count');
 		$sum_iten_isp_set_count = $this->yosanmonth->get('sum_iten_isp_set_count');
+		*/
 
 
 /*
@@ -252,11 +263,11 @@ var_dump($target_monthes);
 
 //var_dump($yosan_week_infos);
 
-		list($year, $month) = sscanf($wiz_month_id, '%4d%2d');
+		list($year, $month) = sscanf($this->_wiz_month_id, '%4d%2d');
 
 		$data = array(
 			//'halfyear_info' => get_wiz_halfyear_info($halfyear),
-			'yosan_week_infos' => $yosan_week_infos,
+			'week_days_info' => $week_days_info,
 			'year' => $year,
 			'month' => $month,
 			//'yosan_month_info_for_sum' => get_yosan_month_info($channel, 'empty'),
