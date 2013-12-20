@@ -216,6 +216,81 @@ class Cron extends CI_Controller {
 		return $wiz_quarter_id;
 	}
 
+    public function create_weekday_weight_mst()
+    {
+		$this->_db_wizp = $this->load->database('wizp', TRUE);
+
+        // 日毎の照会件数
+		$intro_counts_by_date = array();
+        $sql = 'select date, count(*) as count from addup group by date order by date';
+        $query = $this->_db_wizp->query($sql);
+        $intro_counts_by_date = $query->result_array();
+
+        // 祝日マスタ
+		$holidays = array();
+        $sql = 'select date, name from holiday_mst order by date';
+        $query = $this->_db_wizp->query($sql);
+        foreach ($query->result_array() as $tmp)
+		{
+			$holidays[$tmp['date']] = $tmp['name'];
+		}
+
+		// 曜日毎に集計
+        $intro_counts_by_weekday = array();
+        foreach ($intro_counts_by_date as $intro_counts)
+        {
+			$date  = $intro_counts['date'];
+			$count = $intro_counts['count'];
+
+			// 対象日の曜日或いは祝日かどうか
+			if (isset($holidays[$date]))
+			{
+				$weekday = 'Hol';
+			}
+			else
+			{
+				$weekday = date('D', strtotime($date));
+			}
+			// 集計用配列を初期化
+			if ( ! isset($intro_counts_by_weekday[$weekday]))
+			{
+				$intro_counts_by_weekday[$weekday] = array();
+			}
+			
+            $intro_counts_by_weekday[$weekday][] = $intro_counts['count'];
+        }
+
+		// 曜日毎の1日の平均件数を取得
+		$intro_counts_by_weekday_avg = array();
+		foreach ($intro_counts_by_weekday as $weekday => $counts)
+		{
+			$intro_counts_by_weekday_avg[$weekday] = array_sum($counts) / count($counts);
+		}
+
+		// 曜日毎の比率を計算
+        $base_count = min($intro_counts_by_weekday_avg);
+        $weekday_weights = array();
+        foreach ($intro_counts_by_weekday_avg as $weekday => $count)
+        {
+            $weekday_weights[$weekday] = round($count / $base_count, 3);
+        }
+
+		// DBに書き出す
+		foreach ($weekday_weights as $weekday => $weight)
+		{
+			$sql = ''.
+				'REPLACE INTO '.
+					'weekday_weight_mst '.
+				'VALUES '.
+					'('.
+						"'{$weekday}',".
+						"'{$weight}'".
+					')';
+			$this->_db_wizp->query($sql);
+		}
+		echo 'all green.';
+	}
+
 	// 祝日マスタ作成
 	public function create_holiday_mst()
 	{

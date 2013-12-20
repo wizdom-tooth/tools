@@ -27,6 +27,7 @@ class Yosan_Month2 extends CI_Controller_With_Auth {
 			'wiz_month_id' => $this->_wiz_month_id,
 		);
 		$this->load->library('wizweek', $params);
+
 		/*
 		$this->config->load('wiz_form');
         $this->config->load('input_yosan_calendar');

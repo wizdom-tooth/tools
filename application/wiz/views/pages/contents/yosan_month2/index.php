@@ -41,7 +41,7 @@ th, td {
 }
 #left_box {
 	float: left;
-	width: 850px;
+	width: 650px;
 	height: auto;
 }
 #right_box {
@@ -86,18 +86,18 @@ th.Mon, th.Tue, th.Wed, th.Thu, th.Fri {
 	background-image: -moz-linear-gradient(left, #EFB98F, #C8A580);
 }
 th.Sat {
-	background-color: #64A8D1;
+	background-image: -moz-linear-gradient(left, #64A8D1, #462B83);
 }
-th.Sun {
-	background-color: #FF8673;
+th.Sun, th.Hol {
+	background-image: -moz-linear-gradient(left, #FF8673, #F30021);
 }
 th.Total {
-	background-color: #138900;
+	background-image: -moz-linear-gradient(left, #83F03C, #138900);
 }
 th.Empty {
 	background-color: #999999;
 }
-td.Mon, td.Tue, td.Wed, td.Thu, td.Fri, td.Sat, td.Sun {
+td.Mon, td.Tue, td.Wed, td.Thu, td.Fri, td.Sat, td.Sun, td.Hol {
 	height: 20px;
 	background-image: -moz-linear-gradient(left, #FFFFFF, #FFFFD0);
 }
@@ -108,6 +108,12 @@ td.Total {
 td.Empty {
 	height: 20px;
 	background-color: #999999;
+}
+.today {
+    font-size: 15px;
+    font-weight: bold;
+    color: red;
+    margin-right: 3px;
 }
 /* }}} */
 -->
@@ -160,8 +166,13 @@ $tab_channels = array(
 <?php if ($week_order === 'Total'):?> 
 <th class="Total"><?php list(,$week_num) = explode('_', $wiz_week_id); echo $week_num;?></th>
 <?php elseif (isset($info[$week_order])):?>
+<?php $today = (date('Y-m-d') === $info[$week_order]['date']) ? '*' : ''; ?>
 <?php list($year, $month, $day) = explode('-', $info[$week_order]['date']);?>
-<th class="<?php echo $week_order;?>"><?php echo $month.'/'.$day.'<br />'.$week_order_view;?></th>
+<th class="<?php echo ($info[$week_order]['holiday'] === TRUE) ? 'Hol' : $week_order;?>">
+<?php echo $month.'/'.$day;?><br />
+<span class="today"><?php echo $today;?></span>
+<?php echo $week_order_view;?>
+</th>
 <?php else:?>
 <th class="Empty"></th>
 <?php endif;?>
@@ -173,7 +184,7 @@ $tab_channels = array(
 <?php if ($week_order === 'Total'):?>
 <td class="Total">hoge</td>
 <?php elseif (isset($info[$week_order])):?>
-<td class="<?php echo $week_order;?>"><?php echo round($info[$week_order]['weight'], 2);?></td>
+<td class="<?php echo ($info[$week_order]['holiday'] === TRUE) ? 'Hol' : $week_order;?>"><?php echo round($info[$week_order]['weight'] * 100, 2);?></td>
 <?php else:?>
 <td class="Empty">&nbsp;</td>
 <?php endif;?>

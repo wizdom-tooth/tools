@@ -5,21 +5,12 @@ class Wizweek {
 	private $_CI = NULL;
 	private $_db = NULL;
 	private $_wiz_month_id = '';
+	private $_holidays = array();
+	private $_suspends = array();
 	private $_week_raw_info = array();
 	private $_week_days_info = array();
 	private $_week_weight_info = array();
-
-	// 仮 >>> 設定情報取り出し 
-	private $_month_count = '1000'; 
-	private $_weekday_weights = array( 
-		'Mon' => '1', 
-		'Tue' => '1', 
-		'Wed' => '1', 
-		'Thu' => '1', 
-		'Fri' => '1', 
-		'Sat' => '2', 
-		'Sun' => '3', 
-	); 
+	private $_weekday_weights = array();
 
     public function __construct($params)
     {
@@ -27,7 +18,44 @@ class Wizweek {
 		$this->_CI->config->load('wiz_config');
 		$this->_db = $this->_CI->load->database('wizp', TRUE);
 		$this->_wiz_month_id = $params['wiz_month_id'];
+		$this->_set_weekday_weights();
+
+        // 祝日マスタ
+        $holidays = array();
+        $sql = 'select date, name from holiday_mst order by date';
+        $query = $this->_db->query($sql);
+        foreach ($query->result_array() as $tmp)
+        {
+            $this->_holidays[$tmp['date']] = $tmp['name'];
+        }
+
+        // 休業日マスタ
+        $wiz_suspends = array();
+        $sql = 'select date from wiz_suspend_mst order by date';
+        $query = $this->_db->query($sql);
+        foreach ($query->result_array() as $tmp)
+        {
+            $this->_suspends[$tmp['date']] = '';
+        }
     }
+
+	// 曜日の重みづけ取得
+    private function _set_weekday_weights()
+	{
+		$sql = ''.
+			'SELECT '.
+				'weekday, '.
+				'weight '.
+			'FROM '.
+				'weekday_weight_mst';
+		$query = $this->_db->query($sql);
+		foreach ($query->result_array() as $tmp)
+		{
+			$weekday = $tmp['weekday'];
+			$weight  = $tmp['weight'];
+			$this->_weekday_weights[$weekday] = $weight;
+		}
+	}
 
 	// 加工なし
     public function get_week_raw_info($week_num = 9)
@@ -91,14 +119,24 @@ class Wizweek {
 			list($cur_year, $cur_month, $cur_day) = explode('-', $cur_date);
 			$cur_date_timestamp = mktime(0, 0, 0, $cur_month, $cur_day, $cur_year);
 			$cur_date_weekday = date('D', $cur_date_timestamp);
+			$cur_date_is_holiday = (isset($this->_holidays[$cur_date])) ? TRUE : FALSE;
+			$cur_date_is_suspend = (isset($this->_suspends[$cur_date])) ? TRUE : FALSE;
 
 			do {
-				// ex) $yosan_week_infos['201312_1']['Mon']['date'] = '2013-12-18';
-				$this->_week_days_info[$wiz_week_id][$cur_date_weekday]['date'] = $cur_date;
+				if ($cur_date_is_suspend === FALSE)
+				{ 
+					// ex) $yosan_week_infos['201312_1']['Mon']['date'] = '2013-12-18';
+					$this->_week_days_info[$wiz_week_id][$cur_date_weekday] = array(
+						'date'    => $cur_date,
+						'holiday' => $cur_date_is_holiday,
+					);
+				}
 				// 日付を1日進める
 				$cur_date_timestamp = strtotime('+1 day', $cur_date_timestamp);
 				$cur_date = date('Y-m-d', $cur_date_timestamp);
 				$cur_date_weekday = date('D', $cur_date_timestamp);
+				$cur_date_is_holiday = (isset($this->_holidays[$cur_date])) ? TRUE : FALSE;
+				$cur_date_is_suspend = (isset($this->_suspends[$cur_date])) ? TRUE : FALSE;
 			}
 			while ($cur_date <= $to_date);
 		}
@@ -107,9 +145,10 @@ class Wizweek {
 		foreach ($this->_week_days_info as $wiz_week_id => $week_days_info)
 		{
 			$this->_week_weight_info[$wiz_week_id] = 0;
-			foreach (array_keys($week_days_info) as $weekday)
+			foreach ($week_days_info as $weekday => $day_info)
 			{
-				$this->_week_weight_info[$wiz_week_id] += $this->get_weekday_weight($weekday);
+				$weekday_id = ($day_info['holiday'] === TRUE) ? 'Hol' : $weekday;
+				$this->_week_weight_info[$wiz_week_id] += $this->get_weekday_weight($weekday_id);
 			}
 		}
 
@@ -118,9 +157,10 @@ class Wizweek {
 		{
 			foreach ($week_days_info as $weekday => $day_info)
 			{
+				$weekday_id = ($day_info['holiday'] === TRUE) ? 'Hol' : $weekday;
 				$this->_week_days_info[$wiz_week_id][$weekday]['weight'] = 
 					($this->_week_weight_info[$wiz_week_id] / array_sum($this->_week_weight_info)) *
-					($this->get_weekday_weight($weekday) / $this->_week_weight_info[$wiz_week_id]);
+					($this->get_weekday_weight($weekday_id) / $this->_week_weight_info[$wiz_week_id]);
 			}
 		}
 	}
