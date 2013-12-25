@@ -14,6 +14,11 @@ class Wizweek {
 
     public function __construct($params)
     {
+		if ( ! isset($params['wiz_month_id']))
+		{
+			trigger_error('please set param ... wiz_month_id.');
+		}
+
 		$this->_CI =& get_instance();
 		$this->_CI->config->load('wiz_config');
 		$this->_db = $this->_CI->load->database('wizp', TRUE);
@@ -97,6 +102,25 @@ class Wizweek {
 	}
 
 	// 各種日付情報を付与する
+	public function get_day_info($date)
+	{
+		$this->_set_week_days_info();
+		foreach ($this->_week_days_info as $week_info)
+		{
+			foreach ($week_info as $day_info)
+			{
+				if ($day_info['date'] === $date)
+				{
+					return $day_info;
+				}
+				else
+				{
+					continue;
+				}
+			}
+		}
+		trigger_error('following date is not found ... '.$date);
+	}
 	public function get_week_days_info()
 	{
 		$this->_set_week_days_info();
