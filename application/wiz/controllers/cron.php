@@ -511,9 +511,6 @@ class Cron extends CI_Controller {
 		$success_count = 1;
 		$skip_message = array();
 
-		$i_or_cs = array('introduction', 'contract');
-		$date_kinds = array('month', 'week');
-
 		while (($line = fgets($fpr)) !== FALSE)
 		{
 			$line = mb_convert_encoding($line, 'UTF-8', 'SJIS'); // UTF8に変換
@@ -522,42 +519,78 @@ class Cron extends CI_Controller {
 			$line = mb_convert_kana($line, 'KVa', 'UTF-8'); // 全半角統一
 			$line = strtoupper($line); // 小文字アルファベットを大文字に統一
 
-			$fields = explode("\t", $line);
+			$tmp    = array();
+			$fields = array();
+
+			$tmp = explode("\t", $line);
+			$fields = array(
+				'id'                 => $tmp[0],
+				'date'               => $tmp[1],
+				'time_zone'          => $tmp[2],
+				'store_id'           => $tmp[3],
+				'store_name'         => $tmp[4],
+				'channel'            => $tmp[5],
+				'area'               => $tmp[6],
+				'pref'               => $tmp[7],
+				'east_or_west'       => $tmp[8],
+				'status'             => $tmp[9],
+				'contract_time_zone' => $tmp[10],
+				'service'            => $tmp[11],
+				'hikari'             => $tmp[12],
+				'isp'                => $tmp[13],
+				'hikari_tel'         => $tmp[14],
+				'virus'              => $tmp[15],
+				'remote'             => $tmp[16],
+				'router'             => $tmp[17],
+				'contract_date'      => $tmp[18],
+				'user_name'          => $tmp[19],
+				'hikari_tv'          => $tmp[20],
+				'benefit'            => $tmp[21],
+				'complete_date'      => $tmp[22],
+			);
+
 			foreach ($fields as $j => $field)
 			{
 				$fields[$j] = preg_replace('/\s+/', '', $field); // ホワイトスペースのストリップ
 			}
-			$introduction_date = $fields[1] = date('Ymd', strtotime($fields[1])); // 紹介日 日付フォーマット変更
-			$contract_date = $fields[18] = date('Ymd', strtotime($fields[18])); // 契約日 日付フォーマット変更
-			if ($contract_date === '19700101')
+
+			$fields['date']          = date('Ymd', strtotime($fields['date'])); // 紹介日 日付フォーマット変更
+			$fields['contract_date'] = date('Ymd', strtotime($fields['contract_date'])); // 契約日 日付フォーマット変更
+			$fields['complete_date'] = date('Ymd', strtotime($fields['complete_date'])); // 工事日 日付フォーマット変更
+
+			if ($fields['contract_date'] === '19700101')
 			{
-				$contract_date = $fields[18] = '';
+				$fields['contract_date'] = null;
+			}
+			if ($fields['complete_date'] === '19700101')
+			{
+				$fields['complete_date'] = null;
 			}
 
 			// 不正なデータをスキップ
-			$is_invlid_emptyid = FALSE;
-			$is_invlid_date = FALSE;
+			$is_invlid_emptyid  = FALSE;
+			$is_invlid_date     = FALSE;
 			$is_invlid_timezone = FALSE;
 
-			if (empty($fields[0]))
+			if (empty($fields['id']))
 			{
 				$is_invlid_emptyid = TRUE;
 				$message = ''.
-					"LINE NUMBER:[{$i}] VALINE:[{$fields[0]}] - invalid id.";
+					"LINE NUMBER:[{$i}] VALINE:[{$fields['id']}] - invalid id.";
 				$skip_message[] = $message;
 			}
-			elseif ($fields[1] === '19700101')
+			elseif ($fields['date'] === '19700101')
 			{
 				$is_invlid_date = TRUE;
 				$message = ''.
-					"LINE NUMBER:[{$i}] VALINE:[{$fields[1]}] - invalid date.";
+					"LINE NUMBER:[{$i}] VALINE:[{$fields['date']}] - invalid date.";
 				$skip_message[] = $message;
 			}
-			elseif ( ! preg_match('/^[A-Z].+$/', $fields[2]))
+			elseif ( ! preg_match('/^[A-Z].+$/', $fields['time_zone']))
 			{
 				$is_invlid_timezone = TRUE;
 				$message = ''.
-					"LINE NUMBER:[{$i}] VALINE:[{$fields[2]}] - invalid timezone.";
+					"LINE NUMBER:[{$i}] VALINE:[{$fields['time_zone']}] - invalid timezone.";
 				$skip_message[] = $message;
 			}
 
@@ -565,42 +598,6 @@ class Cron extends CI_Controller {
 			{
 				continue;
 			}
-
-			// 紹介日と契約日の月ID及び週IDを取り出す
-			foreach ($i_or_cs as $i_or_c)
-			{
-				foreach ($date_kinds as $date_kind)
-				{
-					$target_date_var = "{$i_or_c}_date";
-					$target_date = $$target_date_var;
-					$select_field_name = "wiz_{$date_kind}_id";
-					$table_name = "wiz_{$date_kind}_mst";
-					$pickup_var = $i_or_c.'_'.$select_field_name;
-
-					if ($target_date !== '')
-					{
-						$sql = "SELECT $select_field_name FROM $table_name WHERE from_date <= '$target_date' AND to_date >= '$target_date'";
-						$query = $this->_db_wizp->query($sql);
-						if ($query->num_rows() > 0)
-						{
-							$row = $query->row();
-							$$pickup_var = $row->$select_field_name;
-						}
-						else
-						{
-							$$pickup_var = '';
-						}
-					}
-					else
-					{
-						$$pickup_var = '';
-					}
-				}
-			}
-			$fields[] = $introduction_wiz_month_id;
-			$fields[] = $introduction_wiz_week_id;
-			$fields[] = $contract_wiz_month_id;
-			$fields[] = $contract_wiz_week_id;
 
 			$line = implode("\t", $fields)."\n";
 			fputs($fpw, $line);

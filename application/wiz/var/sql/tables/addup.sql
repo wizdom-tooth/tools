@@ -26,10 +26,7 @@ CREATE TABLE `addup` (
   `user_name` varchar(100),
   `hikari_tv` varchar(100) NOT NULL,
   `benefit` varchar(100),
-  `introduction_wiz_month_id` varchar(6) NOT NULL,
-  `introduction_wiz_week_id` varchar(8) NOT NULL,
-  `contract_wiz_month_id` varchar(6),
-  `contract_wiz_week_id` varchar(8),
+  `complete_date` date,
   PRIMARY KEY (`id`),
   INDEX (`date`),
   INDEX (`time_zone`),
@@ -38,8 +35,5 @@ CREATE TABLE `addup` (
   INDEX (`contract_time_zone`),
   INDEX (`service`),
   INDEX (`contract_date`),
-  INDEX (`introduction_wiz_month_id`),
-  INDEX (`introduction_wiz_week_id`),
-  INDEX (`contract_wiz_month_id`),
-  INDEX (`contract_wiz_week_id`)
+  INDEX (`complete_date`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;

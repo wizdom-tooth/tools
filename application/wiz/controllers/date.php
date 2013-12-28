@@ -28,7 +28,35 @@ class Date extends CI_Controller_With_Auth {
 
 	public function index()
 	{
-        $sql = "select * from addup where date = '{$this->_date}'";
+        $sql = ''.
+			'select '.
+				'id, '.
+				'date, '.
+				'time_zone, '.
+				'store_id, '.
+				'store_name, '.
+				'channel, '.
+				'area, '.
+				'pref, '.
+				'east_or_west, '.
+				'status, '.
+				'contract_time_zone, '.
+				'service, '.
+				'hikari, '.
+				'isp, '.
+				'hikari_tel, '.
+				'virus, '.
+				'remote, '.
+				'router, '.
+				'replace(contract_date, "0000-00-00", "") as contract_date, '.
+				'user_name, '.
+				'hikari_tv, '.
+				'benefit, '.
+				'replace(complete_date, "0000-00-00", "") as complete_date '.
+			'from '.
+				'addup '.
+			'where '.
+				"date = '{$this->_date}'";
         $query = $this->_db->query($sql);
         $addup_info = $query->result_array();
 
