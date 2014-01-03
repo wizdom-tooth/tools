@@ -1,7 +1,7 @@
 <script type="text/javascript">
 /* {{{ js */
 
-google.load('visualization', '1', {packages:['table', 'corechart']});
+google.load('visualization', '1', {packages:['table', 'corechart', 'gauge']});
 google.setOnLoadCallback(init);
 
 var raw_data = [
@@ -72,20 +72,33 @@ function draw(tab_kind){
 	// サマリ描画
 	// ---------------------
 
-	var summary_count = google.visualization.arrayToDataTable([
-		['phase', 'count', {role:'style'}, {role:'annotation'}],
-		['紹介', intro_count,    '#b87333', intro_count],
-		['契約', contract_count, 'silver',  contract_count],
-		['完成', complete_count, 'gold',    complete_count],
+	var ratio = Math.round((intro_count / <?php echo $yosan_intro_count;?>) * 100);
+	var summary_intro_ratio_init = google.visualization.arrayToDataTable([
+		['Label', 'Value'],
+		['紹介消化率', 0]
+	]);
+	var summary_intro_ratio = google.visualization.arrayToDataTable([
+		['Label', 'Value'],
+		['紹介消化率', ratio]
 	]);
 
-	var summary_option = {
-		title: "件数サマリ",
-		bar: {groupWidth: "80%"},
-		legend: "none",
+	var options = {
+		width: 200,
+		height: 200,
+		redFrom: 95,
+		redTo: 100,
+		minorTicks: 5,
+		animation:{
+			duration: 1000,
+			easing: 'out',
+		},
 	};
-	var summary = new google.visualization.ColumnChart(document.getElementById("summary"));
-	summary.draw(summary_count, summary_option);
+
+	var summary_intro = new google.visualization.Gauge(document.getElementById('summary_intro'));
+	summary_intro.draw(summary_intro_ratio_init, options);
+    setTimeout(function(){
+		summary_intro.draw(summary_intro_ratio, options);
+    }, 600);
 
 	// ---------------------
 	// 描画対象データを選択
@@ -249,7 +262,7 @@ div.chart_label {
 <div id=wrapper>
 <div id="left_box">
 <div id="info_area">
-<div id="summary"></div>
+<div id="summary_intro"></div>
 
 <div id="tabs">
 <?php // 後で別ファイルに定義する事
