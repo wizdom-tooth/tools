@@ -547,6 +547,8 @@ class Cron extends CI_Controller {
 				'hikari_tv'          => $tmp[20],
 				'benefit'            => $tmp[21],
 				'complete_date'      => $tmp[22],
+				'wiz_month_id'       => '',
+				'wiz_week_id'        => '',
 			);
 
 			foreach ($fields as $j => $field)
@@ -557,6 +559,8 @@ class Cron extends CI_Controller {
 			$fields['date']          = date('Ymd', strtotime($fields['date'])); // 紹介日 日付フォーマット変更
 			$fields['contract_date'] = date('Ymd', strtotime($fields['contract_date'])); // 契約日 日付フォーマット変更
 			$fields['complete_date'] = date('Ymd', strtotime($fields['complete_date'])); // 工事日 日付フォーマット変更
+			$fields['wiz_month_id']  = get_wiz_month_id($fields['date']);
+			$fields['wiz_week_id']   = get_wiz_week_id($fields['date']);
 
 			if ($fields['contract_date'] === '19700101')
 			{

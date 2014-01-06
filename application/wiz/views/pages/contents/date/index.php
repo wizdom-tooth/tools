@@ -53,20 +53,15 @@ function draw(tab_kind){
 	contract_data.hideRows(contract_data.getFilteredRows([{column:18, value:''}]));
 
 	// 完成データ
+	/*
 	var complete_data = new google.visualization.DataView(data);
 	complete_data.setRows(complete_data.getViewRows());
 	complete_data.hideRows(complete_data.getFilteredRows([{column:22, value:''}]));
+	*/
 
 	intro_count    = data.getNumberOfRows();
 	contract_count = contract_data.getNumberOfRows();
-	complete_count = complete_data.getNumberOfRows();
-
-	// DEBUG************************
-	if (tab_kind == 'tab-raw') {
-		var table = new google.visualization.Table(document.getElementById('table'));
-		table.draw(data);
-		return;
-	}
+	//complete_count = complete_data.getNumberOfRows();
 
 	// ---------------------
 	// サマリ描画
@@ -82,6 +77,7 @@ function draw(tab_kind){
 		['紹介消化率', ratio]
 	]);
 
+	/*
 	var options = {
 		width: 200,
 		height: 200,
@@ -93,12 +89,37 @@ function draw(tab_kind){
 			easing: 'out',
 		},
 	};
+	*/
 
+	var options = {
+		animation:{
+			duration: 1000,
+			easing: 'out',
+		},
+		legend: { position: "none" },
+		hAxis:{
+			//viewWindowMode: 'explicit',
+			//viewWindowMode: 'maximized',
+			viewWindow:{ min: 0, max: 100, },
+			gridlines:{ count: 2, },
+			//maxValue: 150,
+			baseline: 0,
+		},
+	};
+
+	var yojistu_done_intro = new google.visualization.BarChart(document.getElementById('yojistu_done_intro'));
+	yojistu_done_intro.draw(summary_intro_ratio_init, options);
+    setTimeout(function(){
+		yojistu_done_intro.draw(summary_intro_ratio, options);
+    }, 600);
+
+	/*
 	var summary_intro = new google.visualization.Gauge(document.getElementById('summary_intro'));
 	summary_intro.draw(summary_intro_ratio_init, options);
     setTimeout(function(){
 		summary_intro.draw(summary_intro_ratio, options);
     }, 600);
+	*/
 
 	// ---------------------
 	// 描画対象データを選択
@@ -228,10 +249,8 @@ th, td {
 	width: auto;
 	height: auto;
 	margin: 4px 0px 4px 0px;
+    padding: 2px;
 	background-color: #FFF799;
-}
-#summary {
-	padding: 4px;
 }
 .chart_wrapper {
 	float: left;
@@ -262,14 +281,13 @@ div.chart_label {
 <div id=wrapper>
 <div id="left_box">
 <div id="info_area">
-<div id="summary_intro"></div>
 
 <div id="tabs">
 <?php // 後で別ファイルに定義する事
 $tabs = array(
 	'intro'    => '紹介',
     'contract' => '契約',
-    'complete' => '完成',
+    //'complete' => '完成',
 );
 ?>
 
@@ -279,43 +297,85 @@ $tabs = array(
 <?php endforeach;?>
 </ul>
 
-<?php foreach($tabs as $title => $name):?>
-<div id="tab-<?php echo $title;?>">
+<div id="tab-intro">
+
+<!--
+<div class="chart_wrapper">
+<div class="chart_label">紹介予算消化率</div>
+<hr class="chart_label" />
+<div id="summary_intro"></div>
+</div>
+<div style="clear: both;"></div>
+-->
+
+
+<div class="chart_wrapper">
+<div class="chart_label">紹介予算消化率</div>
+<hr class="chart_label" />
+<div id="yojistu_done_intro"></div>
+</div>
+<div style="clear: both;"></div>
+
+
 
 <div class="chart_wrapper">
 <div class="chart_label">チャネル別集計</div>
 <hr class="chart_label" />
-<div class="chart_unit chart_unit_table" id="tab-<?php echo $title;?>_table_channel"></div>
-<div class="chart_unit" id="tab-<?php echo $title;?>_pie_channel"></div>
+<div class="chart_unit chart_unit_table" id="tab-intro_table_channel"></div>
+<div class="chart_unit" id="tab-intro_pie_channel"></div>
 <div style="clear: both;"></div>
 </div>
-
 <div class="chart_wrapper">
 <div class="chart_label">時間帯別集計</div>
 <hr class="chart_label" />
-<div class="chart_unit chart_unit_table" id="tab-<?php echo $title;?>_table_timezone"></div>
-<div class="chart_unit" id="tab-<?php echo $title;?>_pie_timezone"></div>
+<div class="chart_unit chart_unit_table" id="tab-intro_table_timezone"></div>
+<div class="chart_unit" id="tab-intro_pie_timezone"></div>
 <div style="clear: both;"></div>
 </div>
-
 <div style="clear: both;"></div>
-
 <div class="chart_wrapper">
 <div class="chart_label">担当者別集計</div>
 <hr class="chart_label" />
-<div class="chart_unit chart_unit_table" id="tab-<?php echo $title;?>_table_staff"></div>
-<div class="chart_unit" id="tab-<?php echo $title;?>_pie_staff"></div>
+<div class="chart_unit chart_unit_table" id="tab-intro_table_staff"></div>
+<div class="chart_unit" id="tab-intro_pie_staff"></div>
 <div style="clear: both;"></div>
 </div>
-
 <div style="clear: both;"></div>
-
 <div class="chart_label">データテーブル</div>
 <hr class="chart_label" />
-<div class="float_left" id="tab-<?php echo $title;?>_table"></div>
-
+<div class="float_left" id="tab-intro_table"></div>
 </div>
-<?php endforeach;?>
+
+
+<div id="tab-contract">
+<div class="chart_wrapper">
+<div class="chart_label">チャネル別集計</div>
+<hr class="chart_label" />
+<div class="chart_unit chart_unit_table" id="tab-contract_table_channel"></div>
+<div class="chart_unit" id="tab-contract_pie_channel"></div>
+<div style="clear: both;"></div>
+</div>
+<div class="chart_wrapper">
+<div class="chart_label">時間帯別集計</div>
+<hr class="chart_label" />
+<div class="chart_unit chart_unit_table" id="tab-contract_table_timezone"></div>
+<div class="chart_unit" id="tab-contract_pie_timezone"></div>
+<div style="clear: both;"></div>
+</div>
+<div style="clear: both;"></div>
+<div class="chart_wrapper">
+<div class="chart_label">担当者別集計</div>
+<hr class="chart_label" />
+<div class="chart_unit chart_unit_table" id="tab-contract_table_staff"></div>
+<div class="chart_unit" id="tab-contract_pie_staff"></div>
+<div style="clear: both;"></div>
+</div>
+<div style="clear: both;"></div>
+<div class="chart_label">データテーブル</div>
+<hr class="chart_label" />
+<div class="float_left" id="tab-contract_table"></div>
+</div>
+
 
 </div><!--//tabs-->
 </div><!--//info_area-->

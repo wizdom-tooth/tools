@@ -2,6 +2,9 @@
 
 class Yosan_Month2 extends CI_Controller_With_Auth {
 
+    private $_intro_count = 0;
+    private $_contract_count = array();
+
 	private $_db = NULL;
 	private $_wiz_month_id = NULL;
 
@@ -15,7 +18,7 @@ class Yosan_Month2 extends CI_Controller_With_Auth {
 		$this->config->load('wiz_config');
 
         // 対象半期整理
-		if ($this->input->get_post('wiz_month_id') === FALSE)
+		if ($this->input->get('wiz_month_id') === FALSE)
 		{
 			$this->_wiz_month_id = get_wiz_month_id();
 		}
@@ -27,6 +30,17 @@ class Yosan_Month2 extends CI_Controller_With_Auth {
 			'wiz_month_id' => $this->_wiz_month_id,
 		);
 		$this->load->library('wizweek', $params);
+
+        // 予算情報取得
+        // ******************************** 専用のクラスを作る
+        // 日付係数をかける
+        $this->_contract_count = array(
+            'flets'     => 400,
+            'au_hikari' => 550,
+            'ucom'      => 350,
+            'emobile'   => 240,
+        );
+        $this->_intro_count = 3000;
 
 		/*
 		$this->config->load('wiz_form');
@@ -40,6 +54,38 @@ class Yosan_Month2 extends CI_Controller_With_Auth {
 	public function index()
 	{
 		$week_days_info = $this->wizweek->get_week_days_info();
+
+        $sql = ''.
+            'select '.
+                'id, '.
+                'date, '.
+                'time_zone, '.
+                'store_id, '.
+                'store_name, '.
+                'channel, '.
+                'area, '.
+                'pref, '.
+                'east_or_west, '.
+                'status, '.
+                'contract_time_zone, '.
+                'service, '.
+                'hikari, '.
+                'isp, '.
+                'hikari_tel, '.
+                'virus, '.
+                'remote, '.
+                'router, '.
+                'replace(contract_date, "0000-00-00", "") as contract_date, '.
+                'user_name, '.
+                'hikari_tv, '.
+                'benefit, '.
+                'replace(complete_date, "0000-00-00", "") as complete_date '.
+            'from '.
+                'addup '.
+            'where '.
+                "wiz_month_id = '{$this->_wiz_month_id}'";
+        $query = $this->_db->query($sql);
+        $addup_info = $query->result_array();
 
         // 対象チャネル整理
 		/*
@@ -268,9 +314,13 @@ var_dump($target_monthes);
 
 		$data = array(
 			//'halfyear_info' => get_wiz_halfyear_info($halfyear),
-			'week_days_info' => $week_days_info,
-			'year' => $year,
-			'month' => $month,
+            'yosan_intro_count'    => $this->_intro_count,
+            'yosan_contract_count' => $this->_contract_count,
+			'week_days_info'       => $week_days_info,
+			'year'                 => $year,
+			'month'                => $month,
+            'addup_label'          => array_keys($addup_info[0]),
+            'addup_info'           => $addup_info,
 			//'yosan_month_info_for_sum' => get_yosan_month_info($channel, 'empty'),
 			//'channel' => $channel,
 			//'month' => $month,

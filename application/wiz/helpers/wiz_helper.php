@@ -8,7 +8,7 @@ function load_database_wizp()
 }
 
 /**
- * 日付から半期ID取得
+ * 日付から月ID取得
  */
 function get_wiz_month_id($date = '')
 {
@@ -28,6 +28,29 @@ function get_wiz_month_id($date = '')
 	$query = $db->query($sql);
 	$row = $query->row();
 	return $row->wiz_month_id;
+}
+
+/**
+ * 日付から週ID取得
+ */
+function get_wiz_week_id($date = '')
+{
+	$db = load_database_wizp();
+	if ($date === '')
+	{
+		$date = date('Y-m-d');
+	}
+	$sql = ''.
+		'SELECT '.
+			'wiz_week_id '.
+		'FROM '.
+			'wiz_week_mst '.
+		'WHERE '.
+			"from_date <= '{$date}' AND ".
+			"to_date >= '{$date}'";
+	$query = $db->query($sql);
+	$row = $query->row();
+	return $row->wiz_week_id;
 }
 
 /**
