@@ -4,16 +4,20 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta http-equiv="content-script-type" content="text/javascript" />
 		<meta http-equiv="content-style-type" content="text/css" />
-		<meta http-equiv="Pragma" content="no-cache">
-		<meta http-equiv="Cache-Control" content="no-cache"> 
+		<meta http-equiv="Pragma" content="no-cache" />
+		<meta http-equiv="Cache-Control" content="no-cache" /> 
 		<link rel="stylesheet" href="/assets/wiz/css/reset.css" type="text/css" />
 		<link rel="stylesheet" href="/assets/wiz/css/global.css" type="text/css" />
 		<link rel="stylesheet" href="/assets/wiz/css/jquery-ui.css" type="text/css" />
+		<link rel="stylesheet" href="/assets/wiz/css/jquery.bxslider.css" type="text/css" />
 		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 		<script type="text/javascript" src="/assets/wiz/js/jquery-1.9.1.min.js"></script>
 		<script type="text/javascript" src="/assets/wiz/js/jquery-1.9.1.ui.min.js"></script>
+		<script type="text/javascript" src="/assets/wiz/js/jquery.easing.1.3.js"></script>
+		<script type="text/javascript" src="/assets/wiz/js/jquery.flipCounter.1.2.pack.js"></script>
 		<script type="text/javascript" src="/assets/wiz/js/jquery-contained-sticky-scroll-min.js"></script>
 		<script type="text/javascript" src="/assets/wiz/js/jquery.corner.js"></script>
+		<script type="text/javascript" src="/assets/wiz/js/jquery.bxslider.min.js"></script>
 		<title><?php echo ENV_LABEL.' ';?>Wiz Group Corp Portal</title>
 	</head>
 	<body>

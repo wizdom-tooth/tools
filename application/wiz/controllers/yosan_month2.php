@@ -17,28 +17,21 @@ class Yosan_Month2 extends CI_Controller_With_Auth {
 		$this->_db = $this->load->database('wizp', TRUE);
 		$this->config->load('wiz_config');
 
-        // 対象半期整理
-		if ($this->input->get('wiz_month_id') === FALSE)
-		{
+        // 対象月整理
+		$this->_wiz_month_id = $this->input->get('wiz_month_id');
+		if ($this->_wiz_month_id === FALSE) {
 			$this->_wiz_month_id = get_wiz_month_id();
 		}
-		else
-		{
-			$this->_wiz_month_id = $this->input->get_post('wiz_month_id');
-		}
-		$params = array(
-			'wiz_month_id' => $this->_wiz_month_id,
-		);
-		$this->load->library('wizweek', $params);
+		$this->load->library('wizweek', array('wiz_month_id' => $this->_wiz_month_id));
 
         // 予算情報取得
         // ******************************** 専用のクラスを作る
         // 日付係数をかける
         $this->_contract_count = array(
-            'flets'     => 400,
-            'au_hikari' => 550,
-            'ucom'      => 350,
-            'emobile'   => 240,
+            'flets'     => 200,
+            'au_hikari' => 350,
+            'ucom'      => 150,
+            'emobile'   => 40,
         );
         $this->_intro_count = 3000;
 
@@ -53,7 +46,50 @@ class Yosan_Month2 extends CI_Controller_With_Auth {
 
 	public function index()
 	{
+		$yosan_addup  = 0;
+		$result_addup = 0;
+
+		// 実績情報取り出す
+		$result_info = array();
+		$sql = ''.
+			'select '.
+				'date, '.
+				'count(*) as result '.
+			'from '.
+				'addup '.
+			'where '.
+				"wiz_month_id = '{$this->_wiz_month_id}' and ".
+				//"status like '%契約%'".
+				'contract_date != "0000-00-00" '.
+			'group by '.
+				'date '.
+			'order by '.
+				'date';
+        $query = $this->_db->query($sql);
+        $tmp = $query->result_array();
+		foreach ($tmp as $info) 
+		{
+			$result_info[$info['date']] = (int)$info['result'];
+		}
+
+		// 予実情報を日付情報配列に追加
+		$contract_count = (int)array_sum($this->_contract_count);
 		$week_days_info = $this->wizweek->get_week_days_info();
+		foreach ($week_days_info as $wiz_week_id => $week_info)
+		{
+			foreach ($week_info as $weekday => $day_info)
+			{
+				$result = $result_info[$day_info['date']];
+				$result_addup += (int)$result;
+				$yosan = round($contract_count * $day_info['weight']);
+				$yosan_addup += (int)$yosan;
+
+				$week_days_info[$wiz_week_id][$weekday]['yosan']        = $yosan;
+				$week_days_info[$wiz_week_id][$weekday]['yosan_addup']  = $yosan_addup;
+				$week_days_info[$wiz_week_id][$weekday]['result']       = $result;
+				$week_days_info[$wiz_week_id][$weekday]['result_addup'] = $result_addup;
+			}
+		}
 
         $sql = ''.
             'select '.

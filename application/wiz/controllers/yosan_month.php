@@ -24,8 +24,7 @@ class Yosan_Month extends CI_Controller_With_Auth {
 
 	public function index()
 	{
-
-        // 対象半期整理
+        // 対象月整理
 		if ($this->input->get_post('wiz_month_id') === FALSE)
 		{
 			$wiz_month_id = get_wiz_month_id();
