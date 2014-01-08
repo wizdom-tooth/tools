@@ -1,74 +1,153 @@
 <script type="text/javascript">
-/* {{{ js general */
+
 google.load('visualization', '1', {packages:['table', 'corechart', 'gauge']});
 google.setOnLoadCallback(init);
 
-var combo_option = {
-	vAxis: {title: "件数"},
-	series: {
-		0:{type: "line", pointSize: 3},
-		1:{type: "line", pointSize: 3},
-		2:{type: "steppedArea", targetAxisIndex: 1},
-		3:{type: "steppedArea", targetAxisIndex: 1},
-	},
-	curveType: "function",
-	height: 570,
-	chartArea: {
-		width: '90%',
-		height: '70%',
-	},
-	legend: {position: 'top', textStyle: {fontSize: 16}},
-}
-var counter_option = {imagePath: "/assets/wiz/img/flipCounter-medium.png"};
-var pie_option = {
-	//title: '合計件数：' + intro_count,
-	pieHole: 0.4,
-	chartArea: {width: '90%', height: '90%'},
-	width: '600',
-	height: '400',
-};
-var bar_option = {
-	//animation:{duration: 1000, easing: 'inAndOut'},
-	legend: {position: "none"},
-	hAxis:{
-		viewWindow:{min: 0, max: 100},
-		gridlines:{count: 2},
-		baseline: 0,
-	},
-	chartArea: {width: '85%'},
-};
-var table_option = {width: '450'};
-var raw_data = [
-    <?php echo "['" . implode("', '", $addup_label) . "'],\n";?>
-    <?php foreach ($addup_info as $info):?>
-    <?php echo "['" . implode("', '", $info) . "'],\n";?>
-    <?php endforeach;?>
-];
+/* {{{ js variable */
+var raw_data;
+var data;
+var contract_data;
+var chart_target_data;
+var intro_count;
+var contract_count;
+var ratio;
+var channel_data;
+var timezone_data;
+var staff_data;
+
+var combo_option;
+var counter_option;
+var pie_option;
+var bar_option;
+var table_option;
+
+var pie_channel;
+var pie_timezone;
+var pie_staff;
+var table_channel;
+var table_timezone;
+var table_staff;
+var yojitsu_done_intro;
+var yojitsu_done_contract;
+var summary_intro_ratio;
+var summary_contract_ratio;
+var timeline_data;
+var bx_stack = {};
+/* }}} */
 
 function init(){
+
+	/* {{{ js init define area */
+	// チャートオプション定義
+	combo_option = {
+		vAxis: {title: "件数"},
+		series: {
+			0:{type: "line", pointSize: 3},
+			1:{type: "line", pointSize: 3},
+			2:{type: "steppedArea", targetAxisIndex: 1},
+			3:{type: "steppedArea", targetAxisIndex: 1},
+		},
+		curveType: "function",
+		height: 570,
+		chartArea: {
+			width: '90%',
+			height: '70%',
+		},
+		legend: {
+			position: 'top',
+			textStyle: {fontSize: 16}
+		},
+	}
+	counter_option = {
+		imagePath: "/assets/wiz/img/flipCounter-medium.png"
+	};
+	pie_option = {
+		pieHole: 0.4,
+		chartArea: {width: '90%', height: '90%'},
+		width: '600',
+		height: '400',
+	};
+	bar_option = {
+		//animation:{duration: 1000, easing: 'inAndOut'},
+		chartArea: {width: '85%'},
+		legend: {position: "none"},
+		hAxis:{
+			viewWindow:{min: 0, max: 100},
+			gridlines:{count: 2},
+			baseline: 0,
+		},
+	};
+	table_option = {
+		width: '450'
+	};
+
+	// 生データセット
+	raw_data = [
+		<?php echo "['" . implode("', '", $addup_label) . "'],\n";?>
+		<?php foreach ($addup_info as $info):?>
+		<?php echo "['" . implode("', '", $info) . "'],\n";?>
+		<?php endforeach;?>
+	];
+	/* }}} */
+
+	$("#select_contract_staff").change(function(){
+		draw_tab_contract($(this).val());
+	});
 	$('#calendar_label').bind('click', function(e){
-		$('#calendar_area').animate({height:'toggle'}, {duration:'slow', easing:'swing'});
+		$('#calendar_area').animate(
+			{height: 'toggle'},
+			{duration: 'slow', easing: "easeOutBounce"}
+		);
 	});
     $('.chart_wrapper').corner("8px");
+    $('#tab_contract_timeline').corner("8px");
     $('#tabs').tabs({
         activate: function(e, ui){
+			$("#overlay").fadeIn(1500);
             switch (ui.newTab.text())
             {
                 case '紹介':
-					draw_tab_intro();
+					draw_tab_wrapper('intro');
                     break;
                 case '契約':
-					draw_tab_contract();
+					draw_tab_wrapper('contract', 'all_staff');
                     break;
                 case '予算入力':
-					draw_tab_yosan();
+					draw_tab_wrapper('yosan');
                     break;
             }
         }
     });
-    draw_tab_intro();
+	draw_tab_wrapper('intro');
 }
 /* }}} */
+
+/* {{{ js util function */
+// タブ描画ラッパー
+function draw_tab_wrapper(tab, option = ''){
+	switch (tab)
+	{
+		case 'intro':
+			draw_tab_intro();
+			break;
+		case 'contract':
+			draw_tab_contract(option);
+			break;
+		case 'yosan':
+			draw_tab_yosan();
+			break;
+	}
+	$("#overlay").fadeOut();
+}
+// スライダーセット
+function bxslide(id){
+	if ( ! (id in bx_stack)) {
+		$('#' + id).bxSlider({infiniteLoop: false});
+		bx_stack[id] = true;
+	}
+}
+/* }}} */
+
 
 /* {{{ js intro */
 function draw_tab_intro(){
@@ -84,16 +163,16 @@ function draw_tab_intro(){
     // データ整理
     // ---------------------
 
-    var chart_target_data = google.visualization.arrayToDataTable(raw_data); // データ表
+    chart_target_data = google.visualization.arrayToDataTable(raw_data); // データ表
     intro_count = chart_target_data.getNumberOfRows(); // 件数
-    var ratio = Math.round((intro_count / <?php echo $yosan_intro_count;?>) * 100); // 予算達成率
+    ratio = Math.round((intro_count / <?php echo $yosan_intro_count;?>) * 100); // 予算達成率
 
     // チャネル別集計
-    var channel_data = google.visualization.data.group(chart_target_data, [5], group_option);
+    channel_data = google.visualization.data.group(chart_target_data, [5], group_option);
     channel_data.sort({column:1, desc:true});
 
     // 時間帯別集計
-    var timezone_data = google.visualization.data.group(chart_target_data, [2], group_option);
+    timezone_data = google.visualization.data.group(chart_target_data, [2], group_option);
     timezone_data.sort({column:1, desc:true});
 
     // ---------------------
@@ -101,30 +180,26 @@ function draw_tab_intro(){
     // ---------------------
 
     // チャネル別チャート
-    var pie_channel   = new google.visualization.PieChart($('#tab_intro_pie_channel').get(0));
-	var table_channel = new google.visualization.Table($('#tab_intro_table_channel').get(0));
+    pie_channel   = new google.visualization.PieChart($('#tab_intro_pie_channel').get(0));
+	table_channel = new google.visualization.Table($('#tab_intro_table_channel').get(0));
     pie_channel.draw(channel_data, pie_option);
 	table_channel.draw(channel_data, table_option);
-	$('#bxslider_intro_channel').bxSlider({
-		infiniteLoop: false,
-	});
+	bxslide('bxslider_intro_channel');
 
     // 時間帯チャート
-    var pie_timezone   = new google.visualization.PieChart($('#tab_intro_pie_timezone').get(0));
-    var table_timezone = new google.visualization.Table($('#tab_intro_table_timezone').get(0));
+    pie_timezone   = new google.visualization.PieChart($('#tab_intro_pie_timezone').get(0));
+    table_timezone = new google.visualization.Table($('#tab_intro_table_timezone').get(0));
     pie_timezone.draw(timezone_data, pie_option);
     table_timezone.draw(timezone_data, table_option);
-	$('#bxslider_intro_timezone').bxSlider({
-		infiniteLoop: false,
-	});
+	bxslide('bxslider_intro_timezone');
 
     // ---------------------
     // 予算達成率チャート描画
     // ---------------------
 
 	// バーチャート描画
-    var yojitsu_done_intro = new google.visualization.BarChart($('#yojitsu_done_intro').get(0));
-    var summary_intro_ratio = google.visualization.arrayToDataTable([['', ''], ['', ratio]]);
+    yojitsu_done_intro = new google.visualization.BarChart($('#yojitsu_done_intro').get(0));
+    summary_intro_ratio = google.visualization.arrayToDataTable([['', ''], ['', ratio]]);
     yojitsu_done_intro.draw(summary_intro_ratio, bar_option);
 
 	// 百分率カウンター
@@ -142,7 +217,7 @@ function draw_tab_intro(){
 /* }}} */
 
 /* {{{ js contract */
-function draw_tab_contract() {
+function draw_tab_contract(staff) {
 
 	var group_option = [{
         'column': 0,
@@ -151,124 +226,31 @@ function draw_tab_contract() {
         'type': 'number'
 	}];
 
-	// ----------------
-	// PICKER
-	// ----------------
-
-/*
-	var picker_contract_staff = new google.visualization.ControlWrapper({
-		'controlType': 'CategoryFilter',
-		'containerId': 'picker_contract_staff',
-		'options': {
-			'filterColumnLabel': '担当者',
-			'ui': {
-				'labelStacking': 'vertical',
-				'allowTyping': false,
-				'allowMultiple': false
-			}
-		}
-	});
-
-	// ----------------
-	// PIE CHART
-	// ----------------
-
-	var pie_contract_channel = new google.visualization.ChartWrapper({
-		'chartType': 'PieChart',
-		'containerId': 'pie_contract_channel',
-		'options': {
-			'width': 300,
-			'height': 300,
-			'legend': 'none',
-			//'title': 'Donuts eaten per person',
-			//'chartArea': {'left': 15, 'top': 15, 'right': 0, 'bottom': 0},
-			//'pieSliceText': 'label'
-		},
-		'view': {'columns': [0, 5]}
-	});
-
-	var pie_contract_timezone = new google.visualization.ChartWrapper({
-		'chartType': 'PieChart',
-		'containerId': 'pie_contract_timezone',
-		'options': {
-			'width': 300,
-			'height': 300,
-			'legend': 'none',
-			//'title': 'Donuts eaten per person',
-			//'chartArea': {'left': 15, 'top': 15, 'right': 0, 'bottom': 0},
-			//'pieSliceText': 'label'
-		},
-		'view': {'columns': [0, 2]}
-	});
-
-	var pie_contract_staff = new google.visualization.ChartWrapper({
-		'chartType': 'PieChart',
-		'containerId': 'pie_contract_staff',
-		'options': {
-			'width': 300,
-			'height': 300,
-			'legend': 'none',
-			//'title': 'Donuts eaten per person',
-			//'chartArea': {'left': 15, 'top': 15, 'right': 0, 'bottom': 0},
-			//'pieSliceText': 'label'
-		},
-		'view': {'columns': [0, 19]}
-	});
-
-	// ----------------
-	// TABLE
-	// ----------------
-
-	var table_contract_channel = new google.visualization.ChartWrapper({
-		'chartType': 'Table',
-		'containerId': 'table_contract_channel',
-		'options': {
-			'width': '300px'
-		}
-	});
-
-	var table_contract_timezone = new google.visualization.ChartWrapper({
-		'chartType': 'Table',
-		'containerId': 'table_contract_timezone',
-		'options': {
-			'width': '300px'
-		}
-	});
-
-	var table_contract_staff = new google.visualization.ChartWrapper({
-		'chartType': 'Table',
-		'containerId': 'table_contract_staff',
-		'options': {
-			'width': '300px'
-		}
-	});
-*/
-
-    // ---------------------
-    // データ整理
-    // ---------------------
-
     // 契約データ 契約日が空のモノを無視する
-    var data = google.visualization.arrayToDataTable(raw_data);
-    var chart_target_data = new google.visualization.DataView(data);
-    chart_target_data.setRows(chart_target_data.getViewRows());
-    chart_target_data.hideRows(chart_target_data.getFilteredRows([{column:18, value:''}]));
+	data = google.visualization.arrayToDataTable(raw_data);
+	contract_data = new google.visualization.DataView(data);
+	chart_target_data = contract_data;
+	if (staff === 'all_staff') {
+		chart_target_data.setRows(chart_target_data.getViewRows());
+	} else {
+		chart_target_data.setRows(chart_target_data.getFilteredRows([{column:19, value:staff}]));
+	}
+	chart_target_data.hideRows(chart_target_data.getFilteredRows([{column:18, value:''}]));
 
 	// 基本データ
-	var chart_target_data = chart_target_data;
-    var contract_count = chart_target_data.getNumberOfRows();
-    var ratio = Math.round((contract_count / <?php echo array_sum($yosan_contract_count);?>) * 100);
+    contract_count = contract_data.getNumberOfRows();
+    ratio = Math.round((contract_count / <?php echo array_sum($yosan_contract_count);?>) * 100);
 
     // チャネル別集計
-    var channel_data = google.visualization.data.group(chart_target_data, [5], group_option);
+    channel_data = google.visualization.data.group(chart_target_data, [5], group_option);
     channel_data.sort({column:1, desc:true});
 
     // 時間帯別集計
-    var timezone_data = google.visualization.data.group(chart_target_data, [2], group_option);
+    timezone_data = google.visualization.data.group(chart_target_data, [2], group_option);
     timezone_data.sort({column:1, desc:true});
 
     // 担当者別集計
-    var staff_data = google.visualization.data.group(chart_target_data, [19], group_option);
+    staff_data = google.visualization.data.group(chart_target_data, [19], group_option);
     staff_data.sort({column:1, desc:true});
 
     // ---------------------
@@ -276,33 +258,33 @@ function draw_tab_contract() {
     // ---------------------
 
     // チャネル別チャート
-    var pie_channel   = new google.visualization.PieChart($('#tab_contract_pie_channel').get(0));
-	var table_channel = new google.visualization.Table($('#tab_contract_table_channel').get(0));
+    pie_channel   = new google.visualization.PieChart($('#tab_contract_pie_channel').get(0));
+	table_channel = new google.visualization.Table($('#tab_contract_table_channel').get(0));
     pie_channel.draw(channel_data, pie_option);
 	table_channel.draw(channel_data, table_option);
-	$('#bxslider_contract_channel').bxSlider({infiniteLoop: false});
+	bxslide('bxslider_contract_channel');
 
     // 時間帯チャート
-    var pie_timezone   = new google.visualization.PieChart($('#tab_contract_pie_timezone').get(0));
-    var table_timezone = new google.visualization.Table($('#tab_contract_table_timezone').get(0));
+    pie_timezone   = new google.visualization.PieChart($('#tab_contract_pie_timezone').get(0));
+    table_timezone = new google.visualization.Table($('#tab_contract_table_timezone').get(0));
     pie_timezone.draw(timezone_data, pie_option);
     table_timezone.draw(timezone_data, table_option);
-	$('#bxslider_contract_timezone').bxSlider({infiniteLoop: false});
+	bxslide('bxslider_contract_timezone');
 
     // 担当者チャート
-    var pie_staff   = new google.visualization.PieChart($('#tab_contract_pie_staff').get(0));
-    var table_staff = new google.visualization.Table($('#tab_contract_table_staff').get(0));
+    pie_staff   = new google.visualization.PieChart($('#tab_contract_pie_staff').get(0));
+    table_staff = new google.visualization.Table($('#tab_contract_table_staff').get(0));
     pie_staff.draw(staff_data, pie_option);
     table_staff.draw(staff_data, table_option);
-	$('#bxslider_contract_staff').bxSlider({infiniteLoop: false});
+	bxslide('bxslider_contract_staff');
 
     // ---------------------
     // 予算達成率チャート描画
     // ---------------------
 
 	// バーチャート描画
-    var yojitsu_done_contract = new google.visualization.BarChart($('#yojitsu_done_contract').get(0));
-    var summary_contract_ratio = google.visualization.arrayToDataTable([['', ''], ['', ratio]]);
+    yojitsu_done_contract = new google.visualization.BarChart($('#yojitsu_done_contract').get(0));
+    summary_contract_ratio = google.visualization.arrayToDataTable([['', ''], ['', ratio]]);
     yojitsu_done_contract.draw(summary_contract_ratio, bar_option);
 
 	// 百分率カウンター
@@ -321,7 +303,7 @@ function draw_tab_contract() {
 	// 日毎の進捗タイムラインチャート描画
     // ---------------------
 
-	var timeline_data = google.visualization.arrayToDataTable([
+	timeline_data = google.visualization.arrayToDataTable([
 		['日付', '契予積算', '契実積算', '契予', '契実'],
 		<?php foreach ($week_days_info as $week_info):?>
 		<?php foreach ($week_info as $day_info):?>
@@ -338,6 +320,7 @@ function draw_tab_contract() {
 function draw_tab_yosan(){}
 /* }}} */
 </script>
+
 <style type="text/css">
 <!--
 /* {{{ css */
@@ -357,9 +340,24 @@ th, td {
 }
 #left_box {
 	float: left;
-	/*width: 900px;*/
 	width: auto;
 	height: auto;
+}
+#overlay{
+	width: 100%;
+	height:100%;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	z-index: 100;
+	background: rgba(0,0,0,0.9);
+}
+#loading {
+	width: 140px;
+	height: 140px;
+	position: fixed;
+    top: 50%;
+    left: 50%;
 }
 #info_area {
 	width: auto;
@@ -376,7 +374,7 @@ th, td {
 #calendar_area {
 	width: auto;
 	height: auto;
-	margin: 3px;
+	margin: 6px 3px 6px 3px;
 	display:none;
 	background-color: #FFF799;
 }
@@ -392,7 +390,11 @@ th, td {
 .chart_wrapper {
 	margin: 3px;
     padding: 15px;
-	/*width: 100%;*/
+    border:gray solid 1px;
+}
+#tab_contract_timeline {
+	margin: 3px;
+    padding: 10px;
     border:gray solid 1px;
 }
 .chart_unit {
@@ -472,15 +474,15 @@ td.Empty {
 -->
 </style>
 
+<div id="overlay"><img id="loading" src="/assets/wiz/img/loading140.gif" /></div><!--//overlay-->
 
 <h1><?php echo $month;?>月度 予実管理表</h1>
-
 
 <div id=wrapper>
 <div id="left_box">
 <div id="info_area">
 
-<!--==カレンダー==-->
+<!-- {{{ html calendar -->
 <div id="calendar_label">カレンダー表示・非表示</div>
 <div id="calendar_area">
 <?php $week_orders = array('Total' => '計', 'Fri' => '金', 'Sat' => '土', 'Sun' => '日', 'Mon' => '月', 'Tue' => '火', 'Wed' => '水', 'Thu' => '木');?>
@@ -518,8 +520,8 @@ td.Empty {
 </tr>
 </table>
 <?php endforeach;?>
-</div><!--==/カレンダー-->
-
+</div>
+<!-- }}} -->
 
 <div id="tabs">
 <ul>
@@ -528,7 +530,7 @@ td.Empty {
 <li><a href="#tab_yosan">予算入力</a></li>
 </ul>
 
-<!--===紹介===-->
+<!-- {{{ html tab - intro -->
 <div id="tab_intro">
 <div class="width_fix">
 
@@ -575,11 +577,13 @@ td.Empty {
 
 </div>
 </div>
+<!-- }}} -->
 
-
-<!--===契約===-->
+<!-- {{{ html tab - contract -->
 <div id="tab_contract">
 <div class="width_fix"></div>
+
+<div id="tab_contract_timeline"></div>
 
 <div class="chart_border">
 <div class="chart_wrapper">
@@ -593,10 +597,15 @@ td.Empty {
 </div>
 <div style="clear: both;"></div>
 
-<div id="tab_contract_timeline"></div>
-
 <!--taogawa debug ここに担当者毎の絞り込み機能を入れたい-->
-<div id="picker_contract_staff"></div>
+担当者：
+<select id="select_contract_staff">
+<option value="all_staff">すべて</option>
+<option value="サトウユキ">サトウユキ</option>
+<option value="アサト">アサト</option>
+<option value="カワイ">カワイ</option>
+</select>
+<br />
 <!--/taogawa debug-->
 
 <div class="chart_border">
@@ -635,19 +644,19 @@ td.Empty {
 <div style="clear: both;"></div>
 
 </div>
+<!-- }}} -->
 
+<!-- {{{ html tab - input yosan -->
 <div id="tab_yosan">
 <div class="width_fix"></div>
 ここに指定日付の各種予実情報を記載する
 </div>
+<!-- }}} -->
 
 </div><!--//tabs end-->
 </div><!--//info_area-->
 </div><!--//left_box-->
 
-
-
 <div style="clear: both;"></div>
-
 
 </div><!--wrapper-->
