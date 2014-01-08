@@ -29,7 +29,7 @@ class Yosan_Month2 extends CI_Controller_With_Auth {
         // 日付係数をかける
         $this->_contract_count = array(
             'flets'     => 200,
-            'au_hikari' => 350,
+            'au_hikari' => 150,
             'ucom'      => 150,
             'emobile'   => 40,
         );
