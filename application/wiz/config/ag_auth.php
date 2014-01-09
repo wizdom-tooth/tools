@@ -19,10 +19,10 @@
 * If you have a database table for groups, these ID's must be the same as in the database.
 */
 $config['auth_groups'] = array(
-	'admin'    => '1',
-	'manager'  => '30',
-	'employee' => '60',
-	'operater' => '100',
+    'admin'    => '1',
+    'manager'  => '30',
+    'employee' => '60',
+    'operater' => '100',
 );
 
 /**

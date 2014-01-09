@@ -8,7 +8,7 @@
 | URL to your CodeIgniter root. Typically this will be your base URL,
 | WITH a trailing slash:
 |
-|	http://example.com/
+|    http://example.com/
 |
 | If this is not set then CodeIgniter will guess the protocol, domain and
 | path to your installation.
@@ -18,14 +18,14 @@
 //$config['base_url'] = 'http'.((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 's' : '').'://www4400ui.sakura.ne.jp'.str_replace(basename($_SERVER['SCRIPT_NAME']),"",$_SERVER['SCRIPT_NAME']); 
 if (isset($_SERVER['HTTP_HOST']) === TRUE && $_SERVER['HTTP_HOST'] !== '')
 {
-	$protocol           = (isset($_SERVER['HTTPS']) === TRUE && $_SERVER['HTTPS'] == 'on') ? 'https' : 'http';
-	$host               = $_SERVER['HTTP_HOST'];
-	$path               = str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
-	$config['base_url'] = $protocol . '://' . $host . $path; 
+    $protocol           = (isset($_SERVER['HTTPS']) === TRUE && $_SERVER['HTTPS'] == 'on') ? 'https' : 'http';
+    $host               = $_SERVER['HTTP_HOST'];
+    $path               = str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
+    $config['base_url'] = $protocol . '://' . $host . $path; 
 }
 else
 {
-	$config['base_url'] = '';
+    $config['base_url'] = '';
 }
 
 /*
@@ -49,16 +49,16 @@ $config['index_page'] = '';
 | URI string.  The default setting of 'AUTO' works for most servers.
 | If your links do not seem to work, try one of the other delicious flavors:
 |
-| 'AUTO'			Default - auto detects
-| 'PATH_INFO'		Uses the PATH_INFO
-| 'QUERY_STRING'	Uses the QUERY_STRING
-| 'REQUEST_URI'		Uses the REQUEST_URI
-| 'ORIG_PATH_INFO'	Uses the ORIG_PATH_INFO
+| 'AUTO'            Default - auto detects
+| 'PATH_INFO'        Uses the PATH_INFO
+| 'QUERY_STRING'    Uses the QUERY_STRING
+| 'REQUEST_URI'        Uses the REQUEST_URI
+| 'ORIG_PATH_INFO'    Uses the ORIG_PATH_INFO
 |
 */
 
-//$config['uri_protocol']	= 'AUTO';
-$config['uri_protocol']	= isset($_SERVER['REQUEST_URI']) ? 'REQUEST_URI' : 'CLI';
+//$config['uri_protocol']    = 'AUTO';
+$config['uri_protocol']    = isset($_SERVER['REQUEST_URI']) ? 'REQUEST_URI' : 'CLI';
 
 /*
 |--------------------------------------------------------------------------
@@ -83,7 +83,7 @@ $config['url_suffix'] = '.html';
 | than english.
 |
 */
-$config['language']	= 'japanese';
+$config['language']    = 'japanese';
 
 /*
 |--------------------------------------------------------------------------
@@ -168,11 +168,11 @@ $config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-';
 | use segment based URLs.
 |
 */
-$config['allow_get_array']	= TRUE;
-$config['enable_query_strings']	= FALSE;
-$config['controller_trigger']	= 'c';
-$config['function_trigger']	= 'm';
-$config['directory_trigger']	= 'd'; // experimental not currently in use
+$config['allow_get_array']    = TRUE;
+$config['enable_query_strings']    = FALSE;
+$config['controller_trigger']    = 'c';
+$config['function_trigger']    = 'm';
+$config['directory_trigger']    = 'd'; // experimental not currently in use
 
 /*
 |--------------------------------------------------------------------------
@@ -184,11 +184,11 @@ $config['directory_trigger']	= 'd'; // experimental not currently in use
 | You can enable error logging by setting a threshold over zero. The
 | threshold determines what gets logged. Threshold options are:
 |
-|	0 = Disables logging, Error logging TURNED OFF
-|	1 = Error Messages (including PHP errors)
-|	2 = Debug Messages
-|	3 = Informational Messages
-|	4 = All Messages
+|    0 = Disables logging, Error logging TURNED OFF
+|    1 = Error Messages (including PHP errors)
+|    2 = Debug Messages
+|    3 = Informational Messages
+|    4 = All Messages
 |
 | For a live site you'll usually only enable Errors (1) to be logged otherwise
 | your log files will fill up very fast.
@@ -245,28 +245,28 @@ $config['encryption_key'] = '224a6f78631896753c669cea4834b4a9';
 | Session Variables
 |--------------------------------------------------------------------------
 |
-| 'sess_cookie_name'		= the name you want for the cookie
-| 'sess_expiration'			= the number of SECONDS you want the session to last.
+| 'sess_cookie_name'        = the name you want for the cookie
+| 'sess_expiration'            = the number of SECONDS you want the session to last.
 |   by default sessions last 7200 seconds (two hours).  Set to zero for no expiration.
-| 'sess_expire_on_close'	= Whether to cause the session to expire automatically
+| 'sess_expire_on_close'    = Whether to cause the session to expire automatically
 |   when the browser window is closed
-| 'sess_encrypt_cookie'		= Whether to encrypt the cookie
-| 'sess_use_database'		= Whether to save the session data to a database
-| 'sess_table_name'			= The name of the session database table
-| 'sess_match_ip'			= Whether to match the user's IP address when reading the session data
-| 'sess_match_useragent'	= Whether to match the User Agent when reading the session data
-| 'sess_time_to_update'		= how many seconds between CI refreshing Session Information
+| 'sess_encrypt_cookie'        = Whether to encrypt the cookie
+| 'sess_use_database'        = Whether to save the session data to a database
+| 'sess_table_name'            = The name of the session database table
+| 'sess_match_ip'            = Whether to match the user's IP address when reading the session data
+| 'sess_match_useragent'    = Whether to match the User Agent when reading the session data
+| 'sess_time_to_update'        = how many seconds between CI refreshing Session Information
 |
 */
-$config['sess_cookie_name']	= 'wiz_portal';
-$config['sess_expiration']	= 1200;
-$config['sess_expire_on_close']	= FALSE;
-$config['sess_encrypt_cookie']	= TRUE;
-$config['sess_use_database']	= TRUE;
-$config['sess_table_name']	= 'ci_sessions';
-$config['sess_match_ip']	= FALSE;
-$config['sess_match_useragent']	= TRUE;
-$config['sess_time_to_update']	= 300;
+$config['sess_cookie_name']    = 'wiz_portal';
+$config['sess_expiration']    = 1200;
+$config['sess_expire_on_close']    = FALSE;
+$config['sess_encrypt_cookie']    = TRUE;
+$config['sess_use_database']    = TRUE;
+$config['sess_table_name']    = 'ci_sessions';
+$config['sess_match_ip']    = FALSE;
+$config['sess_match_useragent']    = TRUE;
+$config['sess_time_to_update']    = 300;
 
 /*
 |--------------------------------------------------------------------------
@@ -279,10 +279,10 @@ $config['sess_time_to_update']	= 300;
 | 'cookie_secure' =  Cookies will only be set if a secure HTTPS connection exists.
 |
 */
-$config['cookie_prefix']	= "";
-$config['cookie_domain']	= "";
-$config['cookie_path']		= "/";
-$config['cookie_secure']	= FALSE;
+$config['cookie_prefix']    = "";
+$config['cookie_domain']    = "";
+$config['cookie_path']        = "/";
+$config['cookie_secure']    = FALSE;
 
 /*
 |--------------------------------------------------------------------------
@@ -307,10 +307,10 @@ $config['global_xss_filtering'] = TRUE;
 | 'csrf_cookie_name' = The cookie name
 | 'csrf_expire' = The number in seconds the token should expire.
 */
-$config['csrf_protection']	= FALSE;
-$config['csrf_token_name']	= 'csrf_test_name';
-$config['csrf_cookie_name']	= 'csrf_cookie_name';
-$config['csrf_expire']		= 14400;
+$config['csrf_protection']    = FALSE;
+$config['csrf_token_name']    = 'csrf_test_name';
+$config['csrf_cookie_name']    = 'csrf_cookie_name';
+$config['csrf_expire']        = 14400;
 
 /*
 |--------------------------------------------------------------------------

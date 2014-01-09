@@ -2,7 +2,7 @@
 
 class MY_Email extends CI_Email {
 
-	const EMAIL_ADDRESS_WIZCORP_ADMIN = 'report@wiz-corp.jp';
+    const EMAIL_ADDRESS_WIZCORP_ADMIN = 'report@wiz-corp.jp';
 
     public function __construct()
     {
@@ -32,12 +32,12 @@ class MY_Email extends CI_Email {
 
     public function send_wiz_admin($subject, $body)
     {
-		$this->to(self::EMAIL_ADDRESS_WIZCORP_ADMIN);
-		$this->from(self::EMAIL_ADDRESS_WIZCORP_ADMIN);
-		$this->subject($subject);
-		$this->message($body);
-		$this->send();
-	}
+        $this->to(self::EMAIL_ADDRESS_WIZCORP_ADMIN);
+        $this->from(self::EMAIL_ADDRESS_WIZCORP_ADMIN);
+        $this->subject($subject);
+        $this->message($body);
+        $this->send();
+    }
 }
 // END MY_Email class
 

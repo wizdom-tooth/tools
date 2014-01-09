@@ -7,8 +7,8 @@ google.setOnLoadCallback(initializer);
 
 // chart options
 var table_option = {
-	allowHtml: true,
-	width: '782px',
+    allowHtml: true,
+    width: '782px',
 };
 
 // sum data table
@@ -17,38 +17,38 @@ var sum = {
 $kinds = array_keys($sum);
 foreach ($kinds as $kind)
 {
-	// 種別別集計表テーブル定義
-	if ( ! empty($sum[$kind]))
-	{
-		$js_array_str = "['".implode("','", $sum[$kind])."']";
-		echo "".
-			"${kind}:".
-				"[".
-					"[".
-						"'年月',".
-						"'予算',".
-						"'紹介',".
-						"'実績',".
-						"'達成率',".
-						"'成約率'".
-					"],".
-					$js_array_str.
-				"],\n";
-	}
+    // 種別別集計表テーブル定義
+    if ( ! empty($sum[$kind]))
+    {
+        $js_array_str = "['".implode("','", $sum[$kind])."']";
+        echo "".
+            "${kind}:".
+                "[".
+                    "[".
+                        "'年月',".
+                        "'予算',".
+                        "'紹介',".
+                        "'実績',".
+                        "'達成率',".
+                        "'成約率'".
+                    "],".
+                    $js_array_str.
+                "],\n";
+    }
 }
 ?>
 }
 
 function initializer(){
-	// テーブル描画
-	drawChart();
-	// 右カラムの追跡
-	$('#right').containedStickyScroll({
-		duration: 150,
-		closeChar: 'ついてくんな！'
-	});
-	// タブ
-	$('#tabs').tabs();
+    // テーブル描画
+    drawChart();
+    // 右カラムの追跡
+    $('#right').containedStickyScroll({
+        duration: 150,
+        closeChar: 'ついてくんな！'
+    });
+    // タブ
+    $('#tabs').tabs();
     // 集計結果が0のセルをグレイアウト
     $('.google-visualization-table-td').each(function(i){
         if ($(this).text() == "0") {
@@ -59,19 +59,19 @@ function initializer(){
 
 // draw table
 function drawChart(){
-	<?php if ( ! empty($sum)):?>
-		$('.no_addup').hide();
-		<?php $kinds = array_keys($sum);?>
-		<?php foreach ($kinds as $kind):?>
-			<?php if ( ! empty($sum[$kind])):?>
-				var data = google.visualization.arrayToDataTable(sum['<?php echo $kind;?>']);
-				var table = new google.visualization.Table(document.getElementById('table_<?php echo $kind;?>'));
-				table.draw(data, table_option);
-				//$('#div_<?php echo $kind;?>').show();
-			<?php endif;?>
-		<?php endforeach;?>
-	<?php endif;?>
-	//$('#div_user').show();
+    <?php if ( ! empty($sum)):?>
+        $('.no_addup').hide();
+        <?php $kinds = array_keys($sum);?>
+        <?php foreach ($kinds as $kind):?>
+            <?php if ( ! empty($sum[$kind])):?>
+                var data = google.visualization.arrayToDataTable(sum['<?php echo $kind;?>']);
+                var table = new google.visualization.Table(document.getElementById('table_<?php echo $kind;?>'));
+                table.draw(data, table_option);
+                //$('#div_<?php echo $kind;?>').show();
+            <?php endif;?>
+        <?php endforeach;?>
+    <?php endif;?>
+    //$('#div_user').show();
 }
 </script>
 

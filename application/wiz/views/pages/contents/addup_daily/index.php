@@ -5,8 +5,8 @@ google.setOnLoadCallback(initializer);
 
 // chart options
 var table_option = {
-	allowHtml: true,
-	width: '100%',
+    allowHtml: true,
+    width: '100%',
 };
 
 // sum data table
@@ -15,35 +15,35 @@ var sum = {
 $channels = array_keys($sum);
 foreach ($channels as $channel)
 {
-	// チャンネル別集計表テーブル定義
-	if ( ! empty($sum[$channel]))
-	{
-		$js_arrays = array();
-		foreach ($sum[$channel] as $sum_time_zone)
-		{
-			$js_arrays[] = "['".implode("','", $sum_time_zone)."']";
-		}
-		$js_array_str = implode(',', $js_arrays);
-		echo "".
-			"${channel}:".
-				"[".
-					"[".
-						"'日付',".
-						"'時間帯',".
-						"'照/予',".
-						"'契/予',".
-						"'内フレ',".
-						"'ISP',".
-						"'ウイルス',".
-						"'リモート',".
-						"'ひTVパ',".
-						"'ひTV',".
-						"'ひ電話',".
-						"'NG',".
-					"],".
-					$js_array_str.
-				"],\n";
-	}
+    // チャンネル別集計表テーブル定義
+    if ( ! empty($sum[$channel]))
+    {
+        $js_arrays = array();
+        foreach ($sum[$channel] as $sum_time_zone)
+        {
+            $js_arrays[] = "['".implode("','", $sum_time_zone)."']";
+        }
+        $js_array_str = implode(',', $js_arrays);
+        echo "".
+            "${channel}:".
+                "[".
+                    "[".
+                        "'日付',".
+                        "'時間帯',".
+                        "'照/予',".
+                        "'契/予',".
+                        "'内フレ',".
+                        "'ISP',".
+                        "'ウイルス',".
+                        "'リモート',".
+                        "'ひTVパ',".
+                        "'ひTV',".
+                        "'ひ電話',".
+                        "'NG',".
+                    "],".
+                    $js_array_str.
+                "],\n";
+    }
 }
 ?>
 }
@@ -52,124 +52,124 @@ foreach ($channels as $channel)
 <?php
 if ( ! empty($sum_user))
 {
-	$user_names = array();
-	foreach ($users as $tmp)
-	{
-		$user_names[] = "'".$tmp['user_name']."'";
-	}
-	$js_array_user_str = implode(',', $user_names);
+    $user_names = array();
+    foreach ($users as $tmp)
+    {
+        $user_names[] = "'".$tmp['user_name']."'";
+    }
+    $js_array_user_str = implode(',', $user_names);
 
-	$time_zones = array(
-		'A(10-12)',
-		'B(12-14)',
-		'C(14-16)',
-		'D(16-18)',
-		'E(18-20)',
-		'F(20-LAST)',
-	);
-	$js_array_sum_user = array();
-	foreach ($time_zones as $time_zone)
-	{
-		$time_zone_users = array();
-		foreach ($users as $user)
-		{
-			$user_name = $user['user_name'];
-			$flg = FALSE;
-			foreach ($sum_user as $sum_user_element)
-			{
-				if (
-					$sum_user_element['time_zone'] === $time_zone &&
-					$sum_user_element['user_name'] === $user_name
-				)
-				{
-					$time_zone_users[] = "'".$sum_user_element['contract_total']."'";
-					$flg = TRUE;
-					break;
-				}
-			}
-			if ($flg === FALSE)
-			{
-				$time_zone_users[] = "'0'";
-			}
-		}
-		$time_zone_users_str = implode(',', $time_zone_users);
-		$js_array_sum_user[] = "['${year}-${month}-${day}','${time_zone}',${time_zone_users_str}]";
-	}
-	$js_array_sum_user_str = implode(',', $js_array_sum_user);
-	echo "var sum_user = {".
-		"user:".
-			"[".
-				"[".
-					"'日付',".
-					"'時間帯',".
-					$js_array_user_str.
-				"],".
-				$js_array_sum_user_str.
-			"]}\n";
+    $time_zones = array(
+        'A(10-12)',
+        'B(12-14)',
+        'C(14-16)',
+        'D(16-18)',
+        'E(18-20)',
+        'F(20-LAST)',
+    );
+    $js_array_sum_user = array();
+    foreach ($time_zones as $time_zone)
+    {
+        $time_zone_users = array();
+        foreach ($users as $user)
+        {
+            $user_name = $user['user_name'];
+            $flg = FALSE;
+            foreach ($sum_user as $sum_user_element)
+            {
+                if (
+                    $sum_user_element['time_zone'] === $time_zone &&
+                    $sum_user_element['user_name'] === $user_name
+                )
+                {
+                    $time_zone_users[] = "'".$sum_user_element['contract_total']."'";
+                    $flg = TRUE;
+                    break;
+                }
+            }
+            if ($flg === FALSE)
+            {
+                $time_zone_users[] = "'0'";
+            }
+        }
+        $time_zone_users_str = implode(',', $time_zone_users);
+        $js_array_sum_user[] = "['${year}-${month}-${day}','${time_zone}',${time_zone_users_str}]";
+    }
+    $js_array_sum_user_str = implode(',', $js_array_sum_user);
+    echo "var sum_user = {".
+        "user:".
+            "[".
+                "[".
+                    "'日付',".
+                    "'時間帯',".
+                    $js_array_user_str.
+                "],".
+                $js_array_sum_user_str.
+            "]}\n";
 }
 ?>
 
 function initializer(){
-	// テーブル描画
-	drawChart();
-	// カレンダーの追跡
-	$('#calendar').containedStickyScroll({
-		duration: 150,
-		closeChar: 'カレンダーついてくんな！'
-	});
-	// タブ
-	$('#tabs').tabs();
-	// カレンダーの次月リンクを非表示にするかどうか
-	<?php if($month === date('m')):?>
-	$('#cal_next_url').replaceWith('<span class="gray">&gt;&gt;</span>');
-	<?php endif;?>
-	// 対象日をハイライト
-	$('#calendar td a').each(function(i){
-		if ($(this).text() == "<?php echo (int)$day;?>") {
-			$(this).parent('td').addClass('cal_highlight_cell');
-			$(this).replaceWith('<span class="cal_highlight_text">' + $(this).text() + '<\/span>')
-		}
-	});
-	// 集計結果が0のセルをグレイアウト
-	$('.google-visualization-table-td').each(function(i){
-		var addup_count = $(this).text();
-		if (addup_count == "0" || addup_count == "0 / 0") {
-			/*$(this).css("background-color", "#D3D3D3");*/
-			$(this).css("color", "#D3D3D3");
-			$(this).css("font-size", "8px");
-		} else {
-			var yojitsu_count = addup_count.split(" / ");
-			var jisseki = Number(yojitsu_count[0]);
-			var yosan   = Number(yojitsu_count[1]);
-			if (jisseki > yosan) {
-				$(this).css("color", "blue");
-			} else if (jisseki < yosan) {
-				$(this).css("color", "red");
-			}
-		}
-	});
+    // テーブル描画
+    drawChart();
+    // カレンダーの追跡
+    $('#calendar').containedStickyScroll({
+        duration: 150,
+        closeChar: 'カレンダーついてくんな！'
+    });
+    // タブ
+    $('#tabs').tabs();
+    // カレンダーの次月リンクを非表示にするかどうか
+    <?php if($month === date('m')):?>
+    $('#cal_next_url').replaceWith('<span class="gray">&gt;&gt;</span>');
+    <?php endif;?>
+    // 対象日をハイライト
+    $('#calendar td a').each(function(i){
+        if ($(this).text() == "<?php echo (int)$day;?>") {
+            $(this).parent('td').addClass('cal_highlight_cell');
+            $(this).replaceWith('<span class="cal_highlight_text">' + $(this).text() + '<\/span>')
+        }
+    });
+    // 集計結果が0のセルをグレイアウト
+    $('.google-visualization-table-td').each(function(i){
+        var addup_count = $(this).text();
+        if (addup_count == "0" || addup_count == "0 / 0") {
+            /*$(this).css("background-color", "#D3D3D3");*/
+            $(this).css("color", "#D3D3D3");
+            $(this).css("font-size", "8px");
+        } else {
+            var yojitsu_count = addup_count.split(" / ");
+            var jisseki = Number(yojitsu_count[0]);
+            var yosan   = Number(yojitsu_count[1]);
+            if (jisseki > yosan) {
+                $(this).css("color", "blue");
+            } else if (jisseki < yosan) {
+                $(this).css("color", "red");
+            }
+        }
+    });
 }
 
 // draw table
 function drawChart(){
-	<?php if ( ! empty($sum_user)):?>
-		$('.no_addup').hide();
-		// チャンネル別集計テーブル描画
-		<?php $channels = array_keys($sum);?>
-		<?php foreach ($channels as $channel):?>
-		<?php if ( ! empty($sum[$channel])):?>
-		var data = google.visualization.arrayToDataTable(sum['<?php echo $channel;?>']);
-		var table = new google.visualization.Table(document.getElementById('table_<?php echo $channel;?>'));
-		table.draw(data, table_option);
-		$('#div_<?php echo $channel;?>').show();
-		<?php endif;?>
-		<?php endforeach;?>
-		// 担当者別集計テーブル描画
-		var data = google.visualization.arrayToDataTable(sum_user['user']);
-		var table = new google.visualization.Table(document.getElementById('table_user'));
-		table.draw(data, table_option);
-		$('#div_user').show();
-	<?php endif;?>
+    <?php if ( ! empty($sum_user)):?>
+        $('.no_addup').hide();
+        // チャンネル別集計テーブル描画
+        <?php $channels = array_keys($sum);?>
+        <?php foreach ($channels as $channel):?>
+        <?php if ( ! empty($sum[$channel])):?>
+        var data = google.visualization.arrayToDataTable(sum['<?php echo $channel;?>']);
+        var table = new google.visualization.Table(document.getElementById('table_<?php echo $channel;?>'));
+        table.draw(data, table_option);
+        $('#div_<?php echo $channel;?>').show();
+        <?php endif;?>
+        <?php endforeach;?>
+        // 担当者別集計テーブル描画
+        var data = google.visualization.arrayToDataTable(sum_user['user']);
+        var table = new google.visualization.Table(document.getElementById('table_user'));
+        table.draw(data, table_option);
+        $('#div_user').show();
+    <?php endif;?>
 }
 
 </script>

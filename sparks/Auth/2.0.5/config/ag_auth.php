@@ -18,10 +18,10 @@
 * If you have a database table for groups, these ID's must be the same as in the database.
 */
 $config['auth_groups'] = array(
-							'admin' => '1',
-							'editor' => '2',
-							'user' => '100'
-							);
+                            'admin' => '1',
+                            'editor' => '2',
+                            'user' => '100'
+                            );
 
 /**
 * The default URI string to redirect to after a successful login.

@@ -50,7 +50,7 @@ $config['form_month'] = $month;
 */
 
 $channel = array(
-	'' => '--',
+    '' => '--',
     'realestate_east' => '不動産（東）',
     'realestate_west' => '不動産（西）',
     'able_east' => 'エイブル（東）',

@@ -16,16 +16,16 @@ EOT;
 <div id="improvement">
 <a href="#anchor_overview">事例を読む</a>
 <ul id="improvement">
-	<li><span id="improvement">方法 (A)</span>
-		<ol id="improvement">
-			<li>各データ項目をコピーします</li>
-			<li>全半角、大小文字、不正な形式等に注意しながら、希望の形式に直します</li>
-			<li>整形したデータを表に入力します</li>
-		</ol>
-	</li>
+    <li><span id="improvement">方法 (A)</span>
+        <ol id="improvement">
+            <li>各データ項目をコピーします</li>
+            <li>全半角、大小文字、不正な形式等に注意しながら、希望の形式に直します</li>
+            <li>整形したデータを表に入力します</li>
+        </ol>
+    </li>
 </ul>
 <ul id="improvement">
-	<li><span id="improvement">方法 (B)</span></li>
+    <li><span id="improvement">方法 (B)</span></li>
 </ul>
 <div id="table">
 <form method="post" action="/improvement/data_convert.html">
@@ -35,11 +35,11 @@ EOT;
 <?php
 if (isset($mail_body))
 {
-	echo $mail_body;
+    echo $mail_body;
 }
 else
 {
-	echo $raw_mail;
+    echo $raw_mail;
 }
 ?>
 </textarea>
@@ -80,13 +80,13 @@ else
 
 <?php if (isset($is_form_valid) && $is_form_valid === TRUE):?>
 <ul id="improvement">
-	<li><span id="red">ポイント</span>
-		<ol id="improvement">
-			<li>一定の規則があるテキストであれば、データを抽出する事が可能</li>
-			<li>データを抽出する際にデータを加工・整形する事が可能</li>
-			<li>データを扱う業務の場合は、工程の上流（できれば最初の入力段階）でデータを整える事</li>
-		</ol>
-	</li>
+    <li><span id="red">ポイント</span>
+        <ol id="improvement">
+            <li>一定の規則があるテキストであれば、データを抽出する事が可能</li>
+            <li>データを抽出する際にデータを加工・整形する事が可能</li>
+            <li>データを扱う業務の場合は、工程の上流（できれば最初の入力段階）でデータを整える事</li>
+        </ol>
+    </li>
 </ul>
 <?php endif;?>
 
@@ -107,17 +107,17 @@ else
 文字の間にスペースも入っているようです。
 </div>
 <ul id="improvement">
-	<li><span id="red">条件</span>
-		<ol id="improvement">
-			<li>共通：スペースは削除したい</li>
-			<li>姓名：半角英字の大文字に整形したい</li>
-			<li>メールアドレス：半角英字の小文字に整形したい</li>
-			<li>メールアドレス：@より右側が存在するかチェックしたい</li>
-			<li>国籍：半角英字の大文字に整形したい</li>
-			<li>電話番号：半角数字に整形したい</li>
-			<li>電話番号：連結文字は無しか半角"-"のみに統一したい</li>
-		</ol>
-	</li>
+    <li><span id="red">条件</span>
+        <ol id="improvement">
+            <li>共通：スペースは削除したい</li>
+            <li>姓名：半角英字の大文字に整形したい</li>
+            <li>メールアドレス：半角英字の小文字に整形したい</li>
+            <li>メールアドレス：@より右側が存在するかチェックしたい</li>
+            <li>国籍：半角英字の大文字に整形したい</li>
+            <li>電話番号：半角数字に整形したい</li>
+            <li>電話番号：連結文字は無しか半角"-"のみに統一したい</li>
+        </ol>
+    </li>
 </ul>
 <pre>
 <?php echo $raw_mail;?>

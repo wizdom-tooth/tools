@@ -59,19 +59,19 @@ $bm3 = '<a href="javascript:(function(){'.$js3.'})();">Bookmark Me!</a>';
 </pre>
 
 <ul id="improvement">
-	<li><span id="improvement">方法 (A)</span>
-		<ol id="improvement">
-			<li>各データ項目をコピー＆ペーストして入力し、プルダウンを選択します</li>
-		</ol>
-	</li>
+    <li><span id="improvement">方法 (A)</span>
+        <ol id="improvement">
+            <li>各データ項目をコピー＆ペーストして入力し、プルダウンを選択します</li>
+        </ol>
+    </li>
 </ul>
 <ul id="improvement">
-	<li><span id="improvement">方法 (B)</span>
-		<ol id="improvement">
-			<li>SAMPLE01 [<?php echo $bm1;?>]</li>
-			<li>SAMPLE02 [<?php echo $bm2;?>]</li>
-		</ol>
-	</li>
+    <li><span id="improvement">方法 (B)</span>
+        <ol id="improvement">
+            <li>SAMPLE01 [<?php echo $bm1;?>]</li>
+            <li>SAMPLE02 [<?php echo $bm2;?>]</li>
+        </ol>
+    </li>
 </ul>
 <form>
 <table frame="box">
@@ -160,13 +160,13 @@ $bm3 = '<a href="javascript:(function(){'.$js3.'})();">Bookmark Me!</a>';
 </form>
 
 <ul id="improvement">
-	<li><span id="red">ポイント</span>
-		<ul id="improvement">
-			<li>この手法はリンクをブックマークする事で、任意のページに適用する事が可能です</li>
-			<li>下記はサンプルですので、フォームを送信しないように御注意ください</li>
-			<li>ex) <a href="https://account.edit.yahoo.co.jp/registration" target="blank">Yahoo! Japan ID登録</a> [<?php echo $bm3;?>]</li>
-		</ul>
-	</li>
+    <li><span id="red">ポイント</span>
+        <ul id="improvement">
+            <li>この手法はリンクをブックマークする事で、任意のページに適用する事が可能です</li>
+            <li>下記はサンプルですので、フォームを送信しないように御注意ください</li>
+            <li>ex) <a href="https://account.edit.yahoo.co.jp/registration" target="blank">Yahoo! Japan ID登録</a> [<?php echo $bm3;?>]</li>
+        </ul>
+    </li>
 </ul>
 
 </div>
