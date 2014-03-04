@@ -12,17 +12,11 @@ class Wizweek {
     private $_week_weight_info = array();
     private $_weekday_weights = array();
 
-    public function __construct($params)
+    public function __construct()
     {
-        if ( ! isset($params['wiz_month_id']))
-        {
-            trigger_error('please set param ... wiz_month_id.');
-        }
-
         $this->_CI =& get_instance();
         $this->_CI->config->load('wiz_config');
         $this->_db = $this->_CI->load->database('wizp', TRUE);
-        $this->_wiz_month_id = $params['wiz_month_id'];
         $this->_set_weekday_weights();
 
         // 祝日マスタ
@@ -42,6 +36,12 @@ class Wizweek {
         {
             $this->_suspends[$tmp['date']] = '';
         }
+    }
+
+    public function set_wiz_month_id($wiz_month_id)
+    {
+        // ****************** 妥当性確認追加しよう
+        $this->_wiz_month_id = $wiz_month_id;
     }
 
     // 曜日の重みづけ取得

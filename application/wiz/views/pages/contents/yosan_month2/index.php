@@ -22,6 +22,7 @@ var bar_option;
 var table_option;
 var table_list_option;
 var group_option;
+var gauge_option;
 
 var pie_channel;
 var pie_timezone;
@@ -31,7 +32,7 @@ var table_timezone;
 var table_staff;
 var yojitsu_done_intro;
 var yojitsu_done_contract;
-var summary_intro_ratio;
+var summary_intro_ratio_data;
 var summary_contract_ratio;
 var contract_timeline;
 var table_list;
@@ -70,9 +71,17 @@ function init(){
         width: '600',
         height: '400',
     };
+    gauge_option = {
+        animation:{duration: 1000, easing: 'inAndOut'},
+        width: 400, height: 250,
+        yellowFrom:75, yellowTo: 90,
+        redFrom: 90, redTo: 100,
+        minorTicks: 5,
+    }
+    /*
     bar_option = {
         //animation:{duration: 1000, easing: 'inAndOut'},
-        chartArea: {width: '85%'},
+        chartArea: {width: '85%', height: '80%'},
         legend: {position: "none"},
         hAxis:{
             viewWindow:{min: 0, max: 100},
@@ -80,6 +89,7 @@ function init(){
             baseline: 0,
         },
     };
+    */
     table_option = {
         width: '450'
     };
@@ -163,7 +173,6 @@ function bxslide(id){
 }
 /* }}} */
 
-
 /* {{{ js intro */
 function draw_tab_intro(){
 
@@ -205,22 +214,42 @@ function draw_tab_intro(){
     // 予算達成率チャート描画
     // ---------------------
 
+    yojitsu_done_intro = new google.visualization.Gauge($('#yojitsu_done_intro').get(0));
+    summary_intro_ratio_data_init = google.visualization.arrayToDataTable([['', ''], ['', 0]]);
+    summary_intro_ratio_data = google.visualization.arrayToDataTable([['', ''], ['', ratio]]);
+    yojitsu_done_intro.draw(summary_intro_ratio_data_init, gauge_option);
+    setTimeout(function(){
+        yojitsu_done_intro.draw(summary_intro_ratio_data, gauge_option);
+    }, 600);
+
+
     // バーチャート描画
-    yojitsu_done_intro = new google.visualization.BarChart($('#yojitsu_done_intro').get(0));
+/*
+    yojitsu_done_intro = new SteppedAreaChart($('#yojitsu_done_intro').get(0));
     summary_intro_ratio = google.visualization.arrayToDataTable([['', ''], ['', ratio]]);
     yojitsu_done_intro.draw(summary_intro_ratio, bar_option);
+*/
 
     // 百分率カウンター
-    $("#yojitsu_done_intro_counter").flipCounter(counter_option);
-    setTimeout(function(){$("#yojitsu_done_intro_counter").flipCounter(
-        "startAnimation",
-        {
-            number: 0,
-            end_number: ratio,
-            easing: jQuery.easing.easeOutCubic,
-            duration: 1000,
-        }
-    );}, 600);
+    var obj = {
+        yojitsu_done_intro_ratio: ratio,
+        intro_count: intro_count,
+        yosan_intro_count: <?php echo $yosan_intro_count;?>,
+    };
+    jQuery.each(obj, function(i, val){
+        $("#" + i).flipCounter(counter_option);
+        setTimeout(function(){$("#" + i).flipCounter(
+            "startAnimation",
+            {
+                number: 0,
+                end_number: val,
+                //easing: jQuery.easing.easeOutCubic,
+                easing: 'easeOutCubic',
+                duration: 1000,
+            }
+        );}, 600);
+    });
+
 }
 /* }}} */
 
@@ -330,9 +359,8 @@ function draw_tab_yosan(){}
 /* }}} */
 </script>
 
+<!-- {{{ css -->
 <style type="text/css">
-<!--
-/* {{{ css */
 h1 {
     margin-top: 5px;
     background-color: #FFB700;
@@ -422,20 +450,31 @@ span.chart_label {
 }
 #yojitsu_done_intro, #yojitsu_done_contract{
     width: 55%;
-    float: left;
+    /*float: left;*/
 }
-#yojitsu_done_intro_counter, #yojitsu_done_contract_counter {
+.yojitsu_done_intro td {
+    width: 150px;
+}
+#yojitsu_done_intro_ratio, #yojitsu_done_contract_counter {
+    vertical-align: bottom;
     width: auto;
-    margin-top: 65px;
-    float: left;
+    /*margin-top: 65px;*/
+    /*float: left;*/
 }
 .counter_unit {
     width: auto;
     font-size: 40px;
     font-weight: bold;
-    margin-top: 60px;
+    /*margin-top: 60px;*/
     margin-left: 10px;
     float: left;
+    vertical-align: bottom;
+}
+.counter_text {
+    vertical-align: bottom;
+    width: auto;
+    font-size: 40px;
+    font-weight: bold;
 }
 
 /*テーブル*/
@@ -482,9 +521,8 @@ td.Empty {
     color: red;
     margin-right: 3px;
 }
-/* }}} */
--->
 </style>
+<!-- }}} -->
 
 <div id="overlay"><img id="loading" src="/assets/wiz/img/loading140.gif" /></div><!--//overlay-->
 
@@ -550,9 +588,14 @@ td.Empty {
 <div class="chart_wrapper">
 <span class="chart_label">紹介予算消化率</span>
 <hr class="chart_label" />
+
+<table class="yojitsu_done_intro">
+<tr><td>実</td><td><span id="intro_count"><input type="hidden" name="counter-value"/></span></td></tr>
+<tr><td>予</td><td><span id="yosan_intro_count"><input type="hidden" name="counter-value"/></span></td></tr>
+<tr><td>比</td><td><span id="yojitsu_done_intro_ratio"><input type="hidden" name="counter-value"/></span></td></tr>
+</table>
+
 <div id="yojitsu_done_intro"></div>
-<div id="yojitsu_done_intro_counter"><input type="hidden" name="counter-value"/></div>
-<div class="counter_unit">%</div>
 <div style="clear: both;"></div>
 </div>
 </div>

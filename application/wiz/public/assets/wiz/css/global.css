@@ -5,7 +5,7 @@
 }
 body{
 	width: 100%;
-	min-width: 1200px;
+	min-width: 1250px;
 	margin: 0px;
 	padding: 0px;
 }
@@ -313,7 +313,7 @@ div#improvement{
 	width:1200px;
 	height:600px;
 }
-#loading_must, #loading_jcom_jcn, #remote_src, #flets_box, #au_box, #spaaqs_box, #jcom_box, #jcn_box, #flets_nishi_box, #commufa_box, #starcat_box, #greencity_box, #himawari_box, #eo_hikari_box, #bbiq_box, #itscom_box, #megaegg_box {
+#loading_must, #loading_jcom_jcn, #remote_src, #flets_box, #au_box, #spaaqs_box, #jcom_box, #jcn_box, #flets_nishi_box, #commufa_box, #starcat_box, #greencity_box, #himawari_box, #eo_hikari_box, #bbiq_box, #itscom_box, #megaegg_box, #jcn_yokohama_box {
 	display: none;
 }
 #jcom_jcn_button {
@@ -370,3 +370,28 @@ dd p{line-height:120%}
 #accordion-2 .active .slide-number{color:#fff}
 #accordion-2 a{color:#68889b}
 #accordion-2 dd img{float:right;margin:0 0 0 30px;position:relative;top:-20px}
+
+
+
+
+
+   
+.ta1 {
+margin: 5px;
+border: 1px solid #000000;/*線の色*/
+}
+
+.ta1 td, .ta1 th{
+padding: 8px;
+border: 1px solid #000000;/*線の色*/
+}
+
+.ta1 tr:hover {
+color:#E48E00;
+}
+
+.ta1 th {
+background-color:#696969;
+color:#FFFFFF;
+}
+
