@@ -1,5 +1,4 @@
 <?php
-
 $url = array(
     'flets_login'  => 'https://hikariweb.ntt-east.co.jp/login.php',
     'flets_search' => 'https://msearch.ntt-east.co.jp/msearch/search.php',
@@ -131,7 +130,7 @@ if ($east_or_west === 'west')
 <iframe name="iframe_flets" class="iframe_box" id="iframe_flets"></iframe>
 <form style="display:none" target="iframe_flets" id="form_iframe_flets_login" method="post" action="<?php echo $url['flets_login'];?>">
 <input type="hidden" name="id" value="1001181152" />
-<input type="hidden" name="password" value="wizp1312" />
+<input type="hidden" name="password" value="wizp1403" />
 </form>
 <form style="display:none" target="iframe_flets" id="form_iframe_flets_search" method="post" action="<?php echo $url['flets_search'];?>">
 <input type="hidden" value="zipcode" name="skind">
@@ -299,6 +298,60 @@ if ($east_or_west === 'west')
 </div>
 
 
+<!--JCN横浜-->
+<div id="jcn_yokohama_box">
+<h3 class="accordion_head label_blue">・JCNよこはま</h3>
+<table class="ta1" cellspacing="0">
+<tr>
+<th style="width:300px">建物名</th>
+<th style="width:300px">住所</th>
+<th style="width:120px">TV</th>
+<th style="width:120px">ネット</th>
+<th style="width:120px">電話</th>
+<th style="width:120px">総世帯数</th>
+<!--
+<th>建物区分</th>
+-->
+</tr>
+<?php foreach($jcn_yokohama_matches as $jcn_yokohama_match):?>
+<?php
+$tv_bgcolor = '';
+$net_bgcolor = '';
+$tel_bgcolor = '';
+switch ($jcn_yokohama_match[5])
+{
+    case 'デジタル対応': $tv_bgcolor = '#98FB98'; break;
+    case 'デジタル未対応': $tv_bgcolor = '#808080'; break;
+}
+switch ($jcn_yokohama_match[6])
+{
+    case '対応可': $net_bgcolor = '#98FB98'; break;
+    case '対応不可': $net_bgcolor = '#808080'; break;
+}
+switch ($jcn_yokohama_match[7])
+{
+    case '対応可': $tel_bgcolor = '#98FB98'; break;
+    case '対応不可': $tel_bgcolor = '#808080'; break;
+}
+?>
+<tr>
+<td><?php echo $jcn_yokohama_match[1];?></td>
+<td><?php echo $jcn_yokohama_match[2];?></td>
+<td bgcolor="<?php echo $tv_bgcolor;?>"><span class="tooltip" title="TV"><?php echo $jcn_yokohama_match[5];?></span></td>
+<td bgcolor="<?php echo $net_bgcolor;?>"><span class="tooltip" title="ネット"><?php echo $jcn_yokohama_match[6];?></span></td>
+<td bgcolor="<?php echo $tel_bgcolor;?>"><span class="tooltip" title="電話"><?php echo $jcn_yokohama_match[7];?></span></td>
+<td><span class="tooltip" title="総世帯数"><?php echo $jcn_yokohama_match[3];?></span></td>
+<!--
+<td><?php echo $jcn_yokohama_match[4];?></td>
+-->
+</tr>
+<?php endforeach;?>
+</table>
+</div>
+
+
+
+
 <!--jcom jcn-->
 <button type="button" id="jcom_jcn_button">JCOM ＆ JCN も検索する</button>
 <div id="loading_jcom_jcn">
@@ -396,6 +449,9 @@ $(document).ready(function(){
             itscom_url = 'http://www.itscom.net/apartment/apart_list_03miyamae.chtml';
             break;
     }
+    <?php if ( ! empty($jcn_yokohama_matches)):?>
+    $("#jcn_yokohama_box").show();
+    <?php endif;?>
     if (itscom_url !== '') {
             $("#form_iframe_itscom").attr('action', itscom_url);
             $("#form_iframe_itscom").submit();
@@ -451,6 +507,13 @@ $(document).ready(function(){
             $("#remote_src").show();
         });
     });
+    $(".tooltip").tooltip({
+        show: {
+            effect: "slideDown",
+            delay: 100
+        },
+        position: { my: "left+15 center", at: "right center", collision: "flipfit" }
+    });
 });
 
 $("#jcom_jcn_button").click(function(){
@@ -467,6 +530,7 @@ $("#jcom_jcn_button").click(function(){
         });
     });
 });
+
 //-->
 </script>
 

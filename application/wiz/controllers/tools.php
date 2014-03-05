@@ -21,6 +21,8 @@ class Tools extends CI_Controller_With_Auth {
             'is_aichi_starcat' => FALSE,
             'is_aichi_greencity' => FALSE,
             'is_aichi_himawari' => FALSE,
+            'governmentcode' => '',
+            'jcn_yokohama_matches' => array(),
         );
         $this->ag_auth->view('contents/tools/mansion_search', $data);
         exit;
@@ -86,7 +88,7 @@ class Tools extends CI_Controller_With_Auth {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $result = curl_exec($ch);
         $xml = simplexml_load_string($result);
-        // var_dump($xml);
+        //var_dump($xml);
         if ((int)$xml->ResultInfo->Count === 0 || (int)$xml->Feature->Property->AddressMatchingLevel < 3)
         {
             $this->_show_mansion_search_error($query);
@@ -259,11 +261,31 @@ class Tools extends CI_Controller_With_Auth {
         {
             $this->_show_mansion_search_error($query);
         }
-        $searched_address = $xml->Feature->Property->Address;
+        $searched_address = strval($xml->Feature->Property->Address);
         $zip = str_replace('〒', '', $xml->Feature->Name);
         list($zip1, $zip2) = explode('-', $zip);
         //var_dump($xml);
         curl_close($ch);
+
+        // 神奈川県横浜市の場合はJCN横浜に該当データがあるか検索
+        $jcn_yokohama_matches = array();
+        if (preg_match('/^神奈川県横浜市/', $searched_address))
+        {
+            $yokohama_city_name = preg_replace('/^神奈川県/', '', $searched_address);
+            $jcn_yokohama_lines = file('/home/wiz/g/application/wiz/var/feed/tools/mansion_search/jcn.tsv');
+            foreach ($jcn_yokohama_lines as $jcn_yokohama_line)
+            {
+                $jcn_yokohama_fields = explode("\t", trim($jcn_yokohama_line));
+                if ($yokohama_city_name === $jcn_yokohama_fields[8]) {
+                    $jcn_yokohama_matches[] = $jcn_yokohama_fields;
+                }
+            }
+            $sort = array();
+            foreach ($jcn_yokohama_matches as $i => $tmp) {
+                $sort[$i] = $tmp[2]; // 住所
+            }
+            array_multisort($sort, SORT_ASC, $jcn_yokohama_matches);
+        }
 
         $data = array(
             'query' => $query,
@@ -281,6 +303,7 @@ class Tools extends CI_Controller_With_Auth {
             'is_aichi_greencity' => $is_aichi_greencity,
             'is_aichi_himawari' => $is_aichi_himawari,
             'governmentcode' => $governmentcode,
+            'jcn_yokohama_matches' => $jcn_yokohama_matches,
         );
         $this->ag_auth->view('contents/tools/mansion_search', $data);
     }
