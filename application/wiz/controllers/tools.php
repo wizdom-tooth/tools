@@ -31,7 +31,7 @@ class Tools extends CI_Controller_With_Auth {
     public function mansion_search()
     {
         $query = $this->input->get('query');
-        if (empty($query) || strlen($query) <= 7)
+        if (empty($query) || strlen($query) < 7)
         {
             $this->_show_mansion_search_error($query);
         }
@@ -52,7 +52,6 @@ class Tools extends CI_Controller_With_Auth {
             $post = array(
                 'appid' => self::YAHOO_APPID,
                 'query' => $address,
-                //'detail' => 'simple',
                 'results' => 1,
             );
             $url .= '?' . http_build_query($post);
@@ -65,10 +64,20 @@ class Tools extends CI_Controller_With_Auth {
             {
                 $this->_show_mansion_search_error($query);
             }
-            $address = (string)$xml->Feature->Property->Address;
             //var_dump($xml);
+            $address = (string)$xml->Feature->Property->Address;
+            /* taogawa temp もしジオコーダが死んだ場合のコード
+            $governmentcode = (string)$xml->Feature->Property->GovernmentCode;
+            $prefcode = substr($governmentcode, 0, 2);
+            */
             curl_close($ch);
         }
+        /* taogawa temp もしジオコーダが死んだ場合のコード
+        else
+        {
+            $this->_show_mansion_search_error($query);
+        }
+        */
 
         // -------------------------
         // ジオコーダ
