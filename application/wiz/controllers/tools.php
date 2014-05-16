@@ -50,8 +50,8 @@ class Tools extends CI_Controller_With_Auth {
         {
             $url = 'http://search.olp.yahooapis.jp/OpenLocalPlatform/V1/zipCodeSearch';
             $post = array(
-                'appid' => self::YAHOO_APPID,
                 'query' => $address,
+                'appid' => self::YAHOO_APPID,
                 'results' => 1,
             );
             $url .= '?' . http_build_query($post);

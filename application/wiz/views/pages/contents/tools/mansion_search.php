@@ -130,7 +130,7 @@ if ($east_or_west === 'west')
 <iframe name="iframe_flets" class="iframe_box" id="iframe_flets"></iframe>
 <form style="display:none" target="iframe_flets" id="form_iframe_flets_login" method="post" action="<?php echo $url['flets_login'];?>">
 <input type="hidden" name="id" value="1001181152" />
-<input type="hidden" name="password" value="wizp1403" />
+<input type="hidden" name="password" value="wizp1404" />
 </form>
 <form style="display:none" target="iframe_flets" id="form_iframe_flets_search" method="post" action="<?php echo $url['flets_search'];?>">
 <input type="hidden" value="zipcode" name="skind">
@@ -413,50 +413,66 @@ $(document).ready(function(){
     var itscom_url = '';
     switch ("<?php echo $governmentcode;?>") {
         case '13110': // 東京都 目黒区
-            itscom_url = 'http://www.itscom.net/apartment/apart_list_08meguro.chtml';
+        case '13111': // 東京都 大田区
+        case '13112': // 東京都 世田谷区
+        case '13113': // 東京都 渋谷区
+        case '13209': // 東京都 町田市
+        case '14109': // 神奈川県 横浜市 港北区
+        case '14113': // 神奈川県 横浜市 緑区
+        case '14117': // 神奈川県 横浜市 青葉区
+        case '14118': // 神奈川県 横浜市 都筑区
+        case '14133': // 神奈川県 川崎市 中原区
+        case '14134': // 神奈川県 川崎市 高津区
+        case '14136': // 神奈川県 川崎市 宮前区
+            itscom_url = 'https://mypage.itscom.net/Housing/Housing_area_entry/';
+            break;
+        /*
+        case '13110': // 東京都 目黒区
+            itscom_url = 'https://mypage.itscom.net/Housing/Housing_area_select/%E6%9D%B1%E4%BA%AC%E9%83%BD/%E7%9B%AE%E9%BB%92%E5%8C%BA/';
             break;
         case '13111': // 東京都 大田区
-            itscom_url = 'http://www.itscom.net/apartment/apart_list_09ota.chtml';
+            itscom_url = 'https://mypage.itscom.net/Housing/Housing_area_select/%E6%9D%B1%E4%BA%AC%E9%83%BD/%E5%A4%A7%E7%94%B0%E5%8C%BA/';
             break;
         case '13112': // 東京都 世田谷区
-            itscom_url = 'http://www.itscom.net/apartment/apart_list_10setagaya.chtml';
+            itscom_url = 'https://mypage.itscom.net/Housing/Housing_area_select/%E6%9D%B1%E4%BA%AC%E9%83%BD/%E4%B8%96%E7%94%B0%E8%B0%B7%E5%8C%BA/';
             break;
         case '13113': // 東京都 渋谷区
-            itscom_url = 'http://www.itscom.net/apartment/apart_list_11shibuya.chtml';
+            itscom_url = 'https://mypage.itscom.net/Housing/Housing_area_select/%E6%9D%B1%E4%BA%AC%E9%83%BD/%E6%B8%8B%E8%B0%B7%E5%8C%BA/';
             break;
         case '13209': // 東京都 町田市
-            itscom_url = 'http://www.itscom.net/apartment/apart_list_12machida.chtml';
+            itscom_url = 'https://mypage.itscom.net/Housing/Housing_area_select/%E6%9D%B1%E4%BA%AC%E9%83%BD/%E7%94%BA%E7%94%B0%E5%B8%82/';
             break;
         case '14109': // 神奈川県 横浜市 港北区
-            itscom_url = 'http://www.itscom.net/apartment/apart_list_06kohoku.chtml';
+            itscom_url = 'https://mypage.itscom.net/Housing/Housing_area_select/%E7%A5%9E%E5%A5%88%E5%B7%9D%E7%9C%8C/%E6%A8%AA%E6%B5%9C%E5%B8%82%E6%B8%AF%E5%8C%97%E5%8C%BA/';
             break;
         case '14113': // 神奈川県 横浜市 緑区
-            itscom_url = 'http://www.itscom.net/apartment/apart_list_05midori.chtml';
+            itscom_url = 'https://mypage.itscom.net/Housing/Housing_area_select/%E7%A5%9E%E5%A5%88%E5%B7%9D%E7%9C%8C/%E6%A8%AA%E6%B5%9C%E5%B8%82%E7%B7%91%E5%8C%BA/';
             break;
         case '14117': // 神奈川県 横浜市 青葉区
-            itscom_url = 'http://www.itscom.net/apartment/apart_list_04aoba.chtml';
+            itscom_url = 'https://mypage.itscom.net/Housing/Housing_area_select/%E7%A5%9E%E5%A5%88%E5%B7%9D%E7%9C%8C/%E6%A8%AA%E6%B5%9C%E5%B8%82%E9%9D%92%E8%91%89%E5%8C%BA/';
             break;
         case '14118': // 神奈川県 横浜市 都筑区
-            itscom_url = 'http://www.itscom.net/apartment/apart_list_07tsuzuki.chtml';
+            itscom_url = 'https://mypage.itscom.net/Housing/Housing_area_select/%E7%A5%9E%E5%A5%88%E5%B7%9D%E7%9C%8C/%E6%A8%AA%E6%B5%9C%E5%B8%82%E9%83%BD%E7%AD%91%E5%8C%BA/';
             break;
         case '14133': // 神奈川県 川崎市 中原区
-            itscom_url = 'http://www.itscom.net/apartment/apart_list_02nakahara.chtml';
+            itscom_url = 'https://mypage.itscom.net/Housing/Housing_area_select/%E7%A5%9E%E5%A5%88%E5%B7%9D%E7%9C%8C/%E5%B7%9D%E5%B4%8E%E5%B8%82%E4%B8%AD%E5%8E%9F%E5%8C%BA/';
             break;
         case '14134': // 神奈川県 川崎市 高津区
-            itscom_url = 'http://www.itscom.net/apartment/apart_list_01takatsu.chtml';
+            itscom_url = 'https://mypage.itscom.net/Housing/Housing_area_select/%E7%A5%9E%E5%A5%88%E5%B7%9D%E7%9C%8C/%E5%B7%9D%E5%B4%8E%E5%B8%82%E9%AB%98%E6%B4%A5%E5%8C%BA/';
             break;
         case '14136': // 神奈川県 川崎市 宮前区
-            itscom_url = 'http://www.itscom.net/apartment/apart_list_03miyamae.chtml';
+            itscom_url = 'https://mypage.itscom.net/Housing/Housing_area_select/%E7%A5%9E%E5%A5%88%E5%B7%9D%E7%9C%8C/%E5%B7%9D%E5%B4%8E%E5%B8%82%E5%AE%AE%E5%89%8D%E5%8C%BA/';
             break;
+        */
     }
-    <?php if ( ! empty($jcn_yokohama_matches)):?>
-    $("#jcn_yokohama_box").show();
-    <?php endif;?>
     if (itscom_url !== '') {
             $("#form_iframe_itscom").attr('action', itscom_url);
             $("#form_iframe_itscom").submit();
             $("#itscom_box").show();
     }
+    <?php if ( ! empty($jcn_yokohama_matches)):?>
+    $("#jcn_yokohama_box").show();
+    <?php endif;?>
     switch ("<?php echo $prefcode;?>") {
         // コミュファ
         case '23': // 愛知の場合は地域によって更に下記を追加
