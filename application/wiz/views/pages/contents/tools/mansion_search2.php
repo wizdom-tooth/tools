@@ -127,19 +127,15 @@ if ($east_or_west === 'west')
 <div id="flets_box">
 <h3 class="accordion_head label_blue">・フレッツ光</h3>
 <div>
-<!--<iframe name="iframe_flets" class="iframe_box" id="iframe_flets"></iframe>-->
-<form target="_blank" name="form_iframe_flets_login" id="form_iframe_flets_login" method="post" action="<?php echo $url['flets_login'];?>">
+<iframe name="iframe_flets" class="iframe_box" id="iframe_flets"></iframe>
+<form style="display:none" target="iframe_flets" id="form_iframe_flets_login" method="post" action="<?php echo $url['flets_login'];?>">
 <input type="hidden" name="id" value="1001181152" />
 <input type="hidden" name="password" value="wizp1404" />
 </form>
-<form target="_blank" name="form_iframe_flets_search" id="form_iframe_flets_search" method="post" action="<?php echo $url['flets_search'];?>">
+<form style="display:none" target="iframe_flets" id="form_iframe_flets_search" method="post" action="<?php echo $url['flets_search'];?>">
 <input type="hidden" value="zipcode" name="skind">
 <input type="hidden" name="zip" value="<?php echo $zip1.$zip2;?>" />
 </form>
-<br />
-<a href="javascript:void(0)" onClick="document.form_iframe_flets_search.submit();">検索する</a>（別ウィンドが開きます）<br />
-<br />
-ログインが必要な場合は、<a href="javascript:void(0)" onClick="document.form_iframe_flets_login.submit();">コチラ</a></li>を一度踏んでください。自動的にログイン状態になります。<br />
 </div>
 </div>
 
@@ -408,8 +404,7 @@ $(document).ready(function(){
     $("#form_iframe_spaaqs").submit();
     $("#spaaqs_box").show();
     if ("<?php echo $east_or_west;?>" == "east") {
-        //$("#form_iframe_flets_login").submit();
-        //$("#form_iframe_flets_search").submit();
+        $("#form_iframe_flets_login").submit();
         $("#flets_box").show();
     } else {
         $("#form_iframe_flets_nishi").submit();
